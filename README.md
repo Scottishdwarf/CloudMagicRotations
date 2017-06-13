@@ -1,0 +1,2 @@
+# CloudMagicRotations
+Rotations for CloudMagic
