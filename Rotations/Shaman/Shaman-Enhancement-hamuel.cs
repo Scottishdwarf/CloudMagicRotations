@@ -93,7 +93,7 @@ namespace CloudMagic.Rotation
         {
             get
             {
-                if (WoW.Talent(6) != 2 || WoW.Talent(6) == 2 && WoW.Maelstrom > 25)
+                if (WoW.Talent(6) != 2 || WoW.Talent(6) == 2 && WoW.Maelstrom >= 25)
                 {
                     return true;
                 }
@@ -247,13 +247,13 @@ namespace CloudMagic.Rotation
                 return;
             }
             //actions.buffs +=/ fury_of_air,if= buff.ascendance.up | (feral_spirit.remains > 5) | level < 100
-            if (WoW.CanCast("FoA") && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("FoA")&&(WoW.PlayerHasBuff("Ascendance") && Pets.IsRunning))
+            if (WoW.CanCast("FoA") && WoW.Maelstrom >= 5 && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("FoA")&&(WoW.PlayerHasBuff("Ascendance") && Pets.IsRunning))
             {
                 WoW.CastSpell("FoA", "Buff spell");
                 return;
             }
             //actions.buffs +=/ crash_lightning,if= artifact.alpha_wolf.rank & prev_gcd.1.feral_spirit
-            if (WoW.CanCast("Crash lightning") && WoW.IsSpellInRange("Rockbiter") && Pets.IsRunning && !Crash.IsRunning)
+            if (WoW.CanCast("Crash lightning") && WoW.Maelstrom >= 20 && WoW.IsSpellInRange("Rockbiter") && Pets.IsRunning && !Crash.IsRunning)
             {
                 Crash.Restart();
                 WoW.CastSpell("Crash lightning", "Buff spell");
@@ -266,7 +266,7 @@ namespace CloudMagic.Rotation
                 return;
             }
             //actions.buffs +=/ frostbrand,if= talent.hailstorm.enabled & !buff.frostbrand.up & variable.furyCheck45
-            if(WoW.CanCast("Frostbrand", true, true, true) && WoW.Talent(4) == 3 && !WoW.PlayerHasBuff("Frostbrand")&& furyCheck45)
+            if(WoW.CanCast("Frostbrand", true, true, true) && WoW.Maelstrom >= 20 && WoW.Talent(4) == 3 && !WoW.PlayerHasBuff("Frostbrand")&& furyCheck45)
             {
                 WoW.CastSpell("Frostbrand", "Buff spell");
                 return;
@@ -278,7 +278,7 @@ namespace CloudMagic.Rotation
                 return;
             }
             //actions.buffs +=/ frostbrand,if= talent.hailstorm.enabled & buff.frostbrand.remains < 6 + gcd & cooldown.doom_winds.remains < gcd * 2
-            if (WoW.CanCast("Frostbrand", true, true, true) && WoW.PlayerBuffTimeRemaining("Frostbrand") < 600 + GCD && WoW.SpellCooldownTimeRemaining("Doom Winds") < GCD * 2)
+            if (WoW.CanCast("Frostbrand", true, true, true) && WoW.Maelstrom >= 20 && WoW.PlayerBuffTimeRemaining("Frostbrand") < 600 + GCD && WoW.SpellCooldownTimeRemaining("Doom Winds") < GCD * 2)
             {
                 WoW.CastSpell("Frostbrand", "Buff spell");
                 return;
@@ -294,13 +294,13 @@ namespace CloudMagic.Rotation
                 return;
             }
             //actions.core = earthen_spike,if= variable.furyCheck25
-            if (WoW.CanCast("Earthen spike") && WoW.Talent(6)== 3 && furyCheck25)
+            if (WoW.CanCast("Earthen spike") && WoW.Maelstrom >= 20 && WoW.Talent(7)== 3 && furyCheck25)
             {
                 WoW.CastSpell("Earthen spike", "Core spell");
                 return;
             }
             //actions.core +=/ crash_lightning,if= !buff.crash_lightning.up & active_enemies >= 2
-            if(WoW.CanCast("Crash lightning") && WoW.IsSpellInRange("Rockbiter")&& !WoW.PlayerHasBuff("Crash lightning") && combatRoutine.Type != RotationType.SingleTarget)
+            if(WoW.CanCast("Crash lightning") && WoW.Maelstrom >= 20 && WoW.IsSpellInRange("Rockbiter")&& !WoW.PlayerHasBuff("Crash lightning") && combatRoutine.Type != RotationType.SingleTarget)
             {
                 WoW.CastSpell("Crash lightning", "Core spell");
                 return;
@@ -312,26 +312,26 @@ namespace CloudMagic.Rotation
                 return;
             }
             //actions.core +=/ crash_lightning,if= active_enemies >= 8 | (active_enemies >= 6 & talent.crashing_storm.enabled)
-            if(WoW.CanCast("Crash lightning") && WoW.IsSpellInRange("Rockbiter") && combatRoutine.Type == RotationType.AOE && (WoW.CountEnemyNPCsInRange >= 8 || WoW.CountEnemyNPCsInRange >=6 && WoW.Talent(6) ==1))
+            if(WoW.CanCast("Crash lightning") && WoW.Maelstrom >= 20 && WoW.IsSpellInRange("Rockbiter") && combatRoutine.Type == RotationType.AOE && (WoW.CountEnemyNPCsInRange >= 8 || WoW.CountEnemyNPCsInRange >=6 && WoW.Talent(6) ==1))
             {
                 WoW.CastSpell("Crash lightning", "Core spell");
                 return;
 
             }
             //actions.core +=/ windstrike
-            if(WoW.CanCast("Stormstrike", true, true, true) && WoW.PlayerHasBuff("Ascendance"))
+            if(WoW.CanCast("Stormstrike", true, true, true) && WoW.Maelstrom >= 8 && WoW.PlayerHasBuff("Ascendance"))
             {
                 WoW.CastSpell("Stormstrike", "Core spell");
                 return;
             }
             //actions.core +=/ Stormstrike,if= buff.stormbringer.up & variable.furyCheck25
-            if (WoW.CanCast("Stormstrike", true, true, true) && WoW.PlayerHasBuff("Stormbringer") && furyCheck25)
+            if (WoW.CanCast("Stormstrike", true, true, true) && WoW.Maelstrom >= 20 && WoW.PlayerHasBuff("Stormbringer") && furyCheck25)
             {
                 WoW.CastSpell("Stormstrike", "Core: Stormbriner react spell");
                 return;
             }
             //actions.core +=/ crash_lightning,if= active_enemies >= 4 | (active_enemies >= 2 & talent.crashing_storm.enabled)
-            if(WoW.CanCast("Crash lightning") && WoW.IsSpellInRange("Rockbiter") && combatRoutine.Type != RotationType.SingleTarget && (WoW.CountEnemyNPCsInRange >=4 || WoW.CountEnemyNPCsInRange>2 && WoW.Talent(6)==1 ))
+            if(WoW.CanCast("Crash lightning") && WoW.Maelstrom >= 20 && WoW.IsSpellInRange("Rockbiter") && combatRoutine.Type != RotationType.SingleTarget && (WoW.CountEnemyNPCsInRange >=4 || WoW.CountEnemyNPCsInRange>2 && WoW.Talent(6)==1 ))
             {
                 WoW.CastSpell("Crash lightning", "Core: Aoe with talent spell");
                 return;
@@ -344,13 +344,13 @@ namespace CloudMagic.Rotation
             }
 
             //actions.core +=/ Stormstrike,if= (!talent.overcharge.enabled & variable.furyCheck45) | (talent.overcharge.enabled & variable.furyCheck80)
-            if (WoW.CanCast("Stormstrike",true,true,true) && (WoW.Talent(5) != 2 && furyCheck45|| WoW.Talent(5)==2 &&furyCheck80))
+            if (WoW.CanCast("Stormstrike",true,true,true) && WoW.Maelstrom > 40 && (WoW.Talent(5) != 2 && furyCheck45|| WoW.Talent(5)==2 &&furyCheck80))
             {
                 WoW.CastSpell("Stormstrike", "Core spell");
                 return;
             }
             //actions.core +=/ frostbrand,if= variable.akainuAS
-            if (WoW.CanCast("Frostbrand", true, true, true) && akainus)
+            if (WoW.CanCast("Frostbrand", true, true, true) && WoW.Maelstrom >= 20 && akainus)
             {
                 WoW.CastSpell("Frostbrand","Core, With Akainus spell");
                 return;
@@ -363,13 +363,13 @@ namespace CloudMagic.Rotation
                return;
             }
             //actions.core +=/ sundering,if= active_enemies >= 3
-            if(WoW.CanCast("Sundering")&& WoW.Talent(7) ==3 && combatRoutine.Type == RotationType.AOE)
+            if(WoW.CanCast("Sundering") && WoW.Maelstrom >= 20 && WoW.Talent(6) ==3 && combatRoutine.Type == RotationType.AOE)
             {
                 WoW.CastSpell("Sundering", "Core: Aoe spell");
                 return;
             }
             //actions.core +=/ crash_lightning,if= active_enemies >= 3 | variable.LightningCrashNotUp | variable.alphaWolfCheck
-            if(WoW.CanCast("Crash lightning") && WoW.IsSpellInRange("Rockbiter") && (combatRoutine.Type == RotationType.AOE || LightningCrashNotUp || alphaWolfCheck))
+            if(WoW.CanCast("Crash lightning") && WoW.Maelstrom >= 20 && WoW.IsSpellInRange("Rockbiter") && (combatRoutine.Type == RotationType.AOE || LightningCrashNotUp || alphaWolfCheck))
             {
                 Crash.Restart();
                 WoW.CastSpell("Crash lightning", "Core: Wolves or t20 crit buff");
@@ -397,28 +397,28 @@ namespace CloudMagic.Rotation
                 return;
             }
             //actions.filler +=/ crash_lightning,if= (talent.crashing_storm.enabled | active_enemies >= 2) & debuff.earthen_spike.up & maelstrom >= 40 & variable.OCPool60
-            if (WoW.CanCast("Crash lightning") && WoW.IsSpellInRange("Rockbiter") && (WoW.Talent(6) == 1 && combatRoutine.Type != RotationType.SingleTarget) && WoW.TargetHasDebuff("Earthen spike")&&WoW.Maelstrom >= 40 && OCPool60)
+            if (WoW.CanCast("Crash lightning") && WoW.Maelstrom >= 20 && WoW.IsSpellInRange("Rockbiter") && (WoW.Talent(6) == 1 && combatRoutine.Type != RotationType.SingleTarget) && WoW.TargetHasDebuff("Earthen spike")&&WoW.Maelstrom >= 40 && OCPool60)
             {
                 Crash.Restart();
                 WoW.CastSpell("Crash lightning", "Filler spell");
                 return;
             }
             //actions.filler +=/ frostbrand,if= talent.hailstorm.enabled & buff.frostbrand.remains < 4.8 & maelstrom > 40
-            if (WoW.CanCast("Frostbrand", true, true, true) && hailstormCheck && (!WoW.PlayerHasBuff("Frostbrand") || WoW.PlayerBuffTimeRemaining("Frostbrand") < 480 && WoW.Maelstrom >= 40))
+            if (WoW.CanCast("Frostbrand", true, true, true) && WoW.Maelstrom >= 20 && hailstormCheck && (!WoW.PlayerHasBuff("Frostbrand") || WoW.PlayerBuffTimeRemaining("Frostbrand") < 480 && WoW.Maelstrom >= 40))
             {
                 WoW.CastSpell("Frostbrand", "Hailstorm check");
                 return;
             }
 
             //actions.filler +=/ frostbrand,if= variable.akainuEquipped & !buff.frostbrand.up & maelstrom >= 75
-            if (WoW.CanCast("Frostbrand", true, true, true) && akainuEquip && (!WoW.PlayerHasBuff("Frostbrand") && WoW.Maelstrom >= 75))
+            if (WoW.CanCast("Frostbrand", true, true, true) && WoW.Maelstrom >= 20 && akainuEquip && (!WoW.PlayerHasBuff("Frostbrand") && WoW.Maelstrom >= 75))
             {
                 WoW.CastSpell("Frostbrand", "Filler spell");
                 return;
             }
 
             //actions.filler +=/ sundering
-            if (WoW.CanCast("Sundering") && WoW.Talent(7) == 3)
+            if (WoW.CanCast("Sundering") && WoW.Maelstrom >= 20 && WoW.Talent(6) == 3)
             {
                 WoW.CastSpell("Sundering", "Filler spell");
                 return;
@@ -437,7 +437,7 @@ namespace CloudMagic.Rotation
             }
 
             //actions.filler +=/ crash_lightning,if= (maelstrom >= 65 | talent.crashing_storm.enabled | active_enemies >= 2) & variable.OCPool60 & variable.furyCheck45
-            if (WoW.CanCast("Crash lightning") && WoW.IsSpellInRange("Rockbiter") && (WoW.Maelstrom > 65 | WoW.Talent(6) == 1 && combatRoutine.Type != RotationType.SingleTarget) && OCPool60 && furyCheck45)
+            if (WoW.CanCast("Crash lightning") && WoW.Maelstrom >= 20 && WoW.IsSpellInRange("Rockbiter") && (WoW.Maelstrom > 65 | WoW.Talent(6) == 1 && combatRoutine.Type != RotationType.SingleTarget) && OCPool60 && furyCheck45)
             {
                 Crash.Restart();
                 WoW.CastSpell("Crash lightning", "Filler spell");
@@ -595,6 +595,7 @@ Aura,2645,Ghost Wolf
 Aura,240842,Legionfall
 Aura,234143,Temptation
 Aura,242283,Lightning crash
+Aura,188089,Earthen spike
 Item,142117,Prolonged Power
 Item,142173,Collapsing Futures
 */
