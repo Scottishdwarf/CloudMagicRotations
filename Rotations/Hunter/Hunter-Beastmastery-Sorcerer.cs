@@ -1,16 +1,26 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Timers;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Xml.Serialization;
 using System.Windows.Forms;
 using CloudMagic.Helpers;
+using CloudMagic.GUI;
+
 namespace CloudMagic.Rotation
 {
     public class HunterBeastmastery : CombatRoutine
     {
         public override string Name
-        {get{return "Hunter BM";}}
+        {get{return "Hunter Beastmastery";}}
 
         public override string Class
         {get{return "Hunter";}}
@@ -147,7 +157,7 @@ namespace CloudMagic.Rotation
                     {
                         WoW.CastSpell("Stampede");
                         return;
-                    }                    
+                    }
 
                     /*/Aspect of the Wild
                     if (WoW.CanCast("Aspect of the Wild")
@@ -157,33 +167,8 @@ namespace CloudMagic.Rotation
                     {
                         WoW.CastSpell("Aspect of the Wild");
                     }*/
-                    
-                    //SINGLE TARGET                    
-                    //Bestial Wrath
-                    if ((combatRoutine.Type == RotationType.SingleTarget || combatRoutine.Type == RotationType.SingleTargetCleave)
-                        && WoW.CanCast("Bestial Wrath")
-                        && !WoW.PlayerHasBuff("Aspect of the Turtle")
-                        && WoW.IsSpellInRange("Cobra Shot")
-                        && (WoW.Focus >= 97 || (WoW.Focus >= 90 && WoW.CanCast("Aspect of the Wild"))))
-                    {
-                        WoW.CastSpell("Bestial Wrath");
-                        WoW.CastSpell("Aspect of the Wild");
-                        //WoW.CastSpell("A Murder of Crows");
-                        WoW.CastSpell("Kill Command");
-                    }
 
-                    //Dire Frenzy
-                    if (combatRoutine.Type == RotationType.SingleTarget
-                        && (WoW.CanCast("Dire Frenzy") || WoW.SpellCooldownTimeRemaining("Dire Frenzy") <= 100)
-                        && WoW.IsSpellInRange("Cobra Shot")
-                        && WoW.Talent(2) == 2
-                        && ((WoW.PetHasBuff("Dire Frenzy") && WoW.PetBuffTimeRemaining("Dire Frenzy") <= 200) || !WoW.PetHasBuff("Dire Frenzy") || WoW.PlayerSpellCharges("Dire Frenzy") >= 2))
-                    {
-                        WoW.CastSpell("Titan's Thunder");
-                        WoW.CastSpell("Dire Frenzy");
-                        return;
-                    }
-
+                    //SINGLE TARGET
                     //A Murder of Crows
                     if (combatRoutine.Type == RotationType.SingleTarget
                         && WoW.CanCast("A Murder of Crows")
@@ -194,8 +179,21 @@ namespace CloudMagic.Rotation
                     {
                         WoW.CastSpell("A Murder of Crows");
                         return;
-                    }
+                    }  
                     
+                    //Dire Frenzy
+                    if (combatRoutine.Type == RotationType.SingleTarget
+                        && (WoW.CanCast("Dire Frenzy") || WoW.SpellCooldownTimeRemaining("Dire Frenzy") <= 100)
+                        && WoW.IsSpellInRange("Cobra Shot")
+                        && WoW.Talent(2) == 2
+                        && ((WoW.PetHasBuff("Dire Frenzy") && WoW.PetBuffTimeRemaining("Dire Frenzy") <= 200) || !WoW.PetHasBuff("Dire Frenzy") || WoW.PlayerSpellCharges("Dire Frenzy") >= 2)
+                        )
+                    {
+                        WoW.CastSpell("Titan's Thunder");
+                        WoW.CastSpell("Dire Frenzy");
+                        return;
+                    }
+
                     // Dire beast
                     if (combatRoutine.Type == RotationType.SingleTarget
                         && WoW.CanCast("Dire Beast")
@@ -207,6 +205,26 @@ namespace CloudMagic.Rotation
                         WoW.CastSpell("Titan's Thunder");
                         return;
                     }
+
+                    //Bestial Wrath
+                    if ((combatRoutine.Type == RotationType.SingleTarget || combatRoutine.Type == RotationType.SingleTargetCleave)
+                        && WoW.CanCast("Bestial Wrath")
+                        && !WoW.PlayerHasBuff("Aspect of the Turtle")
+                        && WoW.IsSpellInRange("Cobra Shot")
+                        && (WoW.Focus >= 85 || (WoW.Focus >= 70 && WoW.CanCast("Aspect of the Wild"))))
+                    {
+                        WoW.CastSpell("Bestial Wrath");
+                        WoW.CastSpell("Aspect of the Wild");
+                        WoW.CastSpell("A Murder of Crows");
+                        WoW.CastSpell("Kill Command");
+                    }
+
+                    /*/Aspect of the Wild
+                    if (WoW.CanCast("Aspect of the Wild")
+                        && !WoW.PlayerHasBuff("Aspect of the Turtle"))
+                    {
+                        WoW.CastSpell("Aspect of the Wild");
+                    }*/
 
                     //Kill Command
                     if (combatRoutine.Type == RotationType.SingleTarget
@@ -230,7 +248,7 @@ namespace CloudMagic.Rotation
 
                     //Cobra Shot
                     if (combatRoutine.Type == RotationType.SingleTarget
-                        && ((WoW.Focus >= 90) || (WoW.PlayerHasBuff("Bestial Wrath") && WoW.Focus >= 32))
+                        && ((WoW.Focus >= 80) || (WoW.PlayerHasBuff("Bestial Wrath") && WoW.Focus >= 32))
                         && WoW.IsSpellInRange("Cobra Shot")
                         && WoW.CanCast("Cobra Shot")
                         && !WoW.CanCast("Bestial Wrath"))
@@ -240,7 +258,6 @@ namespace CloudMagic.Rotation
                     }
 
                     //AOE
-
                     //Bestial Wrath
                     if (combatRoutine.Type == RotationType.AOE
                         && WoW.CanCast("Bestial Wrath")
@@ -526,6 +543,10 @@ namespace CloudMagic.Rotation
                 combatRoutine.ChangeType(RotationType.SingleTarget);
 
         }
+
+        public override int SINGLE { get { return 1; } }   //please Set between 1-99 NpC in range for ST if not desired set to 99
+        public override int CLEAVE { get { return 2; } }   //please Set between 1-99 NpC in range for AOE  if not desired set to 99
+        public override int AOE { get { return 4; } }      //please Set between 1-99 NpC in range for Cleave if not desired set to 99
 
       /*  private void ChangeTarget()
         {
