@@ -1,5 +1,4 @@
-// winifix@gmail.com
-// ReSharper disable UnusedMember.Global
+﻿// ReSharper disable UnusedMember.Global
 
 using System;
 using System.Diagnostics;
@@ -27,6 +26,8 @@ namespace CloudMagic.Rotation
 		
 		private readonly Stopwatch tacticswatch = new Stopwatch();
 		private readonly Stopwatch pullwatch = new Stopwatch();
+		private readonly Stopwatch Direfrenzywatch = new Stopwatch();
+		
 
 		 private bool BL
         {
@@ -62,14 +63,29 @@ private float FocusRegen
      {
          return (10f* (1f + (WoW.HastePercent / 100f)));
      }
-}	
+}
+private float FocusRegenAotW
+{
+     get
+     {
+         return ((10f* (1f + (WoW.HastePercent / 100f)))+10);
+     }
+}		
 private float FocusTimetoMax
 {
      get
      {
          return ((120f - WoW.Focus) /(10f* (1f + (WoW.HastePercent / 100f)))) *100f;
      }
-}	
+}
+
+private float FocusTimetoMaxAotW
+{
+     get
+     {
+         return ((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 100f)))+10)) *100f;
+     }
+}
 
 		//Pet Control	
 		private CheckBox HealPetBox;
@@ -87,7 +103,7 @@ private float FocusTimetoMax
 		private CheckBox KickBox;		
 		
 		//dps cds
-		private CheckBox AspectoftheWildBox;
+		private CheckBox FrizzosBox;
 		
 		private static bool Pot
         {
@@ -191,15 +207,15 @@ private float FocusTimetoMax
             set { ConfigFile.WriteValue("HunterBeastmastery", "AspectoftheTurtle", value.ToString()); }
         }				
 		
-        private static bool AspectoftheWild
+        private static bool Frizzos
         {
             get
             {
-                var AspectoftheWild = ConfigFile.ReadValue("HunterBeastmastery", "AspectoftheWild").Trim();
+                var Frizzos = ConfigFile.ReadValue("HunterBeastmastery", "Frizzos").Trim();
 
-                return AspectoftheWild != "" && Convert.ToBoolean(AspectoftheWild);
+                return Frizzos != "" && Convert.ToBoolean(Frizzos);
             }
-            set { ConfigFile.WriteValue("HunterBeastmastery", "AspectoftheWild", value.ToString()); }
+            set { ConfigFile.WriteValue("HunterBeastmastery", "Frizzos", value.ToString()); }
         }		
 		
 
@@ -222,6 +238,7 @@ private float FocusTimetoMax
 		
         public override void Initialize()
         {
+			Log.Write("Auto AoE optimized for WQs", Color.Green);	
            
 			if (ConfigFile.ReadValue("Hunter", "AspectoftheTurtle Percent") == "")
             {
@@ -337,17 +354,17 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
 			 SettingsForm.Controls.Add(lblTextBox3);
 
 			 
-			var lblAspectoftheWildBox = new Label
+			var lblFrizzosBox = new Label
             {
                 Text =
-                    "Aspect of the Wild",
+                    "Frizzo's Fingertrap",
                 Size = new Size(270, 15),
                 Left = 100,
                 Top = 75
             };
 			
-			lblAspectoftheWildBox.ForeColor = Color.Black;
-            SettingsForm.Controls.Add(lblAspectoftheWildBox);			
+			lblFrizzosBox.ForeColor = Color.Black;
+            SettingsForm.Controls.Add(lblFrizzosBox);			
            
 			var lblKickBox = new Label
             {
@@ -522,8 +539,8 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
 			AspectoftheTurtleBox = new CheckBox {Checked = AspectoftheTurtle, TabIndex = 8, Size = new Size(14, 14), Left = 70, Top = 175};			
 			            SettingsForm.Controls.Add(AspectoftheTurtleBox);		
 			//dps cooldowns
-            AspectoftheWildBox = new CheckBox {Checked = AspectoftheWild, TabIndex = 8, Size = new Size(14, 14), Left = 70, Top = 75};
-            SettingsForm.Controls.Add(AspectoftheWildBox);			
+            FrizzosBox = new CheckBox {Checked = Frizzos, TabIndex = 8, Size = new Size(14, 14), Left = 70, Top = 75};
+            SettingsForm.Controls.Add(FrizzosBox);			
 
 			
 			
@@ -532,7 +549,7 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
 			FeignDeathBox.Checked = FeignDeath;	
 			AspectoftheTurtleBox.Checked = AspectoftheTurtle;	
 			
-			AspectoftheWildBox.Checked = AspectoftheWild;
+			FrizzosBox.Checked = Frizzos;
 
 			
 
@@ -547,7 +564,7 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
             HealPetBox.CheckedChanged += HealPet_Click;		
             IntimidationBox.CheckedChanged += Intimidation_Click;				
 			
-            AspectoftheWildBox.CheckedChanged += AspectoftheWild_Click;    
+            FrizzosBox.CheckedChanged += Frizzos_Click;    
             ExhilarationBox.CheckedChanged += Exhilaration_Click; 
             KickBox.CheckedChanged += Kick_Click;
             FeignDeathBox.CheckedChanged += FeignDeath_Click;
@@ -575,7 +592,7 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
             HealPetBox.BringToFront();	
             IntimidationBox.BringToFront();				
 			
-            AspectoftheWildBox.BringToFront();	
+            FrizzosBox.BringToFront();	
             KickBox.BringToFront();	
             ExhilarationBox.BringToFront();
             FeignDeathBox.BringToFront();
@@ -596,7 +613,7 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
             HealPet = HealPetBox.Checked;			
             Intimidation = IntimidationBox.Checked;				
 			
-            AspectoftheWild = AspectoftheWildBox.Checked;		
+            Frizzos = FrizzosBox.Checked;		
             Kick = KickBox.Checked;	
             Exhilaration = ExhilarationBox.Checked;
             FeignDeath = FeignDeathBox.Checked;
@@ -662,9 +679,9 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
             AspectoftheTurtle = AspectoftheTurtleBox.Checked;
         }			
 			//dpscooldown
-        private void AspectoftheWild_Click(object sender, EventArgs e)
+        private void Frizzos_Click(object sender, EventArgs e)
         {
-            AspectoftheWild = AspectoftheWildBox.Checked;
+            Frizzos = FrizzosBox.Checked;
         }			
 
 		
@@ -676,11 +693,13 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
         }
 
         private static bool lastNamePlate = true;
-
+		public override int CLEAVE { get { return 99; } } //please Set between 1-99 NpC in range for AOE  if not desired set to 99
+        public override int AOE { get { return 3; } }//please Set between 1-99 NpC in range for Cleave if not desired set to 99
+        public override int SINGLE {get { return 1; } }//please Set between 1-99 NpC in range for ST if not desired set to 99    
 
         public override void Pulse()
         {
-Log.Write("Current Ingame Spec" + WoW.PlayerSpec, Color.Red);	
+
 		
 		if (DetectKeyPress.GetKeyState(0x6A) < 0)
             {
@@ -716,16 +735,13 @@ Log.Write("Current Ingame Spec" + WoW.PlayerSpec, Color.Red);
 						WoW.CastSpell("Kil'jaeden's Burning Wish") ;
 						return;
 					}					
-                if ((WoW.CanCast("Healthstone") || WoW.CanCast("Potion"))
-                    && (WoW.ItemCount("Healthstone") >= 1 || WoW.ItemCount("Potion") >= 1)
-                    && (!WoW.ItemOnCooldown("Healthstone") || !WoW.ItemOnCooldown("Potion"))
-                    && WoW.HealthPercent <= ConfigFile.ReadValue<int>("Hunter", "Potion Percent") && WoW.HealthPercent != 0 && Potion)
-                {
-                    Thread.Sleep(500);
+
+					if (Potion && WoW.IsInCombat && WoW.HealthPercent < ConfigFile.ReadValue<int>("Hunter", "Potion Percent") && WoW.ItemCount("Healthstone") >= 1 && !WoW.ItemOnCooldown("Healthstone") && WoW.ItemCount("HealthPotion") == 0)
+					{
+                
                     WoW.CastSpell("Healthstone");
-                    WoW.CastSpell("Potion");
                     return;
-                }					
+					}				
                     if (Pot && BL && WoW.CanCast("Pot") && !WoW.PlayerHasBuff("Pot") && WoW.ItemCount("Pot") >= 1 && !WoW.ItemOnCooldown("Pot"))
 					{
 						WoW.CastSpell("Pot") ;
@@ -733,6 +749,9 @@ Log.Write("Current Ingame Spec" + WoW.PlayerSpec, Color.Red);
 					}	
 if(WoW.PlayerSpec == "Beast Mastery")
 {
+					
+					
+					
                     if (!WoW.HasPet && WoW.CanCast("Wolf"))
 					{
 						WoW.CastSpell("Wolf") ;
@@ -849,8 +868,8 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         WoW.CastSpell("A Murder of Crows");
                         return;
                     }
-//	stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14	
-					if (WoW.CanCast("Stampede") && WoW.Talent(7) == 1 && WoW.IsSpellInRange("Cobra Shot") && ((WoW.PlayerHasBuff("Bestial Wrath")) || (WoW.SpellCooldownTimeRemaining("Bestial Wrath") <=2))						
+//	stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14
+					if (WoW.CanCast("Stampede") && WoW.Talent(7) == 1 && WoW.IsSpellInRange("Cobra Shot") && ((WoW.PlayerHasBuff("Bestial Wrath")) || (WoW.SpellCooldownTimeRemaining("Bestial Wrath") <=200))						
 						&& !WoW.PlayerHasBuff("AspectoftheTurtle")
 						&& !WoW.IsSpellOnCooldown("Stampede")) 
                     {
@@ -859,36 +878,44 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         return;
                     }				
 //dire_beast,if=cooldown.bestial_wrath.remains>3	
-					if (WoW.CanCast("Dire Beast") && WoW.Level >= 12&& WoW.Talent(2) != 2 && !WoW.IsSpellOnCooldown ("Dire Beast") && WoW.SpellCooldownTimeRemaining("Bestial Wrath") > 300 && WoW.IsSpellInRange("Cobra Shot"))
+					if (WoW.CanCast("Dire Beast") && WoW.Level >= 12 && WoW.Talent(2) != 2 && !WoW.IsSpellOnCooldown ("Dire Beast") && WoW.SpellCooldownTimeRemaining("Bestial Wrath") > 300 && WoW.IsSpellInRange("Cobra Shot"))
                     {
                         WoW.CastSpell("Dire Beast");
                         return;
                     }									
-//dire_frenzy,if=(cooldown.bestial_wrath.remains>6&(!equipped.the_mantle_of_command|pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2))
-					if (WoW.CanCast("Dire Frenzy") && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") >600 &&(WoW.Legendary(1) != 3 || WoW.PetBuffTimeRemaining("Dire Frenzy") <= 70)) && WoW.Talent(2) == 2 && WoW.IsSpellInRange("Cobra Shot"))
-                    {
+//dire_frenzy,if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|(charges_fractional>=1.8)|target.time_to_die<9
+					if (WoW.CanCast("Dire Frenzy") && WoW.Talent(2) == 2 && WoW.IsSpellInRange("Cobra Shot") && !WoW.IsSpellOnCooldown("Dire Frenzy"))
+					{
+						if (WoW.PetBuffTimeRemaining("Dire Frenzy") <= (GCD*1.8)) 
+						{
                         WoW.CastSpell("Dire Frenzy");
+						Log.Write("Dire 1"  , Color.Red);
                         return;
-                    }
-//|(charges>=2&focus.deficit>=25+talent.dire_stable.enabled*12)|target.time_to_die<9
-					if (WoW.CanCast("Dire Frenzy") && WoW.PlayerSpellCharges("Dire Frenzy") >=2 && WoW.Focus <= 95 && WoW.Talent(2) == 2 && WoW.IsSpellInRange("Cobra Shot"))
-                    {
+						}
+						if (WoW.PlayerSpellCharges("Dire Frenzy") >=2)  
+						{
                         WoW.CastSpell("Dire Frenzy");
+												Log.Write("Dire 2"  , Color.Red);
                         return;
-                    }
-					if (WoW.CanCast("Dire Frenzy") && WoW.PlayerSpellCharges("Dire Frenzy") >=2 && WoW.Focus <= 83 && WoW.Talent(2) == 2 && WoW.Talent(1) == 3 && WoW.IsSpellInRange("Cobra Shot"))
-                    {
-                        WoW.CastSpell("Dire Frenzy");
-                        return;
-                    }	
+						}						
+					}
+					
+
+
+
 //aspect_of_the_wild,if=buff.bestial_wrath.up|target.time_to_die<12	
-					if (WoW.CanCast("Aspect of the Wild")&& WoW.Level >= 26&& UseCooldowns && WoW.PlayerHasBuff("Bestial Wrath") && WoW.IsSpellInRange("Cobra Shot"))
+					if (WoW.CanCast("Aspect of the Wild")&& WoW.Level >= 26&& UseCooldowns && WoW.PlayerHasBuff("Bestial Wrath") && WoW.IsSpellInRange("Cobra Shot") && !WoW.IsSpellOnCooldown("Aspect of the Wild"))
                     {
                         WoW.CastSpell("Aspect of the Wild");
                         return;
                     }	
-//titans_thunder,if=talent.dire_frenzy.enabled|cooldown.dire_beast.remains>=3|(buff.bestial_wrath.up&pet.dire_beast.active)		
-					if (WoW.CanCast("Titan's Thunder") && WoW.Level >= 110&& (WoW.Talent(2) == 2 || (WoW.Talent(2) != 2 && WoW.SpellCooldownTimeRemaining("Dire Beast") > 300) || (WoW.Talent(2) != 2 && WoW.PlayerHasBuff("Bestial Wrath") && WoW.PlayerHasBuff ("Dire Beast"))) && WoW.IsSpellInRange("Cobra Shot"))
+//titans_thunder,if=															(talent.dire_frenzy.enabled&(buff.bestial_wrath.up        |   cooldown.bestial_wrath.remains>35))                  |cooldown.dire_beast.remains>=3                      |(buff.bestial_wrath.up&pet.dire_beast.active)	
+					if (WoW.CanCast("Titan's Thunder") && WoW.IsSpellInRange("Cobra Shot")&& !WoW.IsSpellOnCooldown("Titan's Thunder")&& WoW.Level >= 110&& (WoW.Talent(2) == 2 && ( WoW.PlayerHasBuff("Bestial Wrath") || WoW.SpellCooldownTimeRemaining("Bestial Wrath") > 350)))
+                    {
+                        WoW.CastSpell("Titan's Thunder");
+                        return;
+                    }					
+					if (WoW.CanCast("Titan's Thunder") && WoW.IsSpellInRange("Cobra Shot")&& !WoW.IsSpellOnCooldown("Titan's Thunder")&& WoW.Level >= 110 && WoW.SpellCooldownTimeRemaining("Dire Beast") >=300 || (WoW.PlayerHasBuff ("Bestial Wrath") && WoW.PetHasBuff("Dire Beast")))
                     {
                         WoW.CastSpell("Titan's Thunder");
                         return;
@@ -904,27 +931,38 @@ if(WoW.PlayerSpec == "Beast Mastery")
                     {
                         WoW.CastSpell("Kill Command");
                         return;
-                    }
-					if (WoW.CanCast("Cobra Shot") && WoW.Level <= 39 && WoW.Focus > 40  
-						
-						&& WoW.IsSpellInRange("Cobra Shot"))
-                    {	
+                    }					
+
+//cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>action.kill_command.cost)|target.time_to_die<cooldown.kill_command.remains|(equipped.parsels_tongue&buff.parsels_tongue.remains<=gcd.max*2)				
+					if (WoW.CanCast("Cobra Shot") && WoW.IsSpellOnCooldown("Kill Command") && (WoW.Focus > 32 || (WoW.PlayerHasBuff("Roar of the Seven Lions") && WoW.Focus >= 25))&& WoW.IsSpellInRange("Cobra Shot"))
+				{
+						if (WoW.Level <= 39)
+                    {			
                         WoW.CastSpell("Cobra Shot");
                         return;
-                    }					
-//cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>30)|target.time_to_die<cooldown.kill_command.remains					
-					if (WoW.CanCast("Cobra Shot") && (WoW.Focus > 32 || (WoW.PlayerHasBuff("Roar of the Seven Lions") && WoW.Focus >= 25))&& (WoW.SpellCooldownTimeRemaining("Kill Command") > (FocusTimetoMax)) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (FocusTimetoMax))
-						
-						&& WoW.IsSpellInRange("Cobra Shot"))
+                    }	
+						if ((WoW.SpellCooldownTimeRemaining("Kill Command") > (FocusTimetoMax)) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (FocusTimetoMax)))
                     {			
                         WoW.CastSpell("Cobra Shot");
                         return;
                     }
-					if (WoW.CanCast("Cobra Shot") && (WoW.Focus > 32 || (WoW.PlayerHasBuff("Roar of the Seven Lions") && WoW.Focus >= 25))&& WoW.PlayerHasBuff("Bestial Wrath") && ((FocusRegen*WoW.SpellCooldownTimeRemaining("Kill Command")) > 300) && WoW.IsSpellInRange("Cobra Shot"))
-                    {					
+						if (WoW.PlayerHasBuff("Bestial Wrath") && ((FocusRegen*WoW.SpellCooldownTimeRemaining("Kill Command")) > 300))
+                    {			
                         WoW.CastSpell("Cobra Shot");
                         return;
-                    }
+                    }	
+						if ((WoW.SpellCooldownTimeRemaining("Kill Command") > (FocusTimetoMaxAotW)) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (FocusTimetoMaxAotW))&& WoW.PlayerHasBuff("Aspect of the Wild"))
+                    {			
+                        WoW.CastSpell("Cobra Shot");
+                        return;
+                    }	
+						if (WoW.Legendary(1) == 5 && WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2)
+                    {			
+                        WoW.CastSpell("Cobra Shot");
+                        return;
+                    }						
+				}
+					
                 }
             }
 
@@ -987,68 +1025,80 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         WoW.CastSpell("Dire Beast");
                         return;
                     }									
-//dire_frenzy,if=(cooldown.bestial_wrath.remains>6&(!equipped.the_mantle_of_command|pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2))
-					if (WoW.CanCast("Dire Frenzy") && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") >600 &&(WoW.Legendary(1) != 3 || WoW.PetBuffTimeRemaining("Dire Frenzy") <= 70)) && WoW.Talent(2) == 2 && WoW.IsSpellInRange("Cobra Shot"))
-                    {
+//dire_frenzy,if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|(charges_fractional>=1.8)|target.time_to_die<9
+					if (WoW.CanCast("Dire Frenzy") && WoW.Talent(2) == 2 && WoW.IsSpellInRange("Cobra Shot") && !WoW.IsSpellOnCooldown("Dire Frenzy") && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD)
+					{
+						if (WoW.PetBuffTimeRemaining("Dire Frenzy") <= (GCD*1.8)) 
+						{
                         WoW.CastSpell("Dire Frenzy");
+						Log.Write("Dire 1"  , Color.Red);
                         return;
-                    }
-//|(charges>=2&focus.deficit>=25+talent.dire_stable.enabled*12)|target.time_to_die<9
-					if (WoW.CanCast("Dire Frenzy") && WoW.PlayerSpellCharges("Dire Frenzy") >=2 && WoW.Focus <= 95 && WoW.Talent(2) == 2 && WoW.IsSpellInRange("Cobra Shot"))
-                    {
+						}
+						if (WoW.PlayerSpellCharges("Dire Frenzy") >=2)  
+						{
                         WoW.CastSpell("Dire Frenzy");
+												Log.Write("Dire 2"  , Color.Red);
                         return;
-                    }
-					if (WoW.CanCast("Dire Frenzy") && WoW.PlayerSpellCharges("Dire Frenzy") >=2 && WoW.Focus <= 83 && WoW.Talent(2) == 2 && WoW.Talent(1) == 3 && WoW.IsSpellInRange("Cobra Shot"))
-                    {
-                        WoW.CastSpell("Dire Frenzy");
-                        return;
-                    }	
-//aspect_of_the_wild,if=buff.bestial_wrath.up|target.time_to_die<12	
-					if (WoW.CanCast("Aspect of the Wild") && WoW.Level >= 26&& UseCooldowns && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD && WoW.PlayerHasBuff("Bestial Wrath") && WoW.IsSpellInRange("Cobra Shot"))
+						}						
+					}
+	
+//aspect_of_the_wild,if=buff.bestial_wrath.up|target.time_to_die<12
+					if (WoW.CanCast("Aspect of the Wild") && !WoW.IsSpellOnCooldown("Aspect of the WIld") && WoW.Level >= 26&& UseCooldowns && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD && WoW.PlayerHasBuff("Bestial Wrath") && WoW.IsSpellInRange("Cobra Shot"))
                     {
                         WoW.CastSpell("Aspect of the Wild");
                         return;
                     }	
-//titans_thunder,if=talent.dire_frenzy.enabled|cooldown.dire_beast.remains>=3|(buff.bestial_wrath.up&pet.dire_beast.active)		
-					if (WoW.CanCast("Titan's Thunder") && WoW.Level >= 110&& WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD && (WoW.Talent(2) == 2 || (WoW.Talent(2) != 2 && WoW.SpellCooldownTimeRemaining("Dire Beast") > 300) || (WoW.Talent(2) != 2 && WoW.PlayerHasBuff("Bestial Wrath") && WoW.PlayerHasBuff ("Dire Beast"))) && WoW.IsSpellInRange("Cobra Shot"))
+//titans_thunder,if=															(talent.dire_frenzy.enabled&(buff.bestial_wrath.up        |   cooldown.bestial_wrath.remains>35))                  |cooldown.dire_beast.remains>=3                      |(buff.bestial_wrath.up                 &pet.dire_beast.active)		
+					if (WoW.CanCast("Titan's Thunder") && !WoW.IsSpellOnCooldown("Titan's Thunder") && WoW.Level >= 110 && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD && (WoW.Talent(2) == 2 && 
+					( WoW.PlayerHasBuff("Bestial Wrath") 
+					|| WoW.SpellCooldownTimeRemaining("Bestial Wrath") >= 350)) 
+					|| WoW.SpellCooldownTimeRemaining("Dire Beast") >=300 
+					|| (WoW.PlayerHasBuff ("Bestial Wrath") && WoW.PetHasBuff("Dire Beast")) && WoW.IsSpellInRange("Cobra Shot"))
                     {
                         WoW.CastSpell("Titan's Thunder");
                         return;
                     }	
 //bestial_wrath
-					if (WoW.CanCast("Bestial Wrath") && WoW.Level >= 40&& WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD  &&  WoW.IsSpellInRange("Cobra Shot"))
+					if (WoW.CanCast("Bestial Wrath") && !WoW.IsSpellOnCooldown("Bestial Wrath")&& WoW.Level >= 40&& WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD  &&  WoW.IsSpellInRange("Cobra Shot"))
                     {
                         WoW.CastSpell("Bestial Wrath");
                         return;
                     }
 //kill_command
-					if (WoW.CanCast("Kill Command") && WoW.Level >= 10&& ((WoW.Focus >= 70-FocusRegen) || (WoW.PlayerHasBuff("Roar of the Seven Lions") && (WoW.Focus >= 59-FocusRegen))) && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD &&  WoW.IsSpellInRange("Cobra Shot"))
+					if (WoW.CanCast("Kill Command") && !WoW.IsSpellOnCooldown("Kill Command") && WoW.Level >= 10&& ((WoW.Focus >= 70-FocusRegen) || (WoW.PlayerHasBuff("Roar of the Seven Lions") && (WoW.Focus >= 59-FocusRegen))) && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD &&  WoW.IsSpellInRange("Cobra Shot"))
                     {
                         WoW.CastSpell("Kill Command");
                         return;
                     }					
-//cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>30)|target.time_to_die<cooldown.kill_command.remains					
-					if (WoW.CanCast("Cobra Shot") && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD && ((WoW.Focus > 72-FocusRegen) || (WoW.PlayerHasBuff("Roar of the Seven Lions") && (WoW.Focus >= 59-FocusRegen)))&& (WoW.SpellCooldownTimeRemaining("Kill Command") > FocusTimetoMax && WoW.SpellCooldownTimeRemaining("Bestial Wrath") > FocusTimetoMax) 
-						
-						&& WoW.IsSpellInRange("Cobra Shot"))
-                    {	
+//cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>action.kill_command.cost)|target.time_to_die<cooldown.kill_command.remains|(equipped.parsels_tongue&buff.parsels_tongue.remains<=gcd.max*2)								
+						if (WoW.CanCast("Cobra Shot") && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD&& WoW.IsSpellOnCooldown("Kill Command") && (WoW.Focus > 32 || (WoW.PlayerHasBuff("Roar of the Seven Lions") && WoW.Focus >= 25))&& WoW.IsSpellInRange("Cobra Shot"))
+				{
+						if (WoW.Level <= 39)
+                    {			
+                        WoW.CastSpell("Cobra Shot");
+                        return;
+                    }	
+						if ((WoW.SpellCooldownTimeRemaining("Kill Command") > (FocusTimetoMax)) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (FocusTimetoMax)))
+                    {			
                         WoW.CastSpell("Cobra Shot");
                         return;
                     }
-					if (WoW.CanCast("Cobra Shot") && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD && ((WoW.Focus > 72-FocusRegen) || (WoW.PlayerHasBuff("Roar of the Seven Lions") && (WoW.Focus >= 59-FocusRegen))) && WoW.PlayerHasBuff("Bestial Wrath") && ((FocusRegen*WoW.SpellCooldownTimeRemaining("Kill Command")) > 300) && WoW.IsSpellInRange("Cobra Shot"))
-                    {				
+						if (WoW.PlayerHasBuff("Bestial Wrath") && ((FocusRegen*WoW.SpellCooldownTimeRemaining("Kill Command")) > 300))
+                    {			
                         WoW.CastSpell("Cobra Shot");
                         return;
-                    }
-					if (WoW.CanCast("Cobra Shot") && WoW.Level <= 39 && WoW.Focus > 40  
-						
-						&& WoW.IsSpellInRange("Cobra Shot"))
-                    {	
+                    }	
+						if ((WoW.SpellCooldownTimeRemaining("Kill Command") > (FocusTimetoMaxAotW)) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (FocusTimetoMaxAotW))&& WoW.PlayerHasBuff("Aspect of the Wild"))
+                    {			
+                        WoW.CastSpell("Cobra Shot");
+                        return;
+                    }	
+						if (WoW.Legendary(1) == 5 && WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2)
+                    {			
                         WoW.CastSpell("Cobra Shot");
                         return;
                     }						
-
+				}
 				}
             }
 		}
@@ -1083,7 +1133,13 @@ if(WoW.PlayerSpec == "Beast Mastery")
 
 											
                 if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat)
-                {	
+                {
+						if (WoW.CanCast("Mongoose Bite") && WoW.PlayerHasBuff("Mongoose Fury") && WoW.PlayerBuffStacks ("Mongoose Fury") >= 6 && WoW.IsSpellOnCooldown("Fury of the Eagle") &&  !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling
+							&& WoW.PlayerSpellCharges("Mongoose Bite") >=1 && WoW.SpellCooldownTimeRemaining("Mongoose Bite") <GCD*2 && WoW.IsSpellInRange("Raptor Strike") && (WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD*1.1)))
+						{
+                        WoW.CastSpell("Mongoose Bite");
+                        return;
+						}					
 
 //3	0.00	summon_pet
                     if (!WoW.HasPet && WoW.CanCast("Wolf"))
@@ -1116,10 +1172,10 @@ if(WoW.PlayerSpec == "Beast Mastery")
 					}
 
 //9	0.00	harpoon
-				if(pullwatch.ElapsedMilliseconds < 10000)
+				if(pullwatch.ElapsedMilliseconds < 10000 && (WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD*1.1)))
 				{
                     if (WoW.CanCast("Explosive Trap") 
-						&& !WoW.IsMoving
+						&& !WoW.IsMoving 
 						&& WoW.IsSpellInRange("Raptor Strike")
 						&& !WoW.PlayerIsCasting 
 						&& !WoW.PlayerIsChanneling)
@@ -1129,7 +1185,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
                     }
 //7	0.00	steel_trap
                     if (WoW.CanCast("Steel Trap") 
-						&& !WoW.IsMoving
+						&& !WoW.IsMoving 
 						&& WoW.IsSpellInRange("Raptor Strike")
 						&& !WoW.PlayerIsCasting 
 						&& WoW.Talent(4) == 3
@@ -1140,7 +1196,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
                     }
 //8	0.00	dragonsfire_grenade
                     if (WoW.CanCast("Dragonsfire Grenade") 
-						&& !WoW.IsMoving
+						&& !WoW.IsMoving 
 						&& WoW.IsSpellInRange("Raptor Strike")
 						&& !WoW.PlayerIsCasting 
 						&& WoW.Talent(6) == 2
@@ -1169,49 +1225,52 @@ if(WoW.PlayerSpec == "Beast Mastery")
  //	0.00	call_action_list,name=mokMaintain,if=talent.way_of_the_moknathal.enabled
 				    if(WoW.Talent(1) == 3)
 					{
-						if (WoW.CanCast("Raptor Strike") && !WoW.PlayerHasBuff("tactics")&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike"))
+						if (WoW.CanCast("Raptor Strike") && !WoW.PlayerHasBuff("tactics") && WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
 						{
+Log.Write("Raptor 1", Color.Red);							
                         WoW.CastSpell("Raptor Strike");
 						tacticswatch.Reset();
 						tacticswatch.Start();
                         return;
 						}
-						if (WoW.CanCast("Raptor Strike") && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") < GCD && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike"))
+						if (WoW.CanCast("Raptor Strike") && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") < GCD  && WoW.IsSpellInRange("Raptor Strike"))
 						{
 							
-                        WoW.CastSpell("Raptor Strike");	
+                        WoW.CastSpell("Raptor Strike");
+Log.Write("Raptor 2", Color.Red);						
 						tacticswatch.Reset();
 						tacticswatch.Start();						
                         return;
 						}
 					    if (WoW.CanCast("Raptor Strike") && WoW.PlayerHasBuff("tactics") && WoW.Talent(1) == 3&& WoW.PlayerBuffStacks("tactics") < 2&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike"))
 						{
-                        WoW.CastSpell("Raptor Strike");		
+                        WoW.CastSpell("Raptor Strike");
+Log.Write("Raptor 3", Color.Red);						
 						tacticswatch.Reset();
 						tacticswatch.Start();						
                         return;
 						}
 					}	
 //	0.00	call_action_list,name=CDs,if=buff.moknathal_tactics.stack>=2|!talent.way_of_the_moknathal.enabled
-                    if (((WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && UseCooldowns && WoW.PlayerBuffStacks("tactics") >= 2) || WoW.Talent(1) != 3)&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+                    if (((WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD*1.1 && WoW.PlayerBuffStacks("tactics") >= 2) || WoW.Talent(1) != 3)&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && UseCooldowns)
                     {
-						if (WoW.CanCast("Arcane Torrent")  && WoW.PlayerHasBuff("Aspect of the Eagle")&& !WoW.IsSpellOnCooldown ("Arcane Torrent")&& WoW.PlayerRace == "BloodElf"&& WoW.Focus <= 85)
+						if (WoW.CanCast("Arcane Torrent")  && WoW.PlayerHasBuff("Aspect of the Eagle")&& !WoW.IsSpellOnCooldown ("Arcane Torrent")&& WoW.PlayerRace == "BloodElf"&& WoW.Focus <= 30 && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD*1.1)
 						{
                         WoW.CastSpell("Arcane Torrent");
                         return;
 						}
-						if (WoW.CanCast("Berserking") && WoW.PlayerHasBuff("Aspect of the Eagle")&& !WoW.IsSpellOnCooldown ("Berserking")&& WoW.PlayerRace == "Troll" && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+						if (WoW.CanCast("Berserking") && WoW.PlayerHasBuff("Aspect of the Eagle")&& !WoW.IsSpellOnCooldown ("Berserking")&& WoW.PlayerRace == "Troll" && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling )
 						{
                         WoW.CastSpell("Berserking");
                         return;
 						}					
-						if (WoW.CanCast("Blood Fury") && WoW.PlayerHasBuff("Aspect of the Eagle")	&& !WoW.IsSpellOnCooldown ("Blood Fury")&& WoW.PlayerRace == "Orc" && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+						if (WoW.CanCast("Blood Fury") && WoW.PlayerHasBuff("Aspect of the Eagle")	&& !WoW.IsSpellOnCooldown ("Blood Fury")&& WoW.PlayerRace == "Orc" && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling )
 						{
                         WoW.CastSpell("Blood Fury");
                         return;
 						}
 //	2.82	snake_hunter,if=cooldown.mongoose_bite.charges=0&buff.mongoose_fury.remains>3*gcd						
-						if (WoW.CanCast("Snake Hunter")&& WoW.Talent(2) == 3&& WoW.PlayerSpellCharges("Mongoose Bite") <= 0 && WoW.PlayerHasBuff("Mongoose Fury") && WoW.PlayerBuffTimeRemaining("Mongoose Fury") >= 300 && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike"))
+						if (WoW.CanCast("Snake Hunter")&& WoW.Talent(2) == 3&& WoW.PlayerSpellCharges("Mongoose Bite") <= 0 && WoW.PlayerHasBuff("Mongoose Fury") && WoW.PlayerBuffTimeRemaining("Mongoose Fury") >= 300*GCD && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike"))
 						{
                         WoW.CastSpell("Snake Hunter");
                         return;
@@ -1231,60 +1290,61 @@ if(WoW.PlayerSpec == "Beast Mastery")
 						}						
                     }					
 //0.00	call_action_list,name=preBitePhase,if=!buff.mongoose_fury.up
-					if(!WoW.PlayerHasBuff("Mongoose Fury"))
+					if(!WoW.PlayerHasBuff("Mongoose Fury") && (WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD*1.1)) && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
 					{
 	//16.61	flanking_strike
-						if (WoW.CanCast("Flanking Strike") && WoW.Focus >= 50 && WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+						if (WoW.CanCast("Flanking Strike") && WoW.Focus >= 50 && WoW.IsSpellInRange("Raptor Strike"))
 						{
                         WoW.CastSpell("Flanking Strike");
                         return;
 						}
 //0.00	spitting_cobra
-						if (WoW.CanCast("Spitting Cobra") && WoW.Focus >= 30&& WoW.Talent(7) == 1&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+						if (WoW.CanCast("Spitting Cobra") && WoW.Focus >= 30&& WoW.Talent(7) == 1)
 						{
                         WoW.CastSpell("Spitting Cobra");
                         return;
 						}
 //6.77	lacerate,if=!dot.lacerate.ticking
-						if (WoW.CanCast("Lacerate") && WoW.Focus >= 35 && !WoW.TargetHasDebuff("Lacerate") && WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+						if (WoW.CanCast("Lacerate") && WoW.Focus >= 35 && !WoW.TargetHasDebuff("Lacerate") && WoW.IsSpellInRange("Raptor Strike"))
 						{
                         WoW.CastSpell("Lacerate");
                         return;
 						}
 //0.00	raptor_strike,if=active_enemies=1&talent.serpent_sting.enabled&!dot.serpent_sting.ticking
-						if (WoW.CanCast("Raptor Strike") && !WoW.PlayerHasBuff("tactics") && !WoW.TargetHasDebuff("Serpent Sting")&& WoW.Talent(6) == 3 && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike"))
+						if (WoW.CanCast("Raptor Strike") && !WoW.PlayerHasBuff("tactics") && !WoW.TargetHasDebuff("Serpent Sting")&& WoW.Talent(6) == 3 && WoW.IsSpellInRange("Raptor Strike"))
 						{
+Log.Write("Raptor 4", Color.Red);							
                         WoW.CastSpell("Raptor Strike");
 						tacticswatch.Reset();
 						tacticswatch.Start();
                         return;
 						}
 //0.00	steel_trap
-                    if (WoW.CanCast("Steel Trap") && !WoW.IsMoving && WoW.IsSpellInRange("Raptor Strike")&& !WoW.PlayerIsCasting && WoW.Talent(4) == 3&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+                    if (WoW.CanCast("Steel Trap") && !WoW.IsMoving && WoW.IsSpellInRange("Raptor Strike")&& !WoW.PlayerIsCasting && WoW.Talent(4) == 3)
 						{
                         WoW.CastSpell("Steel Trap");
                         return;
 						}
 //0.00	a_murder_of_crows
-                    if (WoW.CanCast("A Murder of Crows") && WoW.Focus >= 30&& WoW.Talent(2) == 1	&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+                    if (WoW.CanCast("Murder of Crows") && !WoW.IsSpellOnCooldown ("Murder of Crows") && WoW.Focus >= 30&& WoW.Talent(2) == 1)
 						{
-                        WoW.CastSpell("A Murder of Crows");
+                        WoW.CastSpell("Murder of Crows");
                         return;
 						}
 //0.00	dragonsfire_grenade
-                    if (WoW.CanCast("Dragonsfire Grenade")  && !WoW.IsMoving&& WoW.IsSpellInRange("Raptor Strike")&& !WoW.PlayerIsCasting&& WoW.Talent(6) == 2&& !WoW.PlayerIsChanneling)
+                    if (WoW.CanCast("Dragonsfire Grenade")  && !WoW.IsMoving&& WoW.IsSpellInRange("Raptor Strike")&& !WoW.PlayerIsCasting&& WoW.Talent(6) == 2)
 						{
                         WoW.CastSpell("Dragonsfire Grenade");
                         return;
 						}
 //	6.52	explosive_trap
-                    if (WoW.CanCast("Explosive Trap") && !WoW.IsMoving&& WoW.IsSpellInRange("Raptor Strike")&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+                    if (WoW.CanCast("Explosive Trap") && !WoW.IsMoving&& WoW.IsSpellInRange("Raptor Strike"))
 						{
                         WoW.CastSpell("Explosive Trap");
                         return;
 						}
 // 11.01	caltrops,if=!dot.caltrops.ticking
-						if (WoW.CanCast("Caltrops") && !WoW.IsMoving&& !WoW.TargetHasDebuff("Caltrops")&& WoW.Talent(4) == 1&& WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+						if (WoW.CanCast("Caltrops") && !WoW.IsMoving&& !WoW.TargetHasDebuff("Caltrops")&& WoW.Talent(4) == 1&& WoW.IsSpellInRange("Raptor Strike"))
 						{
                         WoW.CastSpell("Caltrops");
                         return;
@@ -1304,7 +1364,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
 						}
 					*/
 //	3.40	lacerate,if=dot.lacerate.remains<3.6
-						if (WoW.CanCast("Lacerate") && WoW.Focus >= 40 && WoW.Talent(6) == 1&& WoW.TargetDebuffTimeRemaining("Lacerate") <360&& WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting&& !WoW.PlayerIsChanneling)
+						if (WoW.CanCast("Lacerate") && WoW.Focus >= 40 && WoW.Talent(6) == 1&& WoW.TargetDebuffTimeRemaining("Lacerate") <360&& WoW.IsSpellInRange("Raptor Strike"))
 						{
                         WoW.CastSpell("Lacerate");
                         return;
@@ -1315,41 +1375,46 @@ if(WoW.PlayerSpec == "Beast Mastery")
 
 //actions.bitePhase
 //	5.42	fury_of_the_eagle,if=(!talent.way_of_the_moknathal.enabled|buff.moknathal_tactics.remains>(gcd*(8%3)))&buff.mongoose_fury.stack=6,interrupt_if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<=tick_time)
-						if (WoW.CanCast ("Fury of the Eagle") && (WoW.Talent(1) != 3 || WoW.PlayerBuffTimeRemaining("tactics") > (GCD*(8%3))) && WoW.PlayerBuffStacks ("Mongoose Fury") >= 6 && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+						if ( (WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD*1.1)) &&!WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+					{
+						if (WoW.CanCast ("Fury of the Eagle") && (WoW.Talent(1) != 3 || WoW.PlayerBuffTimeRemaining("tactics") > (GCD*(8%3))) && WoW.PlayerBuffStacks ("Mongoose Fury") >= 6)
 						{
                         WoW.CastSpell("Fury of the Eagle");
                         return;
 						}
 //	64.01	mongoose_bite,if=charges>=2&cooldown.mongoose_bite.remains<gcd*2
-						if (WoW.CanCast("Mongoose Bite") && WoW.PlayerSpellCharges("Mongoose Bite") >=2 && WoW.SpellCooldownTimeRemaining("Mongoose Bite") <GCD*2 && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike"))
+						if (WoW.CanCast("Mongoose Bite") && WoW.PlayerSpellCharges("Mongoose Bite") >=2 && WoW.SpellCooldownTimeRemaining("Mongoose Bite") <GCD*2 && WoW.IsSpellInRange("Raptor Strike") )
 						{
+Log.Write("Bite >=2" , Color.Red);	
                         WoW.CastSpell("Mongoose Bite");
                         return;
 						}
 //	24.07	flanking_strike,if=((buff.mongoose_fury.remains>(gcd*(cooldown.mongoose_bite.charges+2)))&cooldown.mongoose_bite.charges<=1)&!buff.Aspect_of_the_eagle.up
-						if (WoW.CanCast("Flanking Strike") && WoW.PlayerBuffTimeRemaining("Mongoose Fury") > (GCD*(WoW.SpellCooldownTimeRemaining("Mongoose Bite"))) && WoW.PlayerSpellCharges("Mongoose Bite") <=1 && !WoW.PlayerHasBuff("Aspect of the Eagle")
-						&& WoW.Focus >= 50 && WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting&& !WoW.PlayerIsChanneling)
+						if (WoW.CanCast("Flanking Strike") && WoW.PlayerBuffTimeRemaining("Mongoose Fury") > (GCD*(WoW.SpellCooldownTimeRemaining("Mongoose Bite")+200)) && WoW.PlayerSpellCharges("Mongoose Bite") <=1 && !WoW.PlayerHasBuff("Aspect of the Eagle")
+						&& WoW.Focus >= 50 && WoW.IsSpellInRange("Raptor Strike"))
 						{
                         WoW.CastSpell("Flanking Strike");
                         return;
 						}
 					
 //	53.63	mongoose_bite,if=buff.mongoose_fury.up
-						if (WoW.CanCast("Mongoose Bite") && WoW.PlayerHasBuff("Mongoose Fury")&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike"))
+						if (WoW.CanCast("Mongoose Bite") && WoW.PlayerHasBuff("Mongoose Fury") && WoW.IsSpellInRange("Raptor Strike") && (WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics"))))
 						{
                         WoW.CastSpell("Mongoose Bite");
                         return;
 						}
 //	7.26	flanking_strike
-						if (WoW.CanCast("Flanking Strike") && WoW.Focus >= 50 && WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+						if (WoW.CanCast("Flanking Strike") && WoW.Focus >= 50 && WoW.IsSpellInRange("Raptor Strike"))
 						{
                         WoW.CastSpell("Flanking Strike");
                         return;
 						}
+					}	
 //biteFill	
-					
+					if(WoW.PlayerHasBuff("Mongoose Fury")&& WoW.PlayerSpellCharges("Mongoose Bite") ==0&&(WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD*1.1)) && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+					{					
 					//0.00	spitting_cobra
-						if (WoW.CanCast("Spitting Cobra")&& WoW.Focus >= 30&& WoW.Talent(7) == 1&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+						if (WoW.CanCast("Spitting Cobra")&& WoW.Focus >= 30&& WoW.Talent(7) == 1)
 						{
                         WoW.CastSpell("Spitting Cobra");
                         return;
@@ -1375,23 +1440,24 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         return;
 						}
 //0.00	raptor_strike,if=active_enemies=1&talent.serpent_sting.enabled&!dot.serpent_sting.ticking
-						if (WoW.CanCast("Raptor Strike")&& !WoW.TargetHasDebuff("Serpent Sting") && WoW.Talent(6) == 3&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike"))
+						if (WoW.CanCast("Raptor Strike")&& !WoW.TargetHasDebuff("Serpent Sting") && WoW.Talent(6) == 3 && WoW.IsSpellInRange("Raptor Strike"))
 						{
+Log.Write("Raptor 5", Color.Red);							
                         WoW.CastSpell("Raptor Strike");
 						tacticswatch.Reset();
 						tacticswatch.Start();
                         return;
 						}
 //0.00	steel_trap
-						if (WoW.CanCast("Steel Trap")&& !WoW.IsMoving && WoW.IsSpellInRange("Raptor Strike")&& WoW.Talent(4) == 3&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling )
+						if (WoW.CanCast("Steel Trap")&& !WoW.IsMoving && WoW.IsSpellInRange("Raptor Strike")&& WoW.Talent(4) == 3)
 						{
                         WoW.CastSpell("Steel Trap");
                         return;
 						}
 //0.00	a_murder_of_crows
-						if (WoW.CanCast("A Murder of Crows") && WoW.Focus >= 30&& WoW.Talent(2) == 1 && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+                    if (WoW.CanCast("Murder of Crows") && !WoW.IsSpellOnCooldown ("Murder of Crows") && WoW.Focus >= 30&& WoW.Talent(2) == 1	&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD)
 						{
-                        WoW.CastSpell("A Murder of Crows");
+                        WoW.CastSpell("Murder of Crows");
                         return;
 						}
 // 0.00	dragonsfire_grenade
@@ -1412,9 +1478,12 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         WoW.CastSpell("Caltrops");
                         return;
 						}
+					}
 //FILLERS
 
 //0.00	carve,if=active_enemies>1&talent.serpent_sting.enabled&!dot.serpent_sting.ticking
+					if((WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD*1.1)))
+					{
 						if (WoW.CanCast("Carve")&& WoW.CountEnemyNPCsInRange >1	&& 	WoW.Talent(6) == 3	&& WoW.Focus >= 40 && !WoW.TargetHasDebuff("Serpent Sting")&& WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting&& !WoW.PlayerIsChanneling)
 						{
                         WoW.CastSpell("Carve");
@@ -1433,29 +1502,35 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         return;
 						}
 //10.69	raptor_strike,if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<gcd*4)
-						if (WoW.CanCast("Raptor Strike") && WoW.PlayerHasBuff("tactics")&& WoW.PlayerBuffTimeRemaining("tactics")< (GCD*2) && WoW.Talent(1) == 3&& !WoW.PlayerIsCasting  && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike"))
+						if (WoW.CanCast("Raptor Strike") &&  WoW.PlayerHasBuff("tactics")&& WoW.PlayerBuffTimeRemaining("tactics")< (GCD*4) && WoW.Talent(1) == 3&& !WoW.PlayerIsCasting  && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike"))
 						{
+Log.Write("Raptor 6", Color.Red);							
                         WoW.CastSpell("Raptor Strike");
 						tacticswatch.Reset();
 						tacticswatch.Start();						
                         return;
 						}
 //0.41	raptor_strike,if=focus>((25-focus.regen*gcd)+55)
-						if (WoW.CanCast("Raptor Strike") && WoW.CanCast("Raptor Strike")&& WoW.Focus>((25-FocusRegen*GCD)+55)&& !WoW.PlayerIsCasting&& !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike"))
+						if (WoW.CanCast("Raptor Strike") && WoW.CanCast("Raptor Strike")&& WoW.Focus>((25-FocusRegen*(GCD/100))+55)&& !WoW.PlayerIsCasting&& !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike"))
 						{
+Log.Write("Raptor 7", Color.Red);							
                         WoW.CastSpell("Raptor Strike");
 						Log.Write("Too much focus! RAPTOR", Color.Red);
+
+						
 						
 						tacticswatch.Reset();
 						tacticswatch.Start();						
                         return;
-						}					
+						}
+					}						
 				}
 			}
 			if (combatRoutine.Type == RotationType.AOE )  // Do Single Target Stuff here
 			{
 				if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat)
                 {	
+			
 
 					if ((!WoW.IsInCombat || WoW.IsInCombat) && tacticswatch.ElapsedMilliseconds > 10000)
 					{
@@ -1475,7 +1550,13 @@ if(WoW.PlayerSpec == "Beast Mastery")
 					Log.Write("Leaving Combat, Resetting Stopwatches.", Color.Red);
 					
 					}
-					if(pullwatch.ElapsedMilliseconds < 10000)
+						if (WoW.CanCast("Mongoose Bite") && WoW.PlayerHasBuff("Mongoose Fury") && WoW.PlayerBuffStacks ("Mongoose Fury") >= 6 && WoW.IsSpellOnCooldown("Fury of the Eagle") &&  !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling
+							&& WoW.PlayerSpellCharges("Mongoose Bite") >=1 && WoW.SpellCooldownTimeRemaining("Mongoose Bite") <GCD*2 && WoW.IsSpellInRange("Raptor Strike") && (WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD*1.1)))
+						{
+                        WoW.CastSpell("Mongoose Bite");
+                        return;
+						}					
+					if(pullwatch.ElapsedMilliseconds < 10000 && (WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD*1.1)))
 				{
                     if (WoW.CanCast("Explosive Trap") && !WoW.IsMoving&& WoW.IsSpellInRange("Raptor Strike")&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
                     {
@@ -1512,10 +1593,15 @@ if(WoW.PlayerSpec == "Beast Mastery")
 
  //0.00	muzzle,if=target.debuff.casting.react
 					if (WoW.CanCast("Muzzle") && WoW.TargetIsCastingAndSpellIsInterruptible && WoW.TargetPercentCast >= 60 && !WoW.IsSpellOnCooldown("Muzzle")&& !WoW.PlayerIsChanneling && !WoW.WasLastCasted("Muzzle"))
-                    {
+						{
                             WoW.CastSpell("Muzzle");						
                             return;
-                        }	
+                        }
+						if (!Frizzos && WoW.CanCast("Butchery")&& WoW.Focus >=40 && !WoW.IsSpellOnCooldown("Butchery") && WoW.Talent(6) == 1&& WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+						{
+                        WoW.CastSpell("Butchery");
+                        return;
+						}						
  //	0.00	call_action_list,name=mokMaintain,if=talent.way_of_the_moknathal.enabled
 				    if(WoW.Talent(1) == 3)
 					{
@@ -1526,7 +1612,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
 						tacticswatch.Start();
                         return;
 						}
-						if (WoW.CanCast("Raptor Strike") && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") < GCD && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike"))
+						if (WoW.CanCast("Raptor Strike") && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") < GCD  && WoW.IsSpellInRange("Raptor Strike"))
 						{
 							
                         WoW.CastSpell("Raptor Strike");	
@@ -1543,7 +1629,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
 						}
 					}	
 //	0.00	call_action_list,name=CDs,if=buff.moknathal_tactics.stack>=2|!talent.way_of_the_moknathal.enabled
-                    if (((WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && UseCooldowns) || WoW.Talent(1) != 3) && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+                    if (((WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffStacks("tactics") >= 2 && WoW.PlayerBuffTimeRemaining("tactics") > GCD*1.1) || WoW.Talent(1) != 3) && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && UseCooldowns)
                     {
 //	2.51	Aspect_of_the_eagle,if=(buff.mongoose_fury.remains<=11&buff.mongoose_fury.up)&(cooldown.fury_of_the_eagle.remains>buff.mongoose_fury.remains)
 						if (WoW.CanCast("Aspect of the Eagle")&& WoW.PlayerHasBuff("Mongoose Fury")&& WoW.PlayerBuffTimeRemaining("Mongoose Fury") <=1100
@@ -1574,7 +1660,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         return;
 						}
 //	2.82	snake_hunter,if=cooldown.mongoose_bite.charges=0&buff.mongoose_fury.remains>3*gcd						
-						if (WoW.CanCast("Snake Hunter")&& WoW.Talent(2) == 3&& WoW.PlayerSpellCharges("Mongoose Bite") <= 0 && WoW.PlayerHasBuff("Mongoose Fury") && WoW.PlayerBuffTimeRemaining("Mongoose Fury") >= 300 && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+						if (WoW.CanCast("Snake Hunter")&& WoW.Talent(2) == 3&& WoW.PlayerSpellCharges("Mongoose Bite") <= 0 && WoW.PlayerHasBuff("Mongoose Fury") && WoW.PlayerBuffTimeRemaining("Mongoose Fury") >= 300*GCD && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
 						{
                         WoW.CastSpell("Snake Hunter");
                         return;
@@ -1582,7 +1668,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
 					
                     }					
 //0.00	call_action_list,name=preBitePhase,if=!buff.mongoose_fury.up
-					if(!WoW.PlayerHasBuff("Mongoose Fury"))
+					if(!WoW.PlayerHasBuff("Mongoose Fury") && (WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD*1.1))&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
 					{
 	//16.61	flanking_strike
 						if (WoW.CanCast("Flanking Strike") && WoW.Focus >= 50 && WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
@@ -1615,9 +1701,9 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         return;
 						}
 //0.00	a_murder_of_crows
-                    if (WoW.CanCast("A Murder of Crows") && WoW.Focus >= 30&& WoW.Talent(2) == 1	&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+                    if (WoW.CanCast("Murder of Crows") && !WoW.IsSpellOnCooldown ("Murder of Crows") && WoW.Focus >= 30&& WoW.Talent(2) == 1	&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD)
 						{
-                        WoW.CastSpell("A Murder of Crows");
+                        WoW.CastSpell("Murder of Crows");
                         return;
 						}
 //0.00	dragonsfire_grenade
@@ -1639,19 +1725,19 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         return;
 						}	
 //	butchery,if=equipped.frizzos_fingertrap&dot.lacerate.remains<3.6
-                   /* 	if (WoW.CanCast("Butchery") && WoW.Focus >= 40 && WoW.Talent(6) == 1&& WoW.TargetDebuffTimeRemaining("Lacerate") <360&& WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+                    	if (Frizzos && WoW.CanCast("Butchery") && WoW.Focus >= 40 && WoW.Talent(6) == 1 && WoW.TargetDebuffTimeRemaining("Lacerate") <360&& WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
 						{
                         WoW.CastSpell("Butchery");
                         return;
 						}
-					*/
+					
 //0.00	carve,if=equipped.frizzos_fingertrap&dot.lacerate.remains<3.6
-                   /*	 if (WoW.CanCast("Carve") && WoW.Focus >= 40 && WoW.Talent(6) == 1&& WoW.TargetDebuffTimeRemaining("Lacerate") <360&& WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+                   	 if (Frizzos && WoW.CanCast("Carve") && WoW.Focus >= 40 && WoW.Talent(6) == 1&& WoW.TargetDebuffTimeRemaining("Lacerate") <360&& WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
 						{
                         WoW.CastSpell("Carve");
                         return;
 						}
-					*/
+					
 //	3.40	lacerate,if=dot.lacerate.remains<3.6
 						if (WoW.CanCast("Lacerate") && WoW.Focus >= 40 && WoW.Talent(6) == 1&& WoW.TargetDebuffTimeRemaining("Lacerate") <360&& WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting&& !WoW.PlayerIsChanneling)
 						{
@@ -1664,13 +1750,15 @@ if(WoW.PlayerSpec == "Beast Mastery")
 
 //actions.bitePhase
 //	5.42	fury_of_the_eagle,if=(!talent.way_of_the_moknathal.enabled|buff.moknathal_tactics.remains>(gcd*(8%3)))&buff.mongoose_fury.stack=6,interrupt_if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<=tick_time)
+					if((WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD*1.1)))
+					{			
 						if (WoW.CanCast ("Fury of the Eagle") && (WoW.Talent(1) != 3 || WoW.PlayerBuffTimeRemaining("tactics") > (GCD*(8%3)))  && WoW.PlayerBuffStacks ("Mongoose Fury") >= 6 && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
 						{
                         WoW.CastSpell("Fury of the Eagle");
                         return;
 						}
 //	64.01	mongoose_bite,if=charges>=2&cooldown.mongoose_bite.remains<gcd*2
-						if (WoW.CanCast("Mongoose Bite") && WoW.PlayerSpellCharges("Mongoose Bite") >=2 && WoW.SpellCooldownTimeRemaining("Mongoose Bite") <GCD*2 && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike"))
+						if (WoW.CanCast("Mongoose Bite") && WoW.PlayerSpellCharges("Mongoose Bite") >=2 && WoW.SpellCooldownTimeRemaining("Mongoose Bite") <GCD*4 && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike") && (WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics"))))
 						{
                         WoW.CastSpell("Mongoose Bite");
                         return;
@@ -1684,7 +1772,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
 						}
 					
 //	53.63	mongoose_bite,if=buff.mongoose_fury.up
-						if (WoW.CanCast("Mongoose Bite") && WoW.PlayerHasBuff("Mongoose Fury")&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike"))
+						if (WoW.CanCast("Mongoose Bite") && WoW.PlayerHasBuff("Mongoose Fury")&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike") && (WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics"))))
 						{
                         WoW.CastSpell("Mongoose Bite");
                         return;
@@ -1697,26 +1785,29 @@ if(WoW.PlayerSpec == "Beast Mastery")
 						}
 //biteFill	
 					
-					//0.00	spitting_cobra
+					
+					if(WoW.PlayerHasBuff("Mongoose Fury")&& WoW.PlayerSpellCharges("Mongoose Bite") ==0&&(WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD*1.1)) && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+					{
+//0.00	spitting_cobra
 						if (WoW.CanCast("Spitting Cobra")&& WoW.Focus >= 30&& WoW.Talent(7) == 1&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
 						{
                         WoW.CastSpell("Spitting Cobra");
                         return;
 						}
 //0.00	butchery,if=equipped.frizzos_fingertrap&dot.lacerate.remains<3.6
-						/*if (WoW.CanCast("Butchery") && WoW.Focus >= 40 && WoW.Talent(6) == 1&& WoW.TargetDebuffTimeRemaining("Lacerate") <360&& WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+						if (Frizzos && WoW.CanCast("Butchery") && WoW.Focus >= 40 && WoW.Talent(6) == 1&& WoW.TargetDebuffTimeRemaining("Lacerate") <360&& WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
 						{
                         WoW.CastSpell("Butchery");
                         return;
 						}
-						*/
+						
 //0.00	carve,if=equipped.frizzos_fingertrap&dot.lacerate.remains<3.6
-						/*if (WoW.CanCast("Carve") && WoW.Focus >= 40 && WoW.Talent(6) == 1&& WoW.TargetDebuffTimeRemaining("Lacerate") <360&& WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+						if (Frizzos && WoW.CanCast("Carve") && WoW.Focus >= 40 && WoW.Talent(6) == 1&& WoW.TargetDebuffTimeRemaining("Lacerate") <360&& WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
 						{
                         WoW.CastSpell("Carve");
                         return;
 						}
-						*/
+						
 //	10.26	lacerate,if=dot.lacerate.remains<3.6
 						if (WoW.CanCast("Lacerate") && WoW.Focus >= 40 && WoW.Talent(6) == 1&& WoW.TargetDebuffTimeRemaining("Lacerate") <360&& WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
 						{
@@ -1736,9 +1827,9 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         return;
 						}
 //0.00	a_murder_of_crows
-						if (WoW.CanCast("A Murder of Crows") && WoW.Focus >= 30&& WoW.Talent(2) == 1 && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+						if (WoW.CanCast("Murder of Crows") && !WoW.IsSpellOnCooldown ("Murder of Crows") && WoW.Focus >= 30&& WoW.Talent(2) == 1	&& !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD)
 						{
-                        WoW.CastSpell("A Murder of Crows");
+                        WoW.CastSpell("Murder of Crows");
                         return;
 						}
 // 0.00	dragonsfire_grenade
@@ -1759,14 +1850,17 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         WoW.CastSpell("Caltrops");
                         return;
 						}
-						if (WoW.CanCast("Butchery") && WoW.Talent(6) == 1&& WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
+						if (WoW.CanCast("Butchery")&& WoW.Focus >=40 && !WoW.IsSpellOnCooldown("Butchery") && WoW.Talent(6) == 1&& WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling)
 						{
                         WoW.CastSpell("Butchery");
                         return;
 						}
-//FILLERS
+					}
+						
+//FILLERS		
 
 //0.00	carve,if=active_enemies>1&talent.serpent_sting.enabled&!dot.serpent_sting.ticking
+	
 						if (WoW.CanCast("Carve")	&& 	WoW.Talent(6) == 3	&& WoW.Focus >= 40 && !WoW.TargetHasDebuff("Serpent Sting")&& WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting&& !WoW.PlayerIsChanneling)
 						{
                         WoW.CastSpell("Carve");
@@ -1797,7 +1891,8 @@ if(WoW.PlayerSpec == "Beast Mastery")
 						{
                         WoW.CastSpell("Carve");						
                         return;
-						}					
+						}	
+					}			
 				}							
 			}
 		}
@@ -1920,7 +2015,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         return;
                     }	
 						
-						if (WoW.TargetHasDebuff("Vulnerable") // AimedShot if HasBuff(LockAndLoad) and HasBuff(Vulnerable)
+						if (WoW.TargetHasDebuff("Vulnerable")   // AimedShot if HasBuff(LockAndLoad) and HasBuff(Vulnerable)
 						&& WoW.PlayerHasBuff("Lock and Load")
 						&& WoW.CanCast("AS") 
 						&& WoW.IsSpellInRange("Windburst") 
@@ -1944,7 +2039,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
 						if (WoW.Focus >=50  /* SpellCastTimeSec(AimedShot) < BuffRemainingSec(Vulnerable)) and (not HasTalent(PiercingShot)*/
 						&& WoW.CanCast("AS") 
 						&& WoW.TargetHasDebuff("Vulnerable")
-						&& WoW.TargetDebuffTimeRemaining("Vulnerable") > 200	
+						&& WoW.TargetDebuffTimeRemaining("Vulnerable") > AimedShotCastTime	
 						&& WoW.Talent(7) == 3
 						&& WoW.IsSpellInRange("Windburst") 
 						&& (!WoW.IsMoving || WoW.PlayerHasBuff("Gyroscopic Stabilization")) 
@@ -1959,10 +2054,9 @@ if(WoW.PlayerSpec == "Beast Mastery")
 						&& WoW.CanCast("AS") 
 						&& (!WoW.IsMoving || WoW.PlayerHasBuff("Gyroscopic Stabilization")) 
 						&& WoW.TargetHasDebuff("Vulnerable")
-						&& WoW.TargetDebuffTimeRemaining("Vulnerable") > 200	
+						&& WoW.TargetDebuffTimeRemaining("Vulnerable") > WoW.SpellCooldownTimeRemaining("Piercing Shot")	
 						&& WoW.Talent(7) == 2
 						&& WoW.IsSpellOnCooldown("Piercing Shot")
-						&& WoW.SpellCooldownTimeRemaining("Piercing Shot") > 200
 						&& WoW.IsSpellInRange("Windburst") 
 						&& !WoW.PlayerIsChanneling
 						&& !WoW.PlayerIsCasting	)				
@@ -2233,14 +2327,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
 					    WoW.CastSpell("Marked Shot");
                         return;
 					}						
-/* 					if (WoW.CanCast("Windburst") 
-						&& !WoW.IsMoving
-						&& WoW.Focus >= 20 
-						&& WoW.TargetHasDebuff("Vulnerable") 
-						&& !WoW.PlayerIsChanneling
-						&& !WoW.PlayerIsCasting						
-						&& (WoW.TargetDebuffTimeRemaining("Vulnerable") <= 1)						
-						&& WoW.IsSpellInRange("Windburst"))
+/* 					if (WoW.CanCast("Windburst") 						&& !WoW.IsMoving						&& WoW.Focus >= 20 						&& WoW.TargetHasDebuff("Vulnerable") 						&& !WoW.PlayerIsChanneling						&& !WoW.PlayerIsCasting												&& (WoW.TargetDebuffTimeRemaining("Vulnerable") <= 1)												&& WoW.IsSpellInRange("Windburst"))
                     {
                         WoW.CastSpell("Windburst");
                         return;
@@ -2510,7 +2597,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
 [AddonDetails.db]
 AddonAuthor=Vectarius
 AddonName=myspellpriority
-WoWVersion=Legion - 70100
+WoWVersion=Legion - 70200
 [SpellBook.db]
 Spell,83245,Wolf,F1
 Spell,120679,Dire Beast,D1
@@ -2520,6 +2607,7 @@ Spell,2643,Multi-Shot,D4
 Spell,34026,Kill Command,D2
 Spell,19574,Bestial Wrath,D8
 Spell,131894,A Murder of Crows,D5
+Spell,206505,Murder of Crows,D5
 Spell,120360,Barrage,D6
 Spell,147362,Counter Shot,D0
 Spell,193530,Aspect of the Wild,D9
@@ -2543,6 +2631,32 @@ Spell,26297,Berserking,F3
 Spell,201430,Stampede,C
 Spell,24394,Intimidation,None
 Spell,142117,Pot,NumPad1
+Spell,190928,Mongoose Bite,D1
+Spell,202800,Flanking Strike,D2
+Spell,185855,Lacerate,D3
+Spell,186270,Raptor Strike,D4
+Spell,194277,Caltrops,D5
+Spell,191433,Explosive Trap,D6
+Spell,194855,Dragonsfire Grenade,D7
+Spell,200163,Throwing Axes,D8
+Spell,203415,Fury of the Eagle,D9
+Spell,186289,Aspect of the Eagle,F4
+Spell,212436,Butchery,C
+Spell,187707,Muzzle,F
+Spell,194407,Spitting Cobra,C
+Spell,187708,Carve,F7
+Spell,190925,Harpoon,NumPad5
+Spell,162488,Steel Trap,D5
+Spell,201078,Snake Hunter,D0
+Spell,204147,Windburst,D2
+Spell,19434,AS,D4
+Spell,185358,Arcane Shot,D5
+Spell,185901,Marked Shot,D6
+Spell,186387,Bursting Shot,D7
+Spell,198670,Piercing Shot,D1
+Spell,193526,Trueshot,C
+Aura,120679,Dire Beast
+Aura,151805,Parsels Tongue
 Aura,217200,Dire Frenzy
 Aura,186265,AspectoftheTurtle
 Aura,136,Heal Pet
@@ -2560,49 +2674,20 @@ Aura,118455,Beast Cleave
 Aura,193530,Aspect of the Wild
 Aura,194386,Volley
 Aura,137080,Roar of the Seven Lions
-Item,144259,Kil'jaeden's Burning Wish
-Item,142117,Pot
-Item,5512,Healthstone
-Item,127834,Potion
-
-Spell,190928,Mongoose Bite,D1
-Spell,202800,Flanking Strike,D2
-Spell,185855,Lacerate,D3
-Spell,186270,Raptor Strike,D4
-Spell,194277,Caltrops,D5
-Spell,191433,Explosive Trap,D6
-Spell,194855,Dragonsfire Grenade,D7
-Spell,200163,Throwing Axes,D8
-Spell,203415,Fury of the Eagle,D9
-Spell,186289,Aspect of the Eagle,F4
-Spell,212436,Butchery,C
-Spell,187707,Muzzle,F
-Spell,194407,Spitting Cobra,C
-Spell,187708,Carve,F7
-Spell,190925,Harpoon,Numpad5
-Spell,162488,Steel Trap,D5
-Spell,201078,Snake Hunter,D0
 Aura,190931,Mongoose Fury
-Aura,87935,Serpent Sting
+Aura,118253,Serpent Sting
 Aura,185855,Lacerate
 Aura,186289,Aspect of the Eagle
 Aura,194277,Caltrops
 Aura,201081,tactics
-
-
-Spell,204147,Windburst,D2
-Spell,19434,AS,D4
-Spell,185358,Arcane Shot,D5
-Spell,185901,Marked Shot,D6
-Spell,186387,Bursting Shot,D7
-Spell,198670,Piercing Shot,D1
-Spell,193526,Trueshot,C
 Aura,223138,Marking Targets
 Aura,185365,Hunters Mark
 Aura,194594,Lock and Load
 Aura,187131,Vulnerable
 Aura,193526,Trueshot
 Aura,235712,Gyroscopic Stabilization
-
-
+Item,144259,Kil'jaeden's Burning Wish
+Item,142117,Pot
+Item,5512,Healthstone
+Item,127834,Potion
 */
