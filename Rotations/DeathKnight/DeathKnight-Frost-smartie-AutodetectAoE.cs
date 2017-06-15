@@ -10,6 +10,7 @@
 // v2.8 cleanup and added Racials
 // v2.9 Racial update
 // v3.0 added Deathstrike
+// v3.1 some small bugfixes
 
 using System;
 using System.ComponentModel;
@@ -331,7 +332,7 @@ namespace CloudMagic.Rotation
 
         public override void Initialize()
         {
-            Log.Write("Welcome to the Frost DK v3.0", Color.Green);
+            Log.Write("Welcome to the Frost DK v3.1", Color.Green);
 	        Log.Write("All Talents supported and auto detected", Color.Green);		
 			Log.Write("Hold down Z key (Y for US) for Sindragosa's Fury", Color.Red);
             SettingsFormDFF = new SettingsFormDFF();
@@ -587,7 +588,7 @@ namespace CloudMagic.Rotation
 					{
 						legyringtest = true;
 					}
-					if (WoW.CanCast("Arcane Torrent") && WoW.PlayerRace == "BloodElf" && WoW.RunicPower <= 25 && combatRoutine.UseCooldowns && isCheckHotkeysRacials && WoW.PlayerHasBuff("Breath") && !WoW.PlayerHasBuff("HEmpower Rune") && WoW.CanCast("Obliterate", false, false, true, false, false))
+					if (WoW.CanCast("Arcane Torrent") && !WoW.IsSpellOnCooldown ("Arcane Torrent") && WoW.PlayerRace == "BloodElf" && WoW.RunicPower <= 25 && combatRoutine.UseCooldowns && isCheckHotkeysRacials && WoW.PlayerHasBuff("Breath") && !WoW.PlayerHasBuff("HEmpower Rune") && WoW.CanCast("Obliterate", false, false, true, false, false))
                     {
                         WoW.CastSpell("Arcane Torrent");
                         return;
@@ -667,7 +668,7 @@ namespace CloudMagic.Rotation
 					{
 						WoW.CastSpell("Empower Rune");
 					}
-					if (WoW.CanCast("Arcane Torrent") && combatRoutine.UseCooldowns && isCheckHotkeysRacials && WoW.PlayerRace == "BloodElf" && WoW.RunicPower <= 30 && WoW.PlayerHasBuff("PillarofFrost") && WoW.CanCast("Obliterate", false, false, true, false, false))
+					if (WoW.CanCast("Arcane Torrent") && !WoW.IsSpellOnCooldown ("Arcane Torrent") && combatRoutine.UseCooldowns && isCheckHotkeysRacials && WoW.PlayerRace == "BloodElf" && WoW.RunicPower <= 30 && WoW.PlayerHasBuff("PillarofFrost") && WoW.CanCast("Obliterate", false, false, true, false, false))
                     {
                         WoW.CastSpell("Arcane Torrent");
                         return;
