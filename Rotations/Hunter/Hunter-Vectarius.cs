@@ -1,4 +1,4 @@
-﻿// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedMember.Global
 
 using System;
 using System.Diagnostics;
@@ -25,6 +25,7 @@ namespace CloudMagic.Rotation
 		private NumericUpDown nudPotionPercentValue;		
 		
 		private readonly Stopwatch tacticswatch = new Stopwatch();
+		private readonly Stopwatch mongoosebitewatch = new Stopwatch();
 		private readonly Stopwatch pullwatch = new Stopwatch();
 		private readonly Stopwatch Direfrenzywatch = new Stopwatch();
 		
@@ -47,6 +48,13 @@ namespace CloudMagic.Rotation
             {
                     return 200f / (1f + (WoW.HastePercent / 100f));
             }
+        }
+		private float MongooseBiteRecharge
+        {
+            get
+            {
+                    return 12000f / (1f + (WoW.HastePercent / 100f));
+            }
         }		
 		 private float GCD
         {
@@ -57,6 +65,15 @@ namespace CloudMagic.Rotation
 
             }
         }
+		 private float bitegcd
+        {
+            get
+            {
+
+                    return (MongooseBiteRecharge/10 - GCD*2);
+
+            }
+        }		
 private float FocusRegen
 {
      get
@@ -1116,7 +1133,20 @@ if(WoW.PlayerSpec == "Beast Mastery")
 					Log.Write("Leaving Combat, Resetting tacticswatch.", Color.Red);
 					
 					}
-										
+					if (!WoW.IsInCombat && mongoosebitewatch.ElapsedMilliseconds > 10000)
+					{
+					mongoosebitewatch.Reset();
+					Log.Write("Mongoose Bite watch reset", Color.Red);
+                    
+					}	
+					if (WoW.IsInCombat && mongoosebitewatch.ElapsedMilliseconds > MongooseBiteRecharge)
+					{
+					mongoosebitewatch.Reset();	
+					mongoosebitewatch.Start();
+					Log.Write("Mongoose Bite watch reset", Color.Red);
+					Log.Write("Mongoose Bite watch start", Color.Red);
+                    
+					}					
 					if (WoW.IsInCombat && !pullwatch.IsRunning)
 					{
 					pullwatch.Start();
@@ -1134,8 +1164,10 @@ if(WoW.PlayerSpec == "Beast Mastery")
 											
                 if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat)
                 {
+
+			
 						if (WoW.CanCast("Mongoose Bite") && WoW.PlayerHasBuff("Mongoose Fury") && WoW.PlayerBuffStacks ("Mongoose Fury") >= 6 && WoW.IsSpellOnCooldown("Fury of the Eagle") &&  !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling
-							&& WoW.PlayerSpellCharges("Mongoose Bite") >=1 && WoW.SpellCooldownTimeRemaining("Mongoose Bite") <GCD*2 && WoW.IsSpellInRange("Raptor Strike") && (WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD*1.1)))
+							&& WoW.PlayerSpellCharges("Mongoose Bite") >=1 && WoW.IsSpellInRange("Raptor Strike") && (WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD*1.1)))
 						{
                         WoW.CastSpell("Mongoose Bite");
                         return;
@@ -1383,12 +1415,24 @@ Log.Write("Raptor 4", Color.Red);
                         return;
 						}
 //	64.01	mongoose_bite,if=charges>=2&cooldown.mongoose_bite.remains<gcd*2
-						if (WoW.CanCast("Mongoose Bite") && WoW.PlayerSpellCharges("Mongoose Bite") >=2 && WoW.SpellCooldownTimeRemaining("Mongoose Bite") <GCD*2 && WoW.IsSpellInRange("Raptor Strike") )
+						if (WoW.CanCast("Mongoose Bite") && WoW.PlayerSpellCharges("Mongoose Bite") >=2 && mongoosebitewatch.ElapsedMilliseconds > bitegcd*10 && WoW.IsSpellInRange("Raptor Strike") )
 						{
 Log.Write("Bite >=2" , Color.Red);	
+
                         WoW.CastSpell("Mongoose Bite");
+
                         return;
 						}
+						if (WoW.CanCast("Mongoose Bite") && WoW.PlayerSpellCharges("Mongoose Bite") >=3 && WoW.IsSpellInRange("Raptor Strike") )
+						{
+Log.Write("Bite >=3" , Color.Red);
+Log.Write("Start bite watch" , Color.Red);	
+
+                        WoW.CastSpell("Mongoose Bite");
+						mongoosebitewatch.Reset();
+						mongoosebitewatch.Start();
+                        return;
+						}						
 //	24.07	flanking_strike,if=((buff.mongoose_fury.remains>(gcd*(cooldown.mongoose_bite.charges+2)))&cooldown.mongoose_bite.charges<=1)&!buff.Aspect_of_the_eagle.up
 						if (WoW.CanCast("Flanking Strike") && WoW.PlayerBuffTimeRemaining("Mongoose Fury") > (GCD*(WoW.SpellCooldownTimeRemaining("Mongoose Bite")+200)) && WoW.PlayerSpellCharges("Mongoose Bite") <=1 && !WoW.PlayerHasBuff("Aspect of the Eagle")
 						&& WoW.Focus >= 50 && WoW.IsSpellInRange("Raptor Strike"))
@@ -1748,6 +1792,8 @@ Log.Write("Raptor 7", Color.Red);
 //call_action_list,name=aoe,if=active_enemies>=3
 //if(WoW.CountEnemyNPCsInRange >3	
 
+
+
 //actions.bitePhase
 //	5.42	fury_of_the_eagle,if=(!talent.way_of_the_moknathal.enabled|buff.moknathal_tactics.remains>(gcd*(8%3)))&buff.mongoose_fury.stack=6,interrupt_if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<=tick_time)
 					if((WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics") && WoW.PlayerBuffTimeRemaining("tactics") > GCD*1.1)))
@@ -1758,11 +1804,21 @@ Log.Write("Raptor 7", Color.Red);
                         return;
 						}
 //	64.01	mongoose_bite,if=charges>=2&cooldown.mongoose_bite.remains<gcd*2
-						if (WoW.CanCast("Mongoose Bite") && WoW.PlayerSpellCharges("Mongoose Bite") >=2 && WoW.SpellCooldownTimeRemaining("Mongoose Bite") <GCD*4 && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike") && (WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics"))))
+						if (WoW.CanCast("Mongoose Bite") && WoW.PlayerSpellCharges("Mongoose Bite") >=2 && mongoosebitewatch.ElapsedMilliseconds > bitegcd*10 && !WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.IsSpellInRange("Raptor Strike") && (WoW.Talent(1) != 3 || (WoW.Talent(1) == 3 && WoW.PlayerHasBuff("tactics"))))
 						{
                         WoW.CastSpell("Mongoose Bite");
+					
                         return;
 						}
+						if (WoW.CanCast("Mongoose Bite") && WoW.PlayerSpellCharges("Mongoose Bite") >=3 && WoW.IsSpellInRange("Raptor Strike") )
+						{
+Log.Write("Bite >=3" , Color.Red);	
+
+                        WoW.CastSpell("Mongoose Bite");
+						mongoosebitewatch.Reset();
+						mongoosebitewatch.Start();
+                        return;
+						}						
 //	24.07	flanking_strike,if=((buff.mongoose_fury.remains>(gcd*(cooldown.mongoose_bite.charges+2)))&cooldown.mongoose_bite.charges<=1)&!buff.Aspect_of_the_eagle.up
 						if (WoW.CanCast("Flanking Strike") && WoW.PlayerBuffTimeRemaining("Mongoose Fury") > (GCD*(WoW.SpellCooldownTimeRemaining("Mongoose Bite"))) && WoW.PlayerSpellCharges("Mongoose Bite") <=1 && !WoW.PlayerHasBuff("Aspect of the Eagle")
 						&& WoW.Focus >= 50 && WoW.IsSpellInRange("Raptor Strike") && !WoW.PlayerIsCasting&& !WoW.PlayerIsChanneling)
@@ -2327,8 +2383,7 @@ Log.Write("Raptor 7", Color.Red);
 					    WoW.CastSpell("Marked Shot");
                         return;
 					}						
-/* 					if (WoW.CanCast("Windburst") 						&& !WoW.IsMoving						&& WoW.Focus >= 20 						&& WoW.TargetHasDebuff("Vulnerable") 						&& !WoW.PlayerIsChanneling						&& !WoW.PlayerIsCasting												&& (WoW.TargetDebuffTimeRemaining("Vulnerable") <= 1)												&& WoW.IsSpellInRange("Windburst"))
-                    {
+/* 					if (WoW.CanCast("Windburst") 						&& !WoW.IsMoving						&& WoW.Focus >= 20 						&& WoW.TargetHasDebuff("Vulnerable") 						&& !WoW.PlayerIsChanneling						&& !WoW.PlayerIsCasting												&& (WoW.TargetDebuffTimeRemaining("Vulnerable") <= 1)												&& WoW.IsSpellInRange("Windburst"))                    {
                         WoW.CastSpell("Windburst");
                         return;
                     }
