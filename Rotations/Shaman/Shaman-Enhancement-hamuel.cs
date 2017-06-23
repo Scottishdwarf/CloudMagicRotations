@@ -240,8 +240,14 @@ namespace CloudMagic.Rotation
         }
         private void EnhancementBuffs()
         {
+            //actions +=/ windstrike,if= (variable.heartEquipped | set_bonus.tier19_2pc) & (!talent.earthen_spike.enabled | (cooldown.earthen_spike.remains > 1 & cooldown.doom_winds.remains > 1) | debuff.earthen_spike.up)
+            if (WoW.CanCast("Windstrike", true, true, true) && WoW.PlayerHasBuff("Ascendance") && WoW.Maelstrom >= 8 && (/*heart equip place holder*/WoW.SetBonus(19)>=2) && (WoW.Talent(7) != 3 || (WoW.SpellCooldownTimeRemaining("Earthen spike") > 1 && WoW.SpellCooldownTimeRemaining("Doom winds") > 1 || WoW.TargetHasDebuff("Earthen spike"))))
+            {
+                WoW.CastSpell("Windstrike","Top prioity spell");
+                return;
+            }
             //actions.buffs = rockbiter,if= talent.landslide.enabled & !buff.landslide.up
-            if(WoW.CanCast("Rockbiter", true, true, true) &&WoW.Talent(1) == 3 && !WoW.PlayerHasBuff("Landslide"))
+            if (WoW.CanCast("Rockbiter", true, true, true) &&WoW.Talent(1) == 3 && !WoW.PlayerHasBuff("Landslide"))
             {
                 WoW.CastSpell("Rockbiter", "Buff spell");
                 return;
@@ -287,7 +293,7 @@ namespace CloudMagic.Rotation
         private void EnhancementCore()
         {
 
-            if (WoW.CanCast("lava lash", true, true, true, false, true) && WoW.Maelstrom >= 40 && WoW.TargetDebuffStacks("Legionfall") > 90)
+            if (WoW.CanCast("lava lash", true, true, true, false, true) && WoW.Maelstrom >= 40 && (WoW.TargetDebuffStacks("Legionfall") > 90 || WoW.PlayerHasBuff("Hot Hands") && WoW.PlayerBuffTimeRemaining("Hot Hands") <2))
             {
                 Log.Write("Maelstrom overflow protection", Color.Blue);
                 WoW.CastSpell("lava lash");
@@ -302,7 +308,7 @@ namespace CloudMagic.Rotation
             //actions.core +=/ crash_lightning,if= !buff.crash_lightning.up & active_enemies >= 2
             if(WoW.CanCast("Crash lightning") && WoW.Maelstrom >= 20 && WoW.IsSpellInRange("Rockbiter")&& !WoW.PlayerHasBuff("Crash lightning") && combatRoutine.Type != RotationType.SingleTarget)
             {
-                WoW.CastSpell("Crash lightning", "Core spell");
+                WoW.CastSpell("Crash lightning", "Core: No Crash Buff 2Npc greater");
                 return;
             }
             //actions.core +=/ windsong
@@ -314,14 +320,14 @@ namespace CloudMagic.Rotation
             //actions.core +=/ crash_lightning,if= active_enemies >= 8 | (active_enemies >= 6 & talent.crashing_storm.enabled)
             if(WoW.CanCast("Crash lightning") && WoW.Maelstrom >= 20 && WoW.IsSpellInRange("Rockbiter") && combatRoutine.Type == RotationType.AOE && (WoW.CountEnemyNPCsInRange >= 8 || WoW.CountEnemyNPCsInRange >=6 && WoW.Talent(6) ==1))
             {
-                WoW.CastSpell("Crash lightning", "Core spell");
+                WoW.CastSpell("Crash lightning", "Core:AOE");
                 return;
 
             }
             //actions.core +=/ windstrike
-            if(WoW.CanCast("Stormstrike", true, true, true) && WoW.Maelstrom >= 8 && WoW.PlayerHasBuff("Ascendance"))
+            if(WoW.CanCast("Windstrike", true, true, true) && WoW.Maelstrom >= 8 && WoW.PlayerHasBuff("Ascendance"))
             {
-                WoW.CastSpell("Stormstrike", "Core spell");
+                WoW.CastSpell("Windstrike", "Core spell");
                 return;
             }
             //actions.core +=/ Stormstrike,if= buff.stormbringer.up & variable.furyCheck25
@@ -467,8 +473,8 @@ namespace CloudMagic.Rotation
                 interruptcast();
                 //Stuns();
                 Defensive();
-
-                //actions +=/ call_action_list,name = buffs
+                
+                  //actions +=/ call_action_list,name = buffs
                 EnhancementBuffs();
                 //actions +=/ call_action_list,name = CDs
                 EnhancementCD();
@@ -557,6 +563,7 @@ Spell,108271,Astral Shift,F2
 Spell,193786,Rockbiter,NumPad5
 Spell,60103,lava lash,NumPad6
 Spell,17364,Stormstrike,NumPad7
+Spell,115356,Windstrike,NumPad7
 Spell,187837,Lightning bolt,NumPad8
 Spell,188070,Healing Surge,NumPad9
 Spell,215864,Rainfall,F8
@@ -594,7 +601,7 @@ Aura,197211,FoA
 Aura,2645,Ghost Wolf
 Aura,240842,Legionfall
 Aura,234143,Temptation
-Aura,242283,Lightning crash
+Aura,242284,Lightning crash
 Aura,188089,Earthen spike
 Item,142117,Prolonged Power
 Item,142173,Collapsing Futures
