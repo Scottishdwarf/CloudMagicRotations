@@ -801,6 +801,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
 					if (WoW.TargetIsCasting)
                     {
                         if (WoW.CanCast("Counter Shot") && WoW.Level >= 32
+							&& Kick
 							&& WoW.TargetIsCastingAndSpellIsInterruptible 
 							&& WoW.TargetPercentCast >= ConfigFile.ReadValue<int>("Hunter", "Kick Percent") 
 							&& !WoW.IsSpellOnCooldown("Counter Shot") 
