@@ -1067,11 +1067,12 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         return;
                     }	
 //titans_thunder,if=															(talent.dire_frenzy.enabled&(buff.bestial_wrath.up        |   cooldown.bestial_wrath.remains>35))                  |cooldown.dire_beast.remains>=3                      |(buff.bestial_wrath.up                 &pet.dire_beast.active)		
-					if (WoW.CanCast("Titan's Thunder") && !WoW.IsSpellOnCooldown("Titan's Thunder") && WoW.Level >= 110 && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD && (WoW.Talent(2) == 2 && 
-					( WoW.PlayerHasBuff("Bestial Wrath") 
-					|| WoW.SpellCooldownTimeRemaining("Bestial Wrath") >= 350)) 
-					|| WoW.SpellCooldownTimeRemaining("Dire Beast") >=300 
-					|| (WoW.PlayerHasBuff ("Bestial Wrath") && WoW.PetHasBuff("Dire Beast")) && WoW.IsSpellInRange("Cobra Shot"))
+					if (WoW.CanCast("Titan's Thunder")&& WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD && WoW.IsSpellInRange("Cobra Shot")&& !WoW.IsSpellOnCooldown("Titan's Thunder")&& WoW.Level >= 110&& (WoW.Talent(2) == 2 && ( WoW.PlayerHasBuff("Bestial Wrath") || WoW.SpellCooldownTimeRemaining("Bestial Wrath") > 350)))
+                    {
+                        WoW.CastSpell("Titan's Thunder");
+                        return;
+                    }					
+					if (WoW.CanCast("Titan's Thunder")&& WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD && WoW.IsSpellInRange("Cobra Shot")&& !WoW.IsSpellOnCooldown("Titan's Thunder")&& WoW.Level >= 110 && WoW.SpellCooldownTimeRemaining("Dire Beast") >=300 || (WoW.PlayerHasBuff ("Bestial Wrath") && WoW.PetHasBuff("Dire Beast")))
                     {
                         WoW.CastSpell("Titan's Thunder");
                         return;

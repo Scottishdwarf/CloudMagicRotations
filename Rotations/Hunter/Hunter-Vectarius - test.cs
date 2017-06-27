@@ -39,8 +39,9 @@ namespace CloudMagic.Rotation
                 for (var i = 0; i < idBuffs.Length; i++)
                     if (WoW.PlayerHasBuff(idBuffs[i]))
                         buffs++;
-                return buffs;
+					return buffs;
             }
+			
         }
 
         private bool BL
@@ -819,7 +820,7 @@ Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 1
 
 					if (WoW.TargetIsCasting)
                     {
-                        if (WoW.CanCast("Counter Shot") && WoW.Level >= 32
+                        if (WoW.CanCast("Counter Shot") && WoW.Level >= 32 && Kick
 							&& WoW.TargetIsCastingAndSpellIsInterruptible 
 							&& WoW.TargetPercentCast >= ConfigFile.ReadValue<int>("Hunter", "Kick Percent") 
 							&& !WoW.IsSpellOnCooldown("Counter Shot") 
@@ -970,7 +971,7 @@ Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 1
                     }					
 
 //cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>action.kill_command.cost)|target.time_to_die<cooldown.kill_command.remains|(equipped.parsels_tongue&buff.parsels_tongue.remains<=gcd.max*2)				
-					if (WoW.CanCast("Cobra Shot") && WoW.IsSpellOnCooldown("Kill Command") && (WoW.Focus > 32 || (WoW.PlayerHasBuff("Roar of the Seven Lions") && WoW.Focus >= 25))&& WoW.IsSpellInRange("Cobra Shot")&& (!WoW.PlayerHasBuff("Dire Beast") && !WoW.PlayerHasBuff("Dire Frenzy")))
+					if (WoW.CanCast("Cobra Shot") && WoW.IsSpellOnCooldown("Kill Command") && WoW.IsSpellOnCooldown("Kill Command") && (WoW.Focus > 32 || (WoW.PlayerHasBuff("Roar of the Seven Lions") && WoW.Focus >= 25))&& WoW.IsSpellInRange("Cobra Shot")&& (!WoW.PlayerHasBuff("Dire Beast") && !WoW.PlayerHasBuff("Dire Frenzy")))
 				{
 						if (WoW.Level <= 39)
                     {			
@@ -1109,11 +1110,12 @@ Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 1
                         return;
                     }	
 //titans_thunder,if=															(talent.dire_frenzy.enabled&(buff.bestial_wrath.up        |   cooldown.bestial_wrath.remains>35))                  |cooldown.dire_beast.remains>=3                      |(buff.bestial_wrath.up                 &pet.dire_beast.active)		
-					if (WoW.CanCast("Titan's Thunder") && !WoW.IsSpellOnCooldown("Titan's Thunder") && WoW.Level >= 110 && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD && (WoW.Talent(2) == 2 && 
-					( WoW.PlayerHasBuff("Bestial Wrath") 
-					|| WoW.SpellCooldownTimeRemaining("Bestial Wrath") >= 350)) 
-					|| WoW.SpellCooldownTimeRemaining("Dire Beast") >=300 
-					|| (WoW.PlayerHasBuff ("Bestial Wrath") && WoW.PetHasBuff("Dire Beast")) && WoW.IsSpellInRange("Cobra Shot"))
+					if (WoW.CanCast("Titan's Thunder") && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD&& WoW.IsSpellInRange("Cobra Shot")&& !WoW.IsSpellOnCooldown("Titan's Thunder")&& WoW.Level >= 110&& (WoW.Talent(2) == 2 && ( WoW.PlayerHasBuff("Bestial Wrath") || WoW.SpellCooldownTimeRemaining("Bestial Wrath") > 350)))
+                    {
+                        WoW.CastSpell("Titan's Thunder");
+                        return;
+                    }					
+					if (WoW.CanCast("Titan's Thunder") && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD&& WoW.IsSpellInRange("Cobra Shot")&& !WoW.IsSpellOnCooldown("Titan's Thunder")&& WoW.Level >= 110 && WoW.SpellCooldownTimeRemaining("Dire Beast") >=300 || (WoW.PlayerHasBuff ("Bestial Wrath") && WoW.PetHasBuff("Dire Beast")))
                     {
                         WoW.CastSpell("Titan's Thunder");
                         return;
@@ -1131,7 +1133,7 @@ Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 1
                         return;
                     }					
 //cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>action.kill_command.cost)|target.time_to_die<cooldown.kill_command.remains|(equipped.parsels_tongue&buff.parsels_tongue.remains<=gcd.max*2)								
-						if (WoW.CanCast("Cobra Shot") && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD&& WoW.IsSpellOnCooldown("Kill Command") && (WoW.Focus > 32 || (WoW.PlayerHasBuff("Roar of the Seven Lions") && WoW.Focus >= 25))&& WoW.IsSpellInRange("Cobra Shot"))
+						if (WoW.CanCast("Cobra Shot") && WoW.IsSpellOnCooldown("Kill Command")&& WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD&& WoW.IsSpellOnCooldown("Kill Command") && (WoW.Focus > 32 || (WoW.PlayerHasBuff("Roar of the Seven Lions") && WoW.Focus >= 25))&& WoW.IsSpellInRange("Cobra Shot"))
 				{
 						if (WoW.Level <= 39)
                     {			
