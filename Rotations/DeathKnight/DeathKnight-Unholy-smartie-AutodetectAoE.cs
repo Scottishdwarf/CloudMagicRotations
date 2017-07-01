@@ -4,6 +4,8 @@
 // v1.2 massive cleanup
 // v1.3 Soul Reaper is now supported and working
 // v1.4 added Deathstrike and Mind Freeze
+// v1.5 rotation changes for 7.2.5
+// v1.6 Legendary chest added
 
 
 using System;
@@ -148,97 +150,97 @@ namespace CloudMagic.Rotation
         }
 
 		
-        public static bool isCheckHotkeysFrostDeathstrike
+        public static bool isCheckHotkeysUnholyDeathstrike
         {
             get
             {
-                var isCheckHotkeysFrostDeathstrike = ConfigFile.ReadValue("DkFrost", "isCheckHotkeysFrostDeathstrike").Trim();
+                var isCheckHotkeysUnholyDeathstrike = ConfigFile.ReadValue("DkUnholy", "isCheckHotkeysUnholyDeathstrike").Trim();
 
-                if (isCheckHotkeysFrostDeathstrike != "")
+                if (isCheckHotkeysUnholyDeathstrike != "")
                 {
-                    return Convert.ToBoolean(isCheckHotkeysFrostDeathstrike);
+                    return Convert.ToBoolean(isCheckHotkeysUnholyDeathstrike);
                 }
 
                 return true;
             }
-            set { ConfigFile.WriteValue("DkFrost", "isCheckHotkeysFrostDeathstrike", value.ToString()); }
+            set { ConfigFile.WriteValue("DkUnholy", "isCheckHotkeysUnholyDeathstrike", value.ToString()); }
         }
 
-        public static int FrostDeathstrikeHPPercent
+        public static int UnholyDeathstrikeHPPercent
         {
             get
             {
-                var FrostDeathstrikeHPPercent = ConfigFile.ReadValue("DKFrost", "FrostDeathstrikeHPPercent").Trim();
-                if (FrostDeathstrikeHPPercent != "")
+                var UnholyDeathstrikeHPPercent = ConfigFile.ReadValue("DKUnholy", "UnholyDeathstrikeHPPercent").Trim();
+                if (UnholyDeathstrikeHPPercent != "")
                 {
-                    return Convert.ToInt32(FrostDeathstrikeHPPercent);
+                    return Convert.ToInt32(UnholyDeathstrikeHPPercent);
                 }
 
                 return -1;
             }
-            set { ConfigFile.WriteValue("DkFrost", "FrostDeathstrikeHPPercent", value.ToString()); }
+            set { ConfigFile.WriteValue("DkUnholy", "UnholyDeathstrikeHPPercent", value.ToString()); }
         }
 		
-        public static bool isCheckHotkeysFrostKick
+        public static bool isCheckHotkeysUnholyKick
         {
             get
             {
-                var isCheckHotkeysFrostKick = ConfigFile.ReadValue("DkFrost", "isCheckHotkeysFrostKick").Trim();
+                var isCheckHotkeysUnholyKick = ConfigFile.ReadValue("DkUnholy", "isCheckHotkeysUnholyKick").Trim();
 
-                if (isCheckHotkeysFrostKick != "")
+                if (isCheckHotkeysUnholyKick != "")
                 {
-                    return Convert.ToBoolean(isCheckHotkeysFrostKick);
+                    return Convert.ToBoolean(isCheckHotkeysUnholyKick);
                 }
 
                 return true;
             }
-            set { ConfigFile.WriteValue("DkFrost", "isCheckHotkeysFrostKick", value.ToString()); }
+            set { ConfigFile.WriteValue("DkUnholy", "isCheckHotkeysUnholyKick", value.ToString()); }
         }
 
-        public static int FrostKickPercent
+        public static int UnholyKickPercent
         {
             get
             {
-                var FrostKickPercent = ConfigFile.ReadValue("DKFrost", "FrostKickPercent").Trim();
-                if (FrostKickPercent != "")
+                var UnholyKickPercent = ConfigFile.ReadValue("DKUnholy", "UnholyKickPercent").Trim();
+                if (UnholyKickPercent != "")
                 {
-                    return Convert.ToInt32(FrostKickPercent);
+                    return Convert.ToInt32(UnholyKickPercent);
                 }
 
                 return -1;
             }
-            set { ConfigFile.WriteValue("DkFrost", "FrostKickPercent", value.ToString()); }
+            set { ConfigFile.WriteValue("DkUnholy", "UnholyKickPercent", value.ToString()); }
         }
 		
-        public static bool isCheckHotkeysFrostFreeDeathstrike
+        public static bool isCheckHotkeysUnholyFreeDeathstrike
         {
             get
             {
-                var isCheckHotkeysFrostFreeDeathstrike = ConfigFile.ReadValue("DkFrost", "isCheckHotkeysFrostFreeDeathstrike").Trim();
+                var isCheckHotkeysUnholyFreeDeathstrike = ConfigFile.ReadValue("DkUnholy", "isCheckHotkeysUnholyFreeDeathstrike").Trim();
 
-                if (isCheckHotkeysFrostFreeDeathstrike != "")
+                if (isCheckHotkeysUnholyFreeDeathstrike != "")
                 {
-                    return Convert.ToBoolean(isCheckHotkeysFrostFreeDeathstrike);
+                    return Convert.ToBoolean(isCheckHotkeysUnholyFreeDeathstrike);
                 }
 
                 return true;
             }
-            set { ConfigFile.WriteValue("DkFrost", "isCheckHotkeysFrostFreeDeathstrike", value.ToString()); }
+            set { ConfigFile.WriteValue("DkUnholy", "isCheckHotkeysUnholyFreeDeathstrike", value.ToString()); }
         }
 
-        public static int FrostFreeDeathstrikeHPPercent
+        public static int UnholyFreeDeathstrikeHPPercent
         {
             get
             {
-                var FrostFreeDeathstrikeHPPercent = ConfigFile.ReadValue("DKFrost", "FrostFreeDeathstrikeHPPercent").Trim();
-                if (FrostFreeDeathstrikeHPPercent != "")
+                var UnholyFreeDeathstrikeHPPercent = ConfigFile.ReadValue("DKUnholy", "UnholyFreeDeathstrikeHPPercent").Trim();
+                if (UnholyFreeDeathstrikeHPPercent != "")
                 {
-                    return Convert.ToInt32(FrostFreeDeathstrikeHPPercent);
+                    return Convert.ToInt32(UnholyFreeDeathstrikeHPPercent);
                 }
 
                 return -1;
             }
-            set { ConfigFile.WriteValue("DkFrost", "FrostFreeDeathstrikeHPPercent", value.ToString()); }
+            set { ConfigFile.WriteValue("DkUnholy", "UnholyFreeDeathstrikeHPPercent", value.ToString()); }
         }
 		
 		
@@ -322,7 +324,7 @@ namespace CloudMagic.Rotation
 
         public override void Initialize()
         {
-            Log.Write("Welcome to the Unholy DK v1.4 by smartie", Color.Green);
+            Log.Write("Welcome to the Unholy DK v1.6 by smartie", Color.Green);
 	        Log.Write("All Talents supported and auto detected", Color.Green);		
             SettingsFormDFF = new SettingsFormDFF();
             SettingsForm = SettingsFormDFF;
@@ -331,12 +333,12 @@ namespace CloudMagic.Rotation
 
             SettingsFormDFF.checkHotkeysUnholyOffensiveApocalypse.Checked = isCheckHotkeysUnholyOffensiveApocalypse;
             SettingsFormDFF.checkHotkeysUnholyOffensiveSummonGargoyle.Checked = isCheckHotkeysUnholyOffensiveSummonGargoyle;
-            SettingsFormDFF.checkHotkeysFrostDeathstrike.Checked = isCheckHotkeysFrostDeathstrike;
-            SettingsFormDFF.checkHotkeysFrostDeathstrikePercent.Text = FrostDeathstrikeHPPercent.ToString();
-            SettingsFormDFF.checkHotkeysFrostFreeDeathstrike.Checked = isCheckHotkeysFrostFreeDeathstrike;
-            SettingsFormDFF.checkHotkeysFrostFreeDeathstrikePercent.Text = FrostFreeDeathstrikeHPPercent.ToString();
-            SettingsFormDFF.checkHotkeysFrostKick.Checked = isCheckHotkeysFrostKick;
-            SettingsFormDFF.checkHotkeysFrostKickPercent.Text = FrostKickPercent.ToString();
+            SettingsFormDFF.checkHotkeysUnholyDeathstrike.Checked = isCheckHotkeysUnholyDeathstrike;
+            SettingsFormDFF.checkHotkeysUnholyDeathstrikePercent.Text = UnholyDeathstrikeHPPercent.ToString();
+            SettingsFormDFF.checkHotkeysUnholyFreeDeathstrike.Checked = isCheckHotkeysUnholyFreeDeathstrike;
+            SettingsFormDFF.checkHotkeysUnholyFreeDeathstrikePercent.Text = UnholyFreeDeathstrikeHPPercent.ToString();
+            SettingsFormDFF.checkHotkeysUnholyKick.Checked = isCheckHotkeysUnholyKick;
+            SettingsFormDFF.checkHotkeysUnholyKickPercent.Text = UnholyKickPercent.ToString();
             SettingsFormDFF.checkHotkeysUnholyAntiMagicShield.Checked = isCheckHotkeysUnholyAntiMagicShield;
             SettingsFormDFF.checkHotkeysUnholyIceboundFortitude.Checked = isCheckHotkeysUnholyIceboundFortitude;
             SettingsFormDFF.checkHotkeyslegyshoulder.Checked = isCheckHotkeyslegyshoulder;
@@ -347,12 +349,12 @@ namespace CloudMagic.Rotation
             SettingsFormDFF.checkHotkeysUnholyIceboundFortitude.CheckedChanged += isCheckHotkeysUnholyIceboundFortitude_Click;
             SettingsFormDFF.checkHotkeyslegyshoulder.CheckedChanged += isCheckHotkeyslegyshoulder_Click;
             SettingsFormDFF.checkHotkeyslegytrinket.CheckedChanged += isCheckHotkeyslegytrinket_Click;
-            SettingsFormDFF.checkHotkeysFrostDeathstrike.CheckedChanged += isCheckHotkeysFrostDeathstrike_Click;
-            SettingsFormDFF.checkHotkeysFrostDeathstrikePercent.TextChanged += isCheckHotkeysFrostDeathstrikePercent_Click;
-            SettingsFormDFF.checkHotkeysFrostFreeDeathstrike.CheckedChanged += isCheckHotkeysFrostFreeDeathstrike_Click;
-            SettingsFormDFF.checkHotkeysFrostFreeDeathstrikePercent.TextChanged += isCheckHotkeysFrostFreeDeathstrikePercent_Click;
-            SettingsFormDFF.checkHotkeysFrostKick.CheckedChanged += isCheckHotkeysFrostKick_Click;
-            SettingsFormDFF.checkHotkeysFrostKickPercent.TextChanged += isCheckHotkeysFrostKickPercent_Click;
+            SettingsFormDFF.checkHotkeysUnholyDeathstrike.CheckedChanged += isCheckHotkeysUnholyDeathstrike_Click;
+            SettingsFormDFF.checkHotkeysUnholyDeathstrikePercent.TextChanged += isCheckHotkeysUnholyDeathstrikePercent_Click;
+            SettingsFormDFF.checkHotkeysUnholyFreeDeathstrike.CheckedChanged += isCheckHotkeysUnholyFreeDeathstrike_Click;
+            SettingsFormDFF.checkHotkeysUnholyFreeDeathstrikePercent.TextChanged += isCheckHotkeysUnholyFreeDeathstrikePercent_Click;
+            SettingsFormDFF.checkHotkeysUnholyKick.CheckedChanged += isCheckHotkeysUnholyKick_Click;
+            SettingsFormDFF.checkHotkeysUnholyKickPercent.TextChanged += isCheckHotkeysUnholyKickPercent_Click;
             SettingsFormDFF.checkHotkeysUnholyIFPercent.TextChanged += isCheckHotkeysUnholyIFPercent_Click;
             SettingsFormDFF.checkHotkeysUnholyAntiMagicShield.CheckedChanged += isCheckHotkeysUnholyAntiMagicShield_Click;
             SettingsFormDFF.checkHotkeysUnholyAMSPercent.TextChanged += isCheckHotkeysUnholyAMSPercent_Click;
@@ -404,59 +406,59 @@ namespace CloudMagic.Rotation
         }
 
 		
-        private void isCheckHotkeysFrostDeathstrike_Click(object sender, EventArgs e)
+        private void isCheckHotkeysUnholyDeathstrike_Click(object sender, EventArgs e)
         {
-            isCheckHotkeysFrostDeathstrike = SettingsFormDFF.checkHotkeysFrostDeathstrike.Checked;
+            isCheckHotkeysUnholyDeathstrike = SettingsFormDFF.checkHotkeysUnholyDeathstrike.Checked;
         }
 		
-        private void isCheckHotkeysFrostDeathstrikePercent_Click(object sender, EventArgs e)
+        private void isCheckHotkeysUnholyDeathstrikePercent_Click(object sender, EventArgs e)
         {
             int userVal;
-            if (int.TryParse(SettingsFormDFF.checkHotkeysFrostDeathstrikePercent.Text, out userVal) && userVal >= 0 && userVal <= 100)
+            if (int.TryParse(SettingsFormDFF.checkHotkeysUnholyDeathstrikePercent.Text, out userVal) && userVal >= 0 && userVal <= 100)
             {
-                FrostDeathstrikeHPPercent = userVal;
+                UnholyDeathstrikeHPPercent = userVal;
             }
             else
             {
-                SettingsFormDFF.checkHotkeysFrostDeathstrikePercent.Text = "";
+                SettingsFormDFF.checkHotkeysUnholyDeathstrikePercent.Text = "";
                 Log.Write("Enter a number between 0 and 100 in the text box", Color.DarkRed);
             }
         }
 		
-        private void isCheckHotkeysFrostFreeDeathstrike_Click(object sender, EventArgs e)
+        private void isCheckHotkeysUnholyFreeDeathstrike_Click(object sender, EventArgs e)
         {
-            isCheckHotkeysFrostFreeDeathstrike = SettingsFormDFF.checkHotkeysFrostFreeDeathstrike.Checked;
+            isCheckHotkeysUnholyFreeDeathstrike = SettingsFormDFF.checkHotkeysUnholyFreeDeathstrike.Checked;
         }
 		
-        private void isCheckHotkeysFrostFreeDeathstrikePercent_Click(object sender, EventArgs e)
+        private void isCheckHotkeysUnholyFreeDeathstrikePercent_Click(object sender, EventArgs e)
         {
             int userVal;
-            if (int.TryParse(SettingsFormDFF.checkHotkeysFrostFreeDeathstrikePercent.Text, out userVal) && userVal >= 0 && userVal <= 100)
+            if (int.TryParse(SettingsFormDFF.checkHotkeysUnholyFreeDeathstrikePercent.Text, out userVal) && userVal >= 0 && userVal <= 100)
             {
-                FrostFreeDeathstrikeHPPercent = userVal;
+                UnholyFreeDeathstrikeHPPercent = userVal;
             }
             else
             {
-                SettingsFormDFF.checkHotkeysFrostFreeDeathstrikePercent.Text = "";
+                SettingsFormDFF.checkHotkeysUnholyFreeDeathstrikePercent.Text = "";
                 Log.Write("Enter a number between 0 and 100 in the text box", Color.DarkRed);
             }
         }
 		
-        private void isCheckHotkeysFrostKick_Click(object sender, EventArgs e)
+        private void isCheckHotkeysUnholyKick_Click(object sender, EventArgs e)
         {
-            isCheckHotkeysFrostKick = SettingsFormDFF.checkHotkeysFrostKick.Checked;
+            isCheckHotkeysUnholyKick = SettingsFormDFF.checkHotkeysUnholyKick.Checked;
         }
 		
-        private void isCheckHotkeysFrostKickPercent_Click(object sender, EventArgs e)
+        private void isCheckHotkeysUnholyKickPercent_Click(object sender, EventArgs e)
         {
             int userVal;
-            if (int.TryParse(SettingsFormDFF.checkHotkeysFrostKickPercent.Text, out userVal) && userVal >= 0 && userVal <= 100)
+            if (int.TryParse(SettingsFormDFF.checkHotkeysUnholyKickPercent.Text, out userVal) && userVal >= 0 && userVal <= 100)
             {
-                FrostKickPercent = userVal;
+                UnholyKickPercent = userVal;
             }
             else
             {
-                SettingsFormDFF.checkHotkeysFrostKickPercent.Text = "";
+                SettingsFormDFF.checkHotkeysUnholyKickPercent.Text = "";
                 Log.Write("Enter a number between 0 and 100 in the text box", Color.DarkRed);
             }
         }
@@ -541,22 +543,26 @@ namespace CloudMagic.Rotation
 					WoW.CastSpell("Raise Dead") ;
 					return;
 				}
-				if (WoW.CanCast("Death Coil", false, false, true, false, false) && isCheckHotkeysFrostFreeDeathstrike && WoW.HealthPercent <= FrostFreeDeathstrikeHPPercent && WoW.PlayerHasBuff("Free DeathStrike"))
+				if (WoW.CanCast("Death Coil", false, false, true, false, false) && isCheckHotkeysUnholyFreeDeathstrike && WoW.HealthPercent <= UnholyFreeDeathstrikeHPPercent && WoW.PlayerHasBuff("Free DeathStrike"))
 				{
 					WoW.CastSpell("Death Strike");
 					return;
 				}
-				if (WoW.CanCast("Death Coil", false, false, true, false, false) && isCheckHotkeysFrostDeathstrike && WoW.HealthPercent <= FrostDeathstrikeHPPercent && WoW.RunicPower >=45)
+				if (WoW.CanCast("Death Coil", false, false, true, false, false) && isCheckHotkeysUnholyDeathstrike && WoW.HealthPercent <= UnholyDeathstrikeHPPercent && WoW.RunicPower >=45)
 				{
 					WoW.CastSpell("Death Strike");
 					return;
 				}
-                if (WoW.CanCast("Mind Freeze") && isCheckHotkeysFrostKick && WoW.TargetIsCastingAndSpellIsInterruptible && WoW.TargetPercentCast >= FrostKickPercent && !WoW.IsSpellOnCooldown("Mind Freeze") && !WoW.PlayerIsChanneling)
+                if (WoW.CanCast("Mind Freeze") && isCheckHotkeysUnholyKick && WoW.TargetIsCastingAndSpellIsInterruptible && WoW.TargetPercentCast >= UnholyKickPercent && !WoW.IsSpellOnCooldown("Mind Freeze") && !WoW.PlayerIsChanneling)
                 {
                     WoW.CastSpell("Mind Freeze");						
                     return;
                 }
-
+                if (WoW.CanCast("Chains of Ice") && WoW.CurrentRunes >= 1 && WoW.PlayerHasBuff("Cold Heart") && WoW.PlayerBuffStacks("Cold Heart") == 20 )
+                {
+                    WoW.CastSpell("Chains of Ice");                        
+                    return;
+                }
 				if (combatRoutine.Type == RotationType.SingleTarget || combatRoutine.Type == RotationType.SingleTargetCleave) // Do Single Target Stuff here
 				{
 					if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat && WoW.TargetIsVisible && !WoW.IsMounted)
@@ -622,7 +628,7 @@ namespace CloudMagic.Rotation
 								WoW.CastSpell("Death Coil") ;
 								return;
 							}
-							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.RunicPower >=35 && WoW.RunicPower != 119 && WoW.SpellCooldownTimeRemaining("Dark Arbiter") >= 500 && WoW.PlayerHasBuff("Sudden Doom") && WoW.CurrentRunes >= 3)
+							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.RunicPower >=45 && WoW.RunicPower != 119 && WoW.SpellCooldownTimeRemaining("Dark Arbiter") >= 500 && WoW.PlayerHasBuff("Sudden Doom") && WoW.CurrentRunes >= 3)
 							{
 								WoW.CastSpell("Death Coil") ;
 								return;
@@ -632,12 +638,12 @@ namespace CloudMagic.Rotation
 								WoW.CastSpell("Death Coil") ;
 								return;
 							}
-							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("Necrosis") && WoW.CurrentRunes >= 3 && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("Necrosis") && WoW.CurrentRunes >= 3 && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 							{
 								WoW.CastSpell("Death Coil") ;
 								return;
 							}
-							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.SpellCooldownTimeRemaining("Dark Arbiter") >=10500 && WoW.RunicPower >=35)
+							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.SpellCooldownTimeRemaining("Dark Arbiter") >=10500 && WoW.RunicPower >=45)
 							{
 								WoW.CastSpell("Death Coil") ;
 								return;
@@ -812,17 +818,17 @@ namespace CloudMagic.Rotation
 									WoW.CastSpell("Death Coil") ;
 									return;
 								}
-								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("Necrosis") && WoW.CurrentRunes <= 3 && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("Necrosis") && WoW.CurrentRunes <= 3 && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 								{
 									WoW.CastSpell("Death Coil") ;
 									return;
 								}
-								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 1 && WoW.Talent(7) != 1 && !WoW.PlayerHasBuff("Dark Transformation") && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 1 && WoW.Talent(7) != 1 && !WoW.PlayerHasBuff("Dark Transformation") && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 								{
 									WoW.CastSpell("Death Coil") ;
 									return;
 								}
-								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) != 1 && WoW.Talent(7) != 1 && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) != 1 && WoW.Talent(7) != 1 && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 								{
 									WoW.CastSpell("Death Coil") ;
 									return;
@@ -910,17 +916,17 @@ namespace CloudMagic.Rotation
 									WoW.CastSpell("Death Coil") ;
 									return;
 								}
-								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("Necrosis") && WoW.CurrentRunes <= 3 && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("Necrosis") && WoW.CurrentRunes <= 3 && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 								{
 									WoW.CastSpell("Death Coil") ;
 									return;
 								}
-								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 1 && WoW.Talent(7) != 1 && !WoW.PlayerHasBuff("Dark Transformation") && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 1 && WoW.Talent(7) != 1 && !WoW.PlayerHasBuff("Dark Transformation") && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 								{
 									WoW.CastSpell("Death Coil") ;
 									return;
 								}
-								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) != 1 && WoW.Talent(7) != 1 && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) != 1 && WoW.Talent(7) != 1 && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 								{
 									WoW.CastSpell("Death Coil") ;
 									return;
@@ -988,17 +994,17 @@ namespace CloudMagic.Rotation
 								WoW.CastSpell("Death Coil") ;
 								return;
 							}
-							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Defile") && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("Necrosis") && WoW.CurrentRunes <= 3 && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Defile") && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("Necrosis") && WoW.CurrentRunes <= 3 && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 							{
 								WoW.CastSpell("Death Coil") ;
 								return;
 							}					
-							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Defile") && WoW.Talent(6) == 1 && !WoW.PlayerHasBuff("Dark Transformation") && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Defile") && WoW.Talent(6) == 1 && !WoW.PlayerHasBuff("Dark Transformation") && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 							{
 								WoW.CastSpell("Death Coil") ;
 								return;
 							}
-							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Defile") && WoW.Talent(6) != 1 && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Defile") && WoW.Talent(6) != 1 && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 							{
 								WoW.CastSpell("Death Coil") ;
 								return;
@@ -1068,7 +1074,7 @@ namespace CloudMagic.Rotation
 								WoW.CastSpell("Defile") ;
 								return;
 							}
-							if (WoW.CanCast("Defile") && WoW.TargetHasDebuff("Virulent Plague") && WoW.CurrentRunes <= 1 && (WoW.RunicPower >=35 || WoW.PlayerHasBuff("Sudden Doom")))
+							if (WoW.CanCast("Defile") && WoW.TargetHasDebuff("Virulent Plague") && WoW.CurrentRunes <= 1 && (WoW.RunicPower >=45 || WoW.PlayerHasBuff("Sudden Doom")))
 							{
 								WoW.CastSpell("Death Coil") ;
 								return;
@@ -1151,7 +1157,7 @@ namespace CloudMagic.Rotation
 								WoW.CastSpell("Death Coil") ;
 								return;
 							}
-							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Death and Decay") && WoW.RunicPower >=35 && WoW.RunicPower != 119 && WoW.SpellCooldownTimeRemaining("Dark Arbiter") >= 500 && WoW.PlayerHasBuff("Sudden Doom") && WoW.CurrentRunes >= 3)
+							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Death and Decay") && WoW.RunicPower >=45 && WoW.RunicPower != 119 && WoW.SpellCooldownTimeRemaining("Dark Arbiter") >= 500 && WoW.PlayerHasBuff("Sudden Doom") && WoW.CurrentRunes >= 3)
 							{
 								WoW.CastSpell("Death Coil") ;
 								return;
@@ -1161,12 +1167,12 @@ namespace CloudMagic.Rotation
 								WoW.CastSpell("Death Coil") ;
 								return;
 							}
-							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Death and Decay") && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("Necrosis") && WoW.CurrentRunes >= 3 && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Death and Decay") && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("Necrosis") && WoW.CurrentRunes >= 3 && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 							{
 								WoW.CastSpell("Death Coil") ;
 								return;
 							}
-							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Death and Decay") && WoW.SpellCooldownTimeRemaining("Dark Arbiter") >=10500 && WoW.RunicPower >=35)
+							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Death and Decay") && WoW.SpellCooldownTimeRemaining("Dark Arbiter") >=10500 && WoW.RunicPower >=45)
 							{
 								WoW.CastSpell("Death Coil") ;
 								return;
@@ -1266,7 +1272,7 @@ namespace CloudMagic.Rotation
 								WoW.CastSpell("Clawing Shadows") ;
 								return;
 							}
-							if (WoW.CanCast("Death and Decay") && WoW.TargetHasDebuff("Virulent Plague") && WoW.CurrentRunes <= 1 && (WoW.RunicPower >=35 || WoW.PlayerHasBuff("Sudden Doom")))
+							if (WoW.CanCast("Death and Decay") && WoW.TargetHasDebuff("Virulent Plague") && WoW.CurrentRunes <= 1 && (WoW.RunicPower >=45 || WoW.PlayerHasBuff("Sudden Doom")))
 							{
 								WoW.CastSpell("Death Coil") ;
 								return;
@@ -1371,17 +1377,17 @@ namespace CloudMagic.Rotation
 									WoW.CastSpell("Death Coil") ;
 									return;
 								}
-								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("Necrosis") && WoW.CurrentRunes <= 3 && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("Necrosis") && WoW.CurrentRunes <= 3 && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 								{
 									WoW.CastSpell("Death Coil") ;
 									return;
 								}
-								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 1 && WoW.Talent(7) != 1 && !WoW.PlayerHasBuff("Dark Transformation") && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 1 && WoW.Talent(7) != 1 && !WoW.PlayerHasBuff("Dark Transformation") && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 								{
 									WoW.CastSpell("Death Coil") ;
 									return;
 								}
-								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) != 1 && WoW.Talent(7) != 1 && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) != 1 && WoW.Talent(7) != 1 && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 								{
 									WoW.CastSpell("Death Coil") ;
 									return;
@@ -1469,17 +1475,17 @@ namespace CloudMagic.Rotation
 									WoW.CastSpell("Death Coil") ;
 									return;
 								}
-								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("Necrosis") && WoW.CurrentRunes <= 3 && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("Necrosis") && WoW.CurrentRunes <= 3 && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 								{
 									WoW.CastSpell("Death Coil") ;
 									return;
 								}
-								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 1 && WoW.Talent(7) != 1 && !WoW.PlayerHasBuff("Dark Transformation") && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) == 1 && WoW.Talent(7) != 1 && !WoW.PlayerHasBuff("Dark Transformation") && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 								{
 									WoW.CastSpell("Death Coil") ;
 									return;
 								}
-								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) != 1 && WoW.Talent(7) != 1 && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+								if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && WoW.Talent(6) != 1 && WoW.Talent(7) != 1 && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 								{
 									WoW.CastSpell("Death Coil") ;
 									return;
@@ -1552,17 +1558,17 @@ namespace CloudMagic.Rotation
 								WoW.CastSpell("Death Coil") ;
 								return;
 							}
-							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Defile") && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("Necrosis") && WoW.CurrentRunes <= 3 && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Defile") && WoW.Talent(6) == 2 && !WoW.PlayerHasBuff("Necrosis") && WoW.CurrentRunes <= 3 && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 							{
 								WoW.CastSpell("Death Coil") ;
 								return;
 							}					
-							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Defile") && WoW.Talent(6) == 1 && !WoW.PlayerHasBuff("Dark Transformation") && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Defile") && WoW.Talent(6) == 1 && !WoW.PlayerHasBuff("Dark Transformation") && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 							{
 								WoW.CastSpell("Death Coil") ;
 								return;
 							}
-							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Defile") && WoW.Talent(6) != 1 && WoW.RunicPower >=35 && WoW.RunicPower != 119)
+							if (WoW.CanCast("Death Coil") && WoW.TargetHasDebuff("Virulent Plague") && !WoW.CanCast("Defile") && WoW.Talent(6) != 1 && WoW.RunicPower >=45 && WoW.RunicPower != 119)
 							{
 								WoW.CastSpell("Death Coil") ;
 								return;
@@ -1627,7 +1633,7 @@ namespace CloudMagic.Rotation
 								WoW.CastSpell("Clawing Shadows") ;
 								return;
 							}										
-							if (WoW.CanCast("Defile") && WoW.TargetHasDebuff("Virulent Plague") && WoW.CurrentRunes <= 1 && (WoW.RunicPower >=35 || WoW.PlayerHasBuff("Sudden Doom")))
+							if (WoW.CanCast("Defile") && WoW.TargetHasDebuff("Virulent Plague") && WoW.CurrentRunes <= 1 && (WoW.RunicPower >=45 || WoW.PlayerHasBuff("Sudden Doom")))
 							{
 								WoW.CastSpell("Death Coil") ;
 								return;
@@ -1670,15 +1676,15 @@ namespace CloudMagic.Rotation
         public Button btnaddspell;
         public Button btnHotkeysUnholyOffensiveCooldowns;
         public Button btnremovespell;
-		public CheckBox checkHotkeysFrostDeathstrike;
-        public TextBox checkHotkeysFrostDeathstrikePercent;
-        public Label checkHotkeysFrostDeathstrikePercentLabel;
-        public CheckBox checkHotkeysFrostFreeDeathstrike;
-        public TextBox checkHotkeysFrostFreeDeathstrikePercent;
-        public Label checkHotkeysFrostFreeDeathstrikePercentLabel;
-        public CheckBox checkHotkeysFrostKick;
-        public TextBox checkHotkeysFrostKickPercent;
-        public Label checkHotkeysFrostKickPercentLabel;
+		public CheckBox checkHotkeysUnholyDeathstrike;
+        public TextBox checkHotkeysUnholyDeathstrikePercent;
+        public Label checkHotkeysUnholyDeathstrikePercentLabel;
+        public CheckBox checkHotkeysUnholyFreeDeathstrike;
+        public TextBox checkHotkeysUnholyFreeDeathstrikePercent;
+        public Label checkHotkeysUnholyFreeDeathstrikePercentLabel;
+        public CheckBox checkHotkeysUnholyKick;
+        public TextBox checkHotkeysUnholyKickPercent;
+        public Label checkHotkeysUnholyKickPercentLabel;
         public TextBox checkHotkeysUnholyAMSPercent;
         private readonly Label checkHotkeysUnholyAMSPercentLabel;
         public CheckBox checkHotkeysUnholyAntiMagicShield;
@@ -1722,15 +1728,15 @@ namespace CloudMagic.Rotation
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
             this.groupBox22 = new System.Windows.Forms.GroupBox();
-            this.checkHotkeysFrostDeathstrike = new System.Windows.Forms.CheckBox();
-            this.checkHotkeysFrostDeathstrikePercent = new System.Windows.Forms.TextBox();
-            this.checkHotkeysFrostDeathstrikePercentLabel = new System.Windows.Forms.Label();
-            this.checkHotkeysFrostFreeDeathstrike = new System.Windows.Forms.CheckBox();
-            this.checkHotkeysFrostFreeDeathstrikePercent = new System.Windows.Forms.TextBox();
-            this.checkHotkeysFrostFreeDeathstrikePercentLabel = new System.Windows.Forms.Label();
-            this.checkHotkeysFrostKick = new System.Windows.Forms.CheckBox();
-            this.checkHotkeysFrostKickPercent = new System.Windows.Forms.TextBox();
-            this.checkHotkeysFrostKickPercentLabel = new System.Windows.Forms.Label();
+            this.checkHotkeysUnholyDeathstrike = new System.Windows.Forms.CheckBox();
+            this.checkHotkeysUnholyDeathstrikePercent = new System.Windows.Forms.TextBox();
+            this.checkHotkeysUnholyDeathstrikePercentLabel = new System.Windows.Forms.Label();
+            this.checkHotkeysUnholyFreeDeathstrike = new System.Windows.Forms.CheckBox();
+            this.checkHotkeysUnholyFreeDeathstrikePercent = new System.Windows.Forms.TextBox();
+            this.checkHotkeysUnholyFreeDeathstrikePercentLabel = new System.Windows.Forms.Label();
+            this.checkHotkeysUnholyKick = new System.Windows.Forms.CheckBox();
+            this.checkHotkeysUnholyKickPercent = new System.Windows.Forms.TextBox();
+            this.checkHotkeysUnholyKickPercentLabel = new System.Windows.Forms.Label();
             this.checkHotkeysUnholyIceboundFortitude = new System.Windows.Forms.CheckBox();
             this.checkHotkeyslegyshoulder = new System.Windows.Forms.CheckBox();
             this.checkHotkeyslegytrinket = new System.Windows.Forms.CheckBox();
@@ -1818,15 +1824,15 @@ namespace CloudMagic.Rotation
             // 
             // groupBox12
             // 
-            this.groupBox12.Controls.Add(this.checkHotkeysFrostDeathstrike);
-            this.groupBox12.Controls.Add(this.checkHotkeysFrostDeathstrikePercent);
-            this.groupBox12.Controls.Add(this.checkHotkeysFrostDeathstrikePercentLabel);
-            this.groupBox12.Controls.Add(this.checkHotkeysFrostFreeDeathstrike);
-            this.groupBox12.Controls.Add(this.checkHotkeysFrostFreeDeathstrikePercent);
-            this.groupBox12.Controls.Add(this.checkHotkeysFrostFreeDeathstrikePercentLabel);
-            this.groupBox12.Controls.Add(this.checkHotkeysFrostKick);
-            this.groupBox12.Controls.Add(this.checkHotkeysFrostKickPercent);
-            this.groupBox12.Controls.Add(this.checkHotkeysFrostKickPercentLabel);
+            this.groupBox12.Controls.Add(this.checkHotkeysUnholyDeathstrike);
+            this.groupBox12.Controls.Add(this.checkHotkeysUnholyDeathstrikePercent);
+            this.groupBox12.Controls.Add(this.checkHotkeysUnholyDeathstrikePercentLabel);
+            this.groupBox12.Controls.Add(this.checkHotkeysUnholyFreeDeathstrike);
+            this.groupBox12.Controls.Add(this.checkHotkeysUnholyFreeDeathstrikePercent);
+            this.groupBox12.Controls.Add(this.checkHotkeysUnholyFreeDeathstrikePercentLabel);
+            this.groupBox12.Controls.Add(this.checkHotkeysUnholyKick);
+            this.groupBox12.Controls.Add(this.checkHotkeysUnholyKickPercent);
+            this.groupBox12.Controls.Add(this.checkHotkeysUnholyKickPercentLabel);
             this.groupBox12.Controls.Add(this.checkHotkeysUnholyIceboundFortitude);
             this.groupBox12.Controls.Add(this.checkHotkeysUnholyIFPercent);
             this.groupBox12.Controls.Add(this.checkHotkeysUnholyIFPercentLabel);
@@ -1898,91 +1904,91 @@ namespace CloudMagic.Rotation
             this.checkHotkeysUnholyAMSPercentLabel.TabIndex = 9;
             this.checkHotkeysUnholyAMSPercentLabel.Text = "% HP";
            // 
-            // checkHotkeysFrostDeathstrike
+            // checkHotkeysUnholyDeathstrike
             // 
-            this.checkHotkeysFrostDeathstrike.AutoSize = true;
-            this.checkHotkeysFrostDeathstrike.Location = new System.Drawing.Point(151, 72);
-            this.checkHotkeysFrostDeathstrike.Name = "checkHotkeysFrostDeathstrike";
-            this.checkHotkeysFrostDeathstrike.Size = new System.Drawing.Size(100, 28);
-            this.checkHotkeysFrostDeathstrike.TabIndex = 9;
-            this.checkHotkeysFrostDeathstrike.Text = "Deathstrike";
-            this.checkHotkeysFrostDeathstrike.UseVisualStyleBackColor = true;
+            this.checkHotkeysUnholyDeathstrike.AutoSize = true;
+            this.checkHotkeysUnholyDeathstrike.Location = new System.Drawing.Point(151, 72);
+            this.checkHotkeysUnholyDeathstrike.Name = "checkHotkeysUnholyDeathstrike";
+            this.checkHotkeysUnholyDeathstrike.Size = new System.Drawing.Size(100, 28);
+            this.checkHotkeysUnholyDeathstrike.TabIndex = 9;
+            this.checkHotkeysUnholyDeathstrike.Text = "Deathstrike";
+            this.checkHotkeysUnholyDeathstrike.UseVisualStyleBackColor = true;
             // 
-            // checkHotkeysFrostDeathstrikePercent
+            // checkHotkeysUnholyDeathstrikePercent
             // 
-            this.checkHotkeysFrostDeathstrikePercent.AutoSize = true;
-            this.checkHotkeysFrostDeathstrikePercent.Location = new System.Drawing.Point(300, 72);
-            this.checkHotkeysFrostDeathstrikePercent.Name = "checkHotkeysFrostDeathstrikePercent";
-            this.checkHotkeysFrostDeathstrikePercent.Size = new System.Drawing.Size(20, 28);
-            this.checkHotkeysFrostDeathstrikePercent.TabIndex = 9;
-            this.checkHotkeysFrostDeathstrikePercent.Text = "50";
+            this.checkHotkeysUnholyDeathstrikePercent.AutoSize = true;
+            this.checkHotkeysUnholyDeathstrikePercent.Location = new System.Drawing.Point(300, 72);
+            this.checkHotkeysUnholyDeathstrikePercent.Name = "checkHotkeysUnholyDeathstrikePercent";
+            this.checkHotkeysUnholyDeathstrikePercent.Size = new System.Drawing.Size(20, 28);
+            this.checkHotkeysUnholyDeathstrikePercent.TabIndex = 9;
+            this.checkHotkeysUnholyDeathstrikePercent.Text = "50";
             // 
-            // checkHotkeysFrostDeathstrikeLabel
+            // checkHotkeysUnholyDeathstrikeLabel
             // 
-            this.checkHotkeysFrostDeathstrikePercentLabel.AutoSize = true;
-            this.checkHotkeysFrostDeathstrikePercentLabel.Location = new System.Drawing.Point(321, 74);
-            this.checkHotkeysFrostDeathstrikePercentLabel.Name = "checkHotkeysFrostDeathstrikePercentLabel";
-            this.checkHotkeysFrostDeathstrikePercentLabel.Size = new System.Drawing.Size(20, 28);
-            this.checkHotkeysFrostDeathstrikePercentLabel.TabIndex = 9;
-            this.checkHotkeysFrostDeathstrikePercentLabel.Text = "% HP";
+            this.checkHotkeysUnholyDeathstrikePercentLabel.AutoSize = true;
+            this.checkHotkeysUnholyDeathstrikePercentLabel.Location = new System.Drawing.Point(321, 74);
+            this.checkHotkeysUnholyDeathstrikePercentLabel.Name = "checkHotkeysUnholyDeathstrikePercentLabel";
+            this.checkHotkeysUnholyDeathstrikePercentLabel.Size = new System.Drawing.Size(20, 28);
+            this.checkHotkeysUnholyDeathstrikePercentLabel.TabIndex = 9;
+            this.checkHotkeysUnholyDeathstrikePercentLabel.Text = "% HP";
 			
             // 
-            // checkHotkeysFrostFreeDeathstrike
+            // checkHotkeysUnholyFreeDeathstrike
             // 
-            this.checkHotkeysFrostFreeDeathstrike.AutoSize = true;
-            this.checkHotkeysFrostFreeDeathstrike.Location = new System.Drawing.Point(151, 94);
-            this.checkHotkeysFrostFreeDeathstrike.Name = "checkHotkeysFrostFreeDeathstrike";
-            this.checkHotkeysFrostFreeDeathstrike.Size = new System.Drawing.Size(100, 28);
-            this.checkHotkeysFrostFreeDeathstrike.TabIndex = 9;
-            this.checkHotkeysFrostFreeDeathstrike.Text = "Free Deathstrike";
-            this.checkHotkeysFrostFreeDeathstrike.UseVisualStyleBackColor = true;
+            this.checkHotkeysUnholyFreeDeathstrike.AutoSize = true;
+            this.checkHotkeysUnholyFreeDeathstrike.Location = new System.Drawing.Point(151, 94);
+            this.checkHotkeysUnholyFreeDeathstrike.Name = "checkHotkeysUnholyFreeDeathstrike";
+            this.checkHotkeysUnholyFreeDeathstrike.Size = new System.Drawing.Size(100, 28);
+            this.checkHotkeysUnholyFreeDeathstrike.TabIndex = 9;
+            this.checkHotkeysUnholyFreeDeathstrike.Text = "Free Deathstrike";
+            this.checkHotkeysUnholyFreeDeathstrike.UseVisualStyleBackColor = true;
             // 
-            // checkHotkeysFrostFreeDeathstrikePercent
+            // checkHotkeysUnholyFreeDeathstrikePercent
             // 
-            this.checkHotkeysFrostFreeDeathstrikePercent.AutoSize = true;
-            this.checkHotkeysFrostFreeDeathstrikePercent.Location = new System.Drawing.Point(300, 94);
-            this.checkHotkeysFrostFreeDeathstrikePercent.Name = "checkHotkeysFrostFreeDeathstrikePercent";
-            this.checkHotkeysFrostFreeDeathstrikePercent.Size = new System.Drawing.Size(20, 28);
-            this.checkHotkeysFrostFreeDeathstrikePercent.TabIndex = 9;
-            this.checkHotkeysFrostFreeDeathstrikePercent.Text = "50";
+            this.checkHotkeysUnholyFreeDeathstrikePercent.AutoSize = true;
+            this.checkHotkeysUnholyFreeDeathstrikePercent.Location = new System.Drawing.Point(300, 94);
+            this.checkHotkeysUnholyFreeDeathstrikePercent.Name = "checkHotkeysUnholyFreeDeathstrikePercent";
+            this.checkHotkeysUnholyFreeDeathstrikePercent.Size = new System.Drawing.Size(20, 28);
+            this.checkHotkeysUnholyFreeDeathstrikePercent.TabIndex = 9;
+            this.checkHotkeysUnholyFreeDeathstrikePercent.Text = "50";
             // 
-            // checkHotkeysFrostFreeDeathstrikeLabel
+            // checkHotkeysUnholyFreeDeathstrikeLabel
             // 
-            this.checkHotkeysFrostFreeDeathstrikePercentLabel.AutoSize = true;
-            this.checkHotkeysFrostFreeDeathstrikePercentLabel.Location = new System.Drawing.Point(321, 96);
-            this.checkHotkeysFrostFreeDeathstrikePercentLabel.Name = "checkHotkeysFrostFreeDeathstrikePercentLabel";
-            this.checkHotkeysFrostFreeDeathstrikePercentLabel.Size = new System.Drawing.Size(20, 28);
-            this.checkHotkeysFrostFreeDeathstrikePercentLabel.TabIndex = 9;
-            this.checkHotkeysFrostFreeDeathstrikePercentLabel.Text = "% HP";
+            this.checkHotkeysUnholyFreeDeathstrikePercentLabel.AutoSize = true;
+            this.checkHotkeysUnholyFreeDeathstrikePercentLabel.Location = new System.Drawing.Point(321, 96);
+            this.checkHotkeysUnholyFreeDeathstrikePercentLabel.Name = "checkHotkeysUnholyFreeDeathstrikePercentLabel";
+            this.checkHotkeysUnholyFreeDeathstrikePercentLabel.Size = new System.Drawing.Size(20, 28);
+            this.checkHotkeysUnholyFreeDeathstrikePercentLabel.TabIndex = 9;
+            this.checkHotkeysUnholyFreeDeathstrikePercentLabel.Text = "% HP";
 			
             // 
-            // checkHotkeysFrostKick
+            // checkHotkeysUnholyKick
             // 
-            this.checkHotkeysFrostKick.AutoSize = true;
-            this.checkHotkeysFrostKick.Location = new System.Drawing.Point(151, 116);
-            this.checkHotkeysFrostKick.Name = "checkHotkeysFrostKick";
-            this.checkHotkeysFrostKick.Size = new System.Drawing.Size(100, 28);
-            this.checkHotkeysFrostKick.TabIndex = 9;
-            this.checkHotkeysFrostKick.Text = "Mind Freeze";
-            this.checkHotkeysFrostKick.UseVisualStyleBackColor = true;
+            this.checkHotkeysUnholyKick.AutoSize = true;
+            this.checkHotkeysUnholyKick.Location = new System.Drawing.Point(151, 116);
+            this.checkHotkeysUnholyKick.Name = "checkHotkeysUnholyKick";
+            this.checkHotkeysUnholyKick.Size = new System.Drawing.Size(100, 28);
+            this.checkHotkeysUnholyKick.TabIndex = 9;
+            this.checkHotkeysUnholyKick.Text = "Mind Freeze";
+            this.checkHotkeysUnholyKick.UseVisualStyleBackColor = true;
             // 
-            // checkHotkeysFrostKickPercent
+            // checkHotkeysUnholyKickPercent
             // 
-            this.checkHotkeysFrostKickPercent.AutoSize = true;
-            this.checkHotkeysFrostKickPercent.Location = new System.Drawing.Point(300, 116);
-            this.checkHotkeysFrostKickPercent.Name = "checkHotkeysFrostKickPercent";
-            this.checkHotkeysFrostKickPercent.Size = new System.Drawing.Size(20, 28);
-            this.checkHotkeysFrostKickPercent.TabIndex = 9;
-            this.checkHotkeysFrostKickPercent.Text = "50";
+            this.checkHotkeysUnholyKickPercent.AutoSize = true;
+            this.checkHotkeysUnholyKickPercent.Location = new System.Drawing.Point(300, 116);
+            this.checkHotkeysUnholyKickPercent.Name = "checkHotkeysUnholyKickPercent";
+            this.checkHotkeysUnholyKickPercent.Size = new System.Drawing.Size(20, 28);
+            this.checkHotkeysUnholyKickPercent.TabIndex = 9;
+            this.checkHotkeysUnholyKickPercent.Text = "50";
             // 
-            // checkHotkeysFrostKickLabel
+            // checkHotkeysUnholyKickLabel
             // 
-            this.checkHotkeysFrostKickPercentLabel.AutoSize = true;
-            this.checkHotkeysFrostKickPercentLabel.Location = new System.Drawing.Point(321, 118);
-            this.checkHotkeysFrostKickPercentLabel.Name = "checkHotkeysFrostKickPercentLabel";
-            this.checkHotkeysFrostKickPercentLabel.Size = new System.Drawing.Size(20, 28);
-            this.checkHotkeysFrostKickPercentLabel.TabIndex = 9;
-            this.checkHotkeysFrostKickPercentLabel.Text = "% of Cast";
+            this.checkHotkeysUnholyKickPercentLabel.AutoSize = true;
+            this.checkHotkeysUnholyKickPercentLabel.Location = new System.Drawing.Point(321, 118);
+            this.checkHotkeysUnholyKickPercentLabel.Name = "checkHotkeysUnholyKickPercentLabel";
+            this.checkHotkeysUnholyKickPercentLabel.Size = new System.Drawing.Size(20, 28);
+            this.checkHotkeysUnholyKickPercentLabel.TabIndex = 9;
+            this.checkHotkeysUnholyKickPercentLabel.Text = "% of Cast";
             // 
             // groupBox13
             // 
@@ -2088,7 +2094,7 @@ namespace CloudMagic.Rotation
 [AddonDetails.db]
 AddonAuthor=smartie
 AddonName=smartie
-WoWVersion=Legion - 70100
+WoWVersion=Legion - 70200
 [SpellBook.db]
 Spell,77575,Outbreak,D1
 Spell,63560,Dark Transformation,OemOpenBrackets
@@ -2111,6 +2117,7 @@ Spell,235991,KBW,T
 Spell,49998,Death Strike,NumPad1
 Spell,47528,Mind Freeze,NumPad4
 Spell,80483,Arcane Torrent,F3
+Spell,45524,Chains of Ice,F11
 Aura,101568,Free DeathStrike
 Aura,191587,Virulent Plague
 Aura,194310,Festering Wound
@@ -2122,5 +2129,6 @@ Aura,63560,Dark Transformation
 Aura,81340,Sudden Doom
 Aura,170761,Necrosis
 Aura,53365,Unholy Strength
+Aura,235599,Cold Heart
 Item,144259,KBW
 */
