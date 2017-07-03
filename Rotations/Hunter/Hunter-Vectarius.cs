@@ -1084,7 +1084,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         return;
                     }
 //kill_command
-					if (WoW.CanCast("Kill Command") && !WoW.IsSpellOnCooldown("Kill Command") && WoW.Level >= 10&& ((WoW.Focus >= 70-FocusRegen) || (WoW.PlayerHasBuff("Roar of the Seven Lions") && (WoW.Focus >= 59-FocusRegen))) && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD &&  WoW.IsSpellInRange("Cobra Shot"))
+					if (WoW.CanCast("Kill Command") && !WoW.IsSpellOnCooldown("Kill Command") && WoW.Level >= 10&& ((WoW.Focus >= 70-FocusRegen) || (WoW.PlayerHasBuff("Roar of the Seven Lions") && (WoW.Focus >= 59-FocusRegen)))  &&  WoW.IsSpellInRange("Cobra Shot"))
                     {
                         WoW.CastSpell("Kill Command");
                         return;
