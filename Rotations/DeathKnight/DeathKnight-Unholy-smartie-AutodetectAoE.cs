@@ -2113,7 +2113,7 @@ Spell,48707,Anti-Magic Shell,NumPad2
 Spell,48792,Icebound Fortitude,NumPad3
 Spell,46584,Raise Dead,NumPad5
 Spell,194918,Blighted Rune Weapon,NumPad6
-Spell,235991,KBW,T
+Spell,144259,KBW,T
 Spell,49998,Death Strike,NumPad1
 Spell,47528,Mind Freeze,NumPad4
 Spell,80483,Arcane Torrent,F3
