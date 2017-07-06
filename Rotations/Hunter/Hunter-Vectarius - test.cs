@@ -1054,23 +1054,7 @@ Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 1
                         WoW.CastSpell("A Murder of Crows");
                         return;
                     }
-					if (WoW.CanCast("Multi-Shot") && WoW.Level >= 50
-						&& (WoW.Focus >= 40 || (WoW.PlayerHasBuff("Roar of the Seven Lions") && WoW.Focus >= 34))
-						&& !WoW.PetHasBuff("Beast Cleave") 
-						&& WoW.IsSpellInRange("Multi-Shot"))
-                    {
-                        WoW.CastSpell("Multi-Shot");                        
-                        return;
-                    }
-                    if (WoW.CanCast("Multi-Shot") && WoW.Level >= 50
-						&& (WoW.Focus >= 40 || (WoW.PlayerHasBuff("Roar of the Seven Lions") && WoW.Focus >= 34)) 
-						&& WoW.PetHasBuff("Beast Cleave") 
-						&& WoW.PetBuffTimeRemaining("Beast Cleave") <= 70
-						&& WoW.IsSpellInRange("Multi-Shot"))
-                    {
-                        WoW.CastSpell("Multi-Shot");                        
-                        return;
-                    }					
+					
 //	stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14	
 					if (WoW.CanCast("Stampede") && WoW.Talent(7) == 1 && WoW.IsSpellInRange("Cobra Shot") && ((WoW.PlayerHasBuff("Bestial Wrath")) || (WoW.SpellCooldownTimeRemaining("Bestial Wrath") <=2))						
 						&& !WoW.PlayerHasBuff("AspectoftheTurtle")
@@ -1127,11 +1111,28 @@ Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 1
                         return;
                     }
 //kill_command
-					if (WoW.CanCast("Kill Command") && !WoW.IsSpellOnCooldown("Kill Command") && WoW.Level >= 10&& ((WoW.Focus >= 70-FocusRegen) || (WoW.PlayerHasBuff("Roar of the Seven Lions") && (WoW.Focus >= 59-FocusRegen))) && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD &&  WoW.IsSpellInRange("Cobra Shot"))
+					if (WoW.CanCast("Kill Command") && !WoW.IsSpellOnCooldown("Kill Command") && WoW.Level >= 10&& ((WoW.Focus >= 70-FocusRegen) || (WoW.PlayerHasBuff("Roar of the Seven Lions") && (WoW.Focus >= 59-FocusRegen)))  &&  WoW.IsSpellInRange("Cobra Shot"))
                     {
                         WoW.CastSpell("Kill Command");
                         return;
-                    }					
+                    }
+					if (WoW.CanCast("Multi-Shot") && WoW.Level >= 50
+						&& (WoW.Focus >= 40 || (WoW.PlayerHasBuff("Roar of the Seven Lions") && WoW.Focus >= 34))
+						&& !WoW.PetHasBuff("Beast Cleave") 
+						&& WoW.IsSpellInRange("Multi-Shot"))
+                    {
+                        WoW.CastSpell("Multi-Shot");                        
+                        return;
+                    }
+                    if (WoW.CanCast("Multi-Shot") && WoW.Level >= 50
+						&& (WoW.Focus >= 40 || (WoW.PlayerHasBuff("Roar of the Seven Lions") && WoW.Focus >= 34)) 
+						&& WoW.PetHasBuff("Beast Cleave") 
+						&& WoW.PetBuffTimeRemaining("Beast Cleave") <= 70
+						&& WoW.IsSpellInRange("Multi-Shot"))
+                    {
+                        WoW.CastSpell("Multi-Shot");                        
+                        return;
+                    }		    
 //cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>action.kill_command.cost)|target.time_to_die<cooldown.kill_command.remains|(equipped.parsels_tongue&buff.parsels_tongue.remains<=gcd.max*2)								
 						if (WoW.CanCast("Cobra Shot") && WoW.IsSpellOnCooldown("Kill Command")&& WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD&& WoW.IsSpellOnCooldown("Kill Command") && (WoW.Focus > 32 || (WoW.PlayerHasBuff("Roar of the Seven Lions") && WoW.Focus >= 25))&& WoW.IsSpellInRange("Cobra Shot"))
 				{
