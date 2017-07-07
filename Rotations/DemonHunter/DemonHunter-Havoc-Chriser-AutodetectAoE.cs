@@ -407,12 +407,12 @@ Spell,210152,Death Sweep,D2
 Spell,191427,Metamorphosis,D7
 Spell,198589,Blur,F2
 Spell,201467,FOTI,D5
-Spell,211048,Chaos Blades,G
+Spell,247938,Chaos Blades,G
 Spell,232893,Felblade,R
 Spell,162243,Demons Bite,D9
 Spell,211881,FelEruption,F6
 Spell,80483,Arcane Torrent,F3
 Aura,162264,Metamorphosis
-Aura,211048,Chaos Blades
+Aura,247938,Chaos Blades
 Aura,208628,Momentum
 */
