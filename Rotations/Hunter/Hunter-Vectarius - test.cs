@@ -850,7 +850,8 @@ Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 1
                     }	
 					
 					if (WoW.CanCast("Berserking") 
-						
+						&& WoW.PlayerHasBuff("Bestial Wrath")
+						&& WoW.PlayerBuffTimeRemaining("Bestial Wrath") > 700
 						&& !WoW.IsSpellOnCooldown ("Berserking")
 						&& WoW.PlayerRace == "Troll")
                     {
@@ -865,7 +866,8 @@ Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 1
                         return;
                     }	
 					if (WoW.CanCast("Blood Fury") 
-						
+						&& WoW.PlayerHasBuff("Bestial Wrath")
+						&& WoW.PlayerBuffTimeRemaining("Bestial Wrath") > 700
 						&& !WoW.IsSpellOnCooldown ("Blood Fury")
 						&& WoW.PlayerRace == "Orc")
                     {
