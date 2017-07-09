@@ -30,18 +30,18 @@ namespace CloudMagic.Rotation
 		private readonly Stopwatch Direfrenzywatch = new Stopwatch();
 		
 
-        public int DireBeastCount
+public int DireBeastCount
         {
             get
             {
-                string[] idBuffs = { "Dire Beast", "Dire Frenzy" };
+                string[] idBuffs = { "Dire Beast", "DireFrenzy1" };
                 var buffs = 0;
                 for (var i = 0; i < idBuffs.Length; i++)
-                    if (WoW.PlayerHasBuff(idBuffs[i]))
-                        buffs++;
-					return buffs;
+                    if (WoW.PlayerBuffStacks(idBuffs[i])>0)
+                        buffs = WoW.PlayerBuffStacks(idBuffs[i]);
+                return buffs;
             }
-			
+            
         }
 
         private bool BL
@@ -778,13 +778,16 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
 					{
 						WoW.CastSpell("Pot") ;
 						return;
-					}	
+					}
+				}					
 if(WoW.PlayerSpec == "Beast Mastery")
 {
 Log.Write("Direcount" + DireBeastCount  , Color.Red);
-Log.Write("focusregdire" + (FocusRegen+DireBeastCount*1.5) , Color.Red);
-Log.Write("focusreg" + (10f* (1f + (WoW.HastePercent / 100f)))  , Color.Red);
-Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 100f)))+DireBeastCount*1.5)) *100f) , Color.Red);
+//Log.Write("focusregdire" + (FocusRegen+DireBeastCount*1.5) , Color.Red);
+Log.Write("focusreg" + (FocusRegen+DireBeastCount*1.5)  , Color.Red);
+
+Log.Write("timetomax" + (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100) , Color.Red);
+//Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 100f)))+WoW.PlayerBuffStacks("Dire Beast")*1.5)) *100f) , Color.Red);
 
 
 
@@ -1002,9 +1005,9 @@ Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 1
                     }	
 						
 				}
-				if(WoW.CanCast("Cobra Shot") && WoW.IsSpellOnCooldown("Kill Command") && (WoW.Focus > 32 || (WoW.PlayerHasBuff("Roar of the Seven Lions") && WoW.Focus >= 25))&& WoW.IsSpellInRange("Cobra Shot")&&WoW.PlayerHasBuff("Dire Beast") || WoW.PlayerHasBuff("Dire Frenzy"))
+				if(WoW.CanCast("Cobra Shot") && WoW.IsSpellOnCooldown("Kill Command") && (WoW.Focus > 32 || (WoW.PlayerHasBuff("Roar of the Seven Lions") && WoW.Focus >= 25))&& WoW.IsSpellInRange("Cobra Shot")&& (WoW.PlayerHasBuff("Dire Beast") || WoW.PlayerHasBuff("Dire Frenzy")))
 				{
-						if (WoW.SpellCooldownTimeRemaining("Kill Command") > (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 100f)))+DireBeastCount*1.5)) *100f) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 100f)))+DireBeastCount*1.5)) *100f)))
+						if (WoW.SpellCooldownTimeRemaining("Kill Command") > (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100)))
                     {			
                         WoW.CastSpell("Cobra Shot");
                         return;
@@ -1014,7 +1017,7 @@ Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 1
                         WoW.CastSpell("Cobra Shot");
                         return;
                     }	
-						if ((WoW.SpellCooldownTimeRemaining("Kill Command") > ((((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 100f)))+DireBeastCount*1.5)+10) *100f))) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > ((((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 100f)))+DireBeastCount*1.5)+10) *100f)))&& WoW.PlayerHasBuff("Aspect of the Wild"))
+						if ((WoW.SpellCooldownTimeRemaining("Kill Command") > (((120f - WoW.Focus) /((FocusRegen+DireBeastCount*1.5)+10)) *100) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (((120f - WoW.Focus) /((FocusRegen+DireBeastCount*1.5)+10)) *100))&& WoW.PlayerHasBuff("Aspect of the Wild")))
                     {			
                         WoW.CastSpell("Cobra Shot");
                         return;
@@ -1063,11 +1066,10 @@ Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 1
 						&& !WoW.IsSpellOnCooldown("Stampede")) 
                     {
                         WoW.CastSpell("Stampede");
-
-                        return;
+						return;
                     }				
 //dire_beast,if=cooldown.bestial_wrath.remains>3	
-					if (WoW.CanCast("Dire Beast") && WoW.Level >= 12&& WoW.Talent(2) != 2 && !WoW.IsSpellOnCooldown ("Dire Beast") && WoW.SpellCooldownTimeRemaining("Bestial Wrath") > 300 && WoW.IsSpellInRange("Cobra Shot"))
+					if (WoW.CanCast("Dire Beast") && WoW.Level >= 12&& WoW.Talent(2) != 2 && !WoW.IsSpellOnCooldown ("Dire Beast") && WoW.SpellCooldownTimeRemaining("Bestial Wrath") > 300 && WoW.IsSpellInRange("Cobra Shot") && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD)
                     {
                         WoW.CastSpell("Dire Beast");
                         return;
@@ -1143,17 +1145,17 @@ Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 1
                         WoW.CastSpell("Cobra Shot");
                         return;
                     }	
-						if ((WoW.SpellCooldownTimeRemaining("Kill Command") > (FocusTimetoMax)) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (FocusTimetoMax)))
+						if (WoW.SpellCooldownTimeRemaining("Kill Command") > (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100)))
                     {			
                         WoW.CastSpell("Cobra Shot");
                         return;
                     }
-						if (WoW.PlayerHasBuff("Bestial Wrath") && ((FocusRegen*WoW.SpellCooldownTimeRemaining("Kill Command")) > 300))
+						if (WoW.PlayerHasBuff("Bestial Wrath") && (((FocusRegen+DireBeastCount*1.5)*WoW.SpellCooldownTimeRemaining("Kill Command")) > 300))
                     {			
                         WoW.CastSpell("Cobra Shot");
                         return;
                     }	
-						if ((WoW.SpellCooldownTimeRemaining("Kill Command") > (FocusTimetoMaxAotW)) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (FocusTimetoMaxAotW))&& WoW.PlayerHasBuff("Aspect of the Wild"))
+						if ((WoW.SpellCooldownTimeRemaining("Kill Command") > (((120f - WoW.Focus) /((FocusRegen+DireBeastCount*1.5)+10)) *100) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (((120f - WoW.Focus) /((FocusRegen+DireBeastCount*1.5)+10)) *100))&& WoW.PlayerHasBuff("Aspect of the Wild")))
                     {			
                         WoW.CastSpell("Cobra Shot");
                         return;
@@ -1167,7 +1169,7 @@ Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 1
 				}
             }
 		}
-}
+
 			
 // - Survival Hunter	
 		if (WoW.PlayerSpec == "Survival")
@@ -2761,6 +2763,7 @@ Spell,193526,Trueshot,C
 Aura,120694,Dire Beast
 Aura,151805,Parsels Tongue
 Aura,217200,Dire Frenzy
+Aura,246152,DireFrenzy1
 Aura,186265,AspectoftheTurtle
 Aura,136,Heal Pet
 Aura,11196,Bandaged
