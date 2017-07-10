@@ -782,11 +782,11 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
 									
 if(WoW.PlayerSpec == "Beast Mastery")
 {
-Log.Write("Direcount" + DireBeastCount  , Color.Red);
+//Log.Write("Direcount" + DireBeastCount  , Color.Red);
 //Log.Write("focusregdire" + (FocusRegen+DireBeastCount*1.5) , Color.Red);
-Log.Write("focusreg" + (FocusRegen+DireBeastCount*1.5)  , Color.Red);
+//Log.Write("focusreg" + (FocusRegen+DireBeastCount*1.5)  , Color.Red);
 
-Log.Write("timetomax" + (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100) , Color.Red);
+//Log.Write("timetomax" + (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100) , Color.Red);
 //Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 100f)))+WoW.PlayerBuffStacks("Dire Beast")*1.5)) *100f) , Color.Red);
 
 
