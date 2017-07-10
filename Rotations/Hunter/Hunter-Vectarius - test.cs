@@ -779,7 +779,7 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
 						WoW.CastSpell("Pot") ;
 						return;
 					}
-				}					
+									
 if(WoW.PlayerSpec == "Beast Mastery")
 {
 Log.Write("Direcount" + DireBeastCount  , Color.Red);
@@ -877,7 +877,7 @@ Log.Write("timetomax" + (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *
                         WoW.CastSpell("Blood Fury");
                         return;
                     }	
-				
+}
 				
 			if (combatRoutine.Type == RotationType.SingleTarget || combatRoutine.Type == RotationType.SingleTargetCleave)  
             {
