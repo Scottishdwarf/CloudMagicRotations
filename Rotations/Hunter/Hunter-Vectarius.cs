@@ -877,7 +877,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         WoW.CastSpell("Blood Fury");
                         return;
                     }	
-}
+
 				
 			if (combatRoutine.Type == RotationType.SingleTarget || combatRoutine.Type == RotationType.SingleTargetCleave)  
             {
@@ -1168,7 +1168,8 @@ if(WoW.PlayerSpec == "Beast Mastery")
 				}
 				}
             }
-		}
+				}
+
 
 			
 // - Survival Hunter	
@@ -2694,6 +2695,7 @@ Log.Write("Bite >=3" , Color.Red);
 
 }
 	}
+}
 
 
 	
