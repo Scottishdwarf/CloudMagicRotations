@@ -30,19 +30,7 @@ namespace CloudMagic.Rotation
 		private readonly Stopwatch Direfrenzywatch = new Stopwatch();
 		
 
-public int DireBeastCount
-        {
-            get
-            {
-                string[] idBuffs = { "Dire Beast", "DireFrenzy1" };
-                var buffs = 0;
-                for (var i = 0; i < idBuffs.Length; i++)
-                    if (WoW.PlayerBuffStacks(idBuffs[i])>0)
-                        buffs = WoW.PlayerBuffStacks(idBuffs[i]);
-                return buffs;
-            }
-            
-        }
+
 
         private bool BL
         {
@@ -63,13 +51,7 @@ public int DireBeastCount
                     return 200f / (1f + (WoW.HastePercent / 100f));
             }
         }
-		private float MongooseBiteRecharge
-        {
-            get
-            {
-                    return 12000f / (1f + (WoW.HastePercent / 100f));
-            }
-        }		
+		
 		 private float GCD
         {
             get
@@ -79,15 +61,7 @@ public int DireBeastCount
 
             }
         }
-		 private float bitegcd
-        {
-            get
-            {
-
-                    return (MongooseBiteRecharge/10 - GCD*2);
-
-            }
-        }		
+			
 private float FocusRegen
 {
      get
@@ -96,28 +70,7 @@ private float FocusRegen
      }
 }
 
-private float FocusRegenAotW
-{
-     get
-     {
-         return ((10f* (1f + (WoW.HastePercent / 100f)))+10);
-     }
-}		
-private float FocusTimetoMax
-{
-     get
-     {
-         return ((120f - WoW.Focus) /(10f* (1f + (WoW.HastePercent / 100f)))) *100f;
-     }
-}
 
-private float FocusTimetoMaxAotW
-{
-     get
-     {
-         return ((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 100f)))+10)) *100f;
-     }
-}
 
 		//Pet Control	
 		private CheckBox HealPetBox;
