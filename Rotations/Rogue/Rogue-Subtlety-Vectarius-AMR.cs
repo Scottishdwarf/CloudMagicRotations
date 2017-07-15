@@ -245,7 +245,7 @@ Spell,115191,Stealth,R
 Spell,26297,Berserking,F2
 Spell,202719,Arcane Torrent,F2
 Spell,20572,Blood Fury,F2
-Aura,212283,Symbols of Death
+Aura,212283,SymbolsOfDeath
 Aura,115191,Stealth
 Aura,115192,Subterfuge
 Aura,185422,ShadowDance
