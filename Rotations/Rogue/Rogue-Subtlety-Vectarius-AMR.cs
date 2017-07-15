@@ -26,7 +26,7 @@ namespace CloudMagic.Rotation
         {
             get
             {
-				if (WoW.Talent(7) ==3 && WoW.Talent(6)==1 && WoW.NpcCount < 4)
+				if (WoW.Talent(7) ==3 && WoW.Talent(6)==1 )
 				{
 					return true;
 				}
@@ -103,7 +103,7 @@ namespace CloudMagic.Rotation
 					// Cooldowns Spell ShadowBlades if AlternatePowerToMax >= 2
 					if (combatRoutine.UseCooldowns)
 					{
-						if !stealth
+						if (!stealth)
 						{
 //StealthCooldowns Spell ShadowDance if ChargesRemaining(ShadowDance) = SpellCharges(ShadowDance)
 						if (WoW.CanCast("ShadowDance") && WoW.PlayerSpellCharges("ShadowDance") >=2)
@@ -228,7 +228,7 @@ AddonAuthor=Chriser
 AddonName=Recount
 WoWVersion=Legion - 70100
 [SpellBook.db]
-Spell,,DeathFromAbove
+Spell,152150,DeathFromAbove,D0
 Spell,185311,CrimsonVial,F3
 Spell,212283,Symbols of Death,D2
 Spell,185438,ShadowStrike,D1
