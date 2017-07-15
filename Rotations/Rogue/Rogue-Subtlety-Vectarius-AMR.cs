@@ -215,7 +215,125 @@ namespace CloudMagic.Rotation
 
             if (combatRoutine.Type == RotationType.AOE) // Do AoE Stuff here
             {
-                 
+                 if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat && !WoW.IsMounted)
+                {
+// Spell ShadowDance if TimerSecRemaining(DeathFromAbove) > 0 and HasTalent(DarkShadow)					
+				if (WoW.CanCast("ShadowDance")  && WoW.Talent(6)==1 && WoW.LastSpell == "DeathFromAbove" )
+						{
+                        WoW.CastSpell("ShadowDance");
+                        return;
+						}					
+					// Cooldowns Spell ShadowBlades if AlternatePowerToMax >= 2
+					if (combatRoutine.UseCooldowns)
+					{
+						if (!stealth)
+						{
+//StealthCooldowns Spell ShadowDance if ChargesRemaining(ShadowDance) = SpellCharges(ShadowDance)
+						if (WoW.CanCast("ShadowDance") && WoW.PlayerSpellCharges("ShadowDance") >=2)
+						{
+                        WoW.CastSpell("ShadowDance");
+                        return;
+						}	
+//StealthCooldowns Spell Vanish if HasTalent(Subterfuge) and not HasBuff(MasterAssassinsInitiative)
+							if (WoW.CanCast("Vanish") && WoW.IsSpellInRange("NightBlade") && WoW.Talent(2)==2 && !WoW.PlayerHasBuff("MasterAssassinsInitiative") && (!WoW.PlayerHasBuff("Stealth") || !WoW.PlayerHasBuff("ShadowDance")))
+							{
+								WoW.CastSpell("Vanish");
+								return;
+							}						
+						}
+							if (WoW.CanCast("ShadowBlades") && WoW.IsSpellInRange("NightBlade") && WoW.CurrentComboPoints <= 4)
+							{
+								WoW.CastSpell("ShadowBlades");
+								return;
+							}	
+//Cooldowns Spell GoremawsBite if AlternatePowerToMax >= 3 and not HasBuff(Stealth) and not HasBuff(ShadowDance) and not HasBuff(Subterfuge) and ChargesRemaining(ShadowDance) < SpellCharges(ShadowDance)	
+						if (WoW.CanCast("GoremawsBite") && WoW.IsSpellInRange("NightBlade") && WoW.CurrentComboPoints <=3 && !stealth && WoW.PlayerSpellCharges("ShadowDance") < 2)
+						{
+							WoW.CastSpell("GoremawsBite");
+							return;
+						}
+							
+					}
+							if (WoW.CanCast("Berserking") && !WoW.IsSpellOnCooldown ("Berserking") && WoW.PlayerRace == "Troll")
+							{
+								WoW.CastSpell("Berserking");
+								return;
+							}	
+							if (WoW.CanCast("Arcane Torrent") && !WoW.IsSpellOnCooldown ("Arcane Torrent") && WoW.PlayerRace == "BloodElf" && WoW.Energy <= 20)
+							{
+								WoW.CastSpell("Arcane Torrent");
+								return;
+							}	
+							if (WoW.CanCast("Blood Fury") && !WoW.IsSpellOnCooldown ("Blood Fury") && WoW.PlayerRace == "Orc")
+							{
+								WoW.CastSpell("Blood Fury");
+								return;
+							}	
+
+// Spell Backstab Once if AlternatePower < 5 and FightDurationSec - FightSecRemaining < 2		
+					if (WoW.CanCast("Backstab") && WoW.CurrentComboPoints < 6 && WoW.Energy >= 45 && WoW.IsSpellInRange("NightBlade"))
+						{
+							WoW.CastSpell("Backstab");
+							return;
+						}
+//Spell Vanish if not HasTalent(Subterfuge) and not HasBuff(ShadowDance) and not HasBuff(MasterAssassinsInitiative) and Power >= 40 and ChargesRemaining(ShadowDance) < SpellCharges(ShadowDance) and not IsOnGcd and (AlternatePowerToMax >= 3 or (AlternatePowerToMax >= 2 and not HasBuff(ShadowBlades)))						
+							if (WoW.CanCast("Vanish") &&!stealth&& WoW.IsSpellInRange("NightBlade") && WoW.Talent(2)!=2 && !WoW.PlayerHasBuff("ShadowDance") &&!WoW.PlayerHasBuff("MasterAssassinsInitiative") && WoW.Energy >=40 && WoW.PlayerSpellCharges("ShadowDance") <2 && (WoW.CurrentComboPoints >=3 || (WoW.CurrentComboPoints >=2 && !WoW.PlayerHasBuff("ShadowBlades"))))
+							{
+								WoW.CastSpell("Vanish");
+								return;
+							}
+//AmrRogueSubtletyDefault2 Spell SymbolsOfDeath if ((PowerToMax >= 40 and (not HasBuff(ShadowDance) or BuffRemainingSec(ShadowDance) >= BuffDurationSec(ShadowDance) - 1)) or 
+						if(WoW.CanCast("Symbols of Death") && WoW.IsSpellInRange("NightBlade") && WoW.Energy >=35 &&  WoW.Energy <=60 && (WoW.PlayerHasBuff("ShadowDance") || WoW.PlayerBuffTimeRemaining("ShadowDance") >= 300))
+						{
+							WoW.CastSpell("Symbols of Death");
+							return;
+						}
+//(HasBuff(ShadowDance) and FightDurationSec - FightSecRemaining < 10) or 
+
+//(HasItem(TheFirstOfTheDead) and AlternatePowerToMax >= 5 and Power >= 40)) and not IsOnGcd		
+// Finisher Spell Nightblade if CanRefreshDot(Nightblade) and TargetSecRemaining > 6 and (not HasBuff(MasterAssassinsInitiative) or DotRemainingSec(Nightblade) < BuffRemainingSec(MasterAssassinsInitiative))	
+						if (WoW.CanCast("NightBlade") && WoW.CurrentComboPoints >= 5 && WoW.Energy >= 25 && (!WoW.TargetHasDebuff("NightBlade") || WoW.TargetDebuffTimeRemaining("NightBlade") <= 600) &&((!WoW.TargetHasDebuff("MasterAssassinsInitiative")) || (WoW.TargetDebuffTimeRemaining("Nightblade") < WoW.PlayerBuffTimeRemaining("MasterAssassinsInitiative"))) && WoW.IsSpellInRange("NightBlade"))
+						{
+                            WoW.CastSpell("NightBlade");
+                            return;
+						}
+ //Finisher Spell DeathFromAbove if HasBuff(SymbolsOfDeath) or CooldownSecRemaining(SymbolsOfDeath) > 10	
+						if (WoW.CanCast("DeathFromAbove") && WoW.CurrentComboPoints >= 5 && WoW.Energy >= 25 && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") > 10000) && WoW.IsSpellInRange("NightBlade"))
+						{
+                            WoW.CastSpell("DeathFromAbove");
+                            return;
+						} 
+//Finisher Spell Eviscerate
+						if (WoW.CanCast("Eviscerate") && WoW.CurrentComboPoints >=5 && WoW.IsSpellInRange("NightBlade") && WoW.Energy >=35 && WoW.TargetHasDebuff("NightBlade"))
+						{	
+							WoW.CastSpell("Eviscerate");
+							return;
+						}
+//InsideStealth Spell Shadowstrike
+						if (WoW.CanCast("ShurikenStorm") && WoW.IsSpellInRange("NightBlade") && WoW.Energy >=40 && WoW.CurrentComboPoints <=5 && stealth )
+						{
+							WoW.CastSpell("ShurikenStorm");
+							return;
+						}	
+// Spell ShadowDance if TimerSecRemaining(DeathFromAbove) > 0 and HasTalent(DarkShadow)
+				if (WoW.CanCast("ShadowDance")  && WoW.Talent(6)==1 && WoW.LastSpell == "DeathFromAbove" )
+						{
+                        WoW.CastSpell("ShadowDance");
+                        return;
+						}	
+//StealthCooldowns Spell ShadowDance
+				if (WoW.CanCast("ShadowDance") )
+						{
+                        WoW.CastSpell("ShadowDance");
+                        return;
+						}
+//Builder Spell Backstab	
+                if (WoW.CanCast("ShurikenStorm") && WoW.CurrentComboPoints < 6 && WoW.Energy >= 35 && WoW.IsSpellInRange("NightBlade"))
+						{
+							WoW.CastSpell("ShurikenStorm");
+							return;
+						}					
+				}                
             }
         }
     }
