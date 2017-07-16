@@ -91,7 +91,18 @@ namespace CloudMagic.Rotation
             }
         }
 		
-
+        private bool DfAready
+        {
+            get
+            {
+				if (WoW.CanCast("DeathFromAbove")&& WoW.IsSpellInRange("NightBlade")   && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
+				{
+					return true;
+				}
+				else
+					return false;
+            }
+        }	
 
 		//Pet Control	
 		private CheckBox MantleoftheMasterBox;
@@ -731,12 +742,7 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
 					}							
 									
 
-//Log.Write("Direcount" + DireBeastCount  , Color.Red);
-//Log.Write("focusregdire" + (FocusRegen+DireBeastCount*1.5) , Color.Red);
-//Log.Write("focusreg" + (FocusRegen+DireBeastCount*1.5)  , Color.Red);
 
-//Log.Write("timetomax" + (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100) , Color.Red);
-//Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 100f)))+WoW.PlayerBuffStacks("Dire Beast")*1.5)) *100f) , Color.Red);
 
 
 
@@ -744,7 +750,7 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
 			if (combatRoutine.Type == RotationType.SingleTarget || combatRoutine.Type == RotationType.SingleTargetCleave)  
             {
 
-                if (WoW.HasTarget && WoW.TargetIsEnemy  && !WoW.IsMounted)
+                if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat && !WoW.IsMounted)
                 {
 //shadow_dance,if=talent.dark_shadow.enabled&!stealthed.all&buff.death_from_above.up&buff.death_from_above.remains<=0.15			
 				if (WoW.CanCast("ShadowDance") && (WoW.PlayerHasBuff("DeathFromAbove")|| WoW.LastSpell == "DeathFromAbove")&& !stealth && WoW.Talent(6)==1 )
@@ -754,7 +760,7 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
                         return;
 						}
 //shadow_dance,if=charges_fractional>=variable.shd_fractional|target.time_to_die<cooldown.symbols_of_death.remains		
-				if (WoW.CanCast("ShadowDance") && WoW.PlayerSpellCharges("ShadowDance") <= 2 && !stealth && WoW.LastSpell != "ShadowDance" )
+				if (WoW.CanCast("ShadowDance") && WoW.PlayerSpellCharges("ShadowDance") >= 2 && !stealth && WoW.LastSpell != "ShadowDance" )
 						{
                         WoW.CastSpell("ShadowDance");
                         return;
@@ -855,15 +861,24 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
                             return;
 						}
 //	death_from_above,if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)
-						if (WoW.CanCast("DeathFromAbove")&& WoW.IsSpellInRange("NightBlade")   && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
+						if (WoW.CanCast("DeathFromAbove")&& WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade")   && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
 						{
                             WoW.CastSpell("DeathFromAbove");
 							Thread.Sleep(1000); 
 							WoW.CastSpell("ShadowDance");
-                            return;
+								if (WoW.CanCast("ShadowDance") && !WoW.IsSpellOnCooldown("ShadowDance") && !stealth )
+								{
+								WoW.CastSpell("ShadowDance");
+									if (WoW.CanCast("ShadowDance") && !WoW.IsSpellOnCooldown("ShadowDance") && !stealth )
+									{
+									WoW.CastSpell("ShadowDance");
+									
+									}
+								}
+								return;
 						} 
 //eviscerate
-						if (WoW.CanCast("Eviscerate")  && WoW.IsSpellInRange("NightBlade") && WoW.Energy >=35 && WoW.TargetHasDebuff("NightBlade"))
+						if (WoW.CanCast("Eviscerate") && !DfAready && WoW.IsSpellInRange("NightBlade") && WoW.Energy >=35 && WoW.TargetHasDebuff("NightBlade"))
 						{	
 							WoW.CastSpell("Eviscerate");
 							return;
@@ -993,15 +1008,24 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
                             return;
 						}
 //	death_from_above,if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)
-						if (WoW.CanCast("DeathFromAbove")&& WoW.IsSpellInRange("NightBlade")   && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
+						if (WoW.CanCast("DeathFromAbove")&& WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade")   && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
 						{
                             WoW.CastSpell("DeathFromAbove");
 							Thread.Sleep(1000); 
 							WoW.CastSpell("ShadowDance");
-                            return;
+								if (WoW.CanCast("ShadowDance") && !WoW.IsSpellOnCooldown("ShadowDance") && !stealth )
+								{
+								WoW.CastSpell("ShadowDance");
+									if (WoW.CanCast("ShadowDance") && !WoW.IsSpellOnCooldown("ShadowDance") && !stealth )
+									{
+									WoW.CastSpell("ShadowDance");
+									
+									}
+								}
+								return;
 						} 
 //eviscerate
-						if (WoW.CanCast("Eviscerate")  && WoW.IsSpellInRange("NightBlade") && WoW.Energy >=35 && WoW.TargetHasDebuff("NightBlade"))
+						if (WoW.CanCast("Eviscerate") && !DfAready && WoW.IsSpellInRange("NightBlade") && WoW.Energy >=35 && WoW.TargetHasDebuff("NightBlade"))
 						{	
 							WoW.CastSpell("Eviscerate");
 							return;
@@ -1049,7 +1073,7 @@ Spell,115191,Stealth,R
 Spell,26297,Berserking,F2
 Spell,25046,Arcane Torrent,F2
 Spell,20572,Blood Fury,F2
-Aura,196819,Eviscerate
+Aura,197496,Eviscerate
 Aura,121471,ShadowBlades
 Aura,212283,SymbolsOfDeath
 Aura,152150,DeathFromAbove
