@@ -255,7 +255,8 @@ namespace CloudMagic.Rotation
 		
         public override void Initialize()
         {
-			Log.Write("Auto AoE optimized for WQs", Color.Green);	
+			Log.Write("Talents: 1/1/1/3/2/1/3", Color.Green);
+
            
 			if (ConfigFile.ReadValue("Hunter", "AspectoftheTurtle Percent") == "")
             {
@@ -774,6 +775,13 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
 //	call_action_list,name=cds	
 						if (combatRoutine.UseCooldowns)
 						{
+//	use_item,name=vial_of_ceaseless_toxins,if=(!talent.dark_shadow.enabled|buff.shadow_dance.up)&(buff.symbols_of_death.up|(!talent.death_from_above.enabled&((mantle_duration>=3|!equipped.mantle_of_the_master_assassin)|cooldown.vanish.remains>=60)))
+/*							if (WoW.CanCast("VOCT") && !WoW.IsSpellOnCooldown ("VOCT") && !stealth && !WoW.ItemOnCooldown ("VOCT") && (WoW.Talent(6)!=1 || WoW.PlayerHasBuff("ShadowDance")) && (WoW.PlayerHasBuff("SymbolsOfDeath") || (WoW.Talent(7) !=3 &&((MantleDuration >=300 || !MantleoftheMaster) || WoW.SpellCooldownTimeRemaining("Vanish") >=60))))
+							{
+								WoW.CastSpell("VOCT");
+								return;
+							}
+*/							
 							if (WoW.CanCast("Berserking") && !WoW.IsSpellOnCooldown ("Berserking") && WoW.PlayerRace == "Troll" && stealth)
 							{
 								WoW.CastSpell("Berserking");
@@ -789,12 +797,20 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
 								WoW.CastSpell("Blood Fury");
 								return;
 							}
+//symbols_of_death,if=!talent.death_from_above.enabled&((time>10&energy.deficit>=40-stealthed.all*30)|(time<10&dot.nightblade.ticking))
+							if(WoW.CanCast("SymbolsOfDeath") && WoW.Talent(6) !=1 && stealth && ((pullwatch.ElapsedMilliseconds > 10000 && WoW.Energy >=40) ||pullwatch.ElapsedMilliseconds < 10000 && WoW.TargetHasDebuff("NightBlade") ))
+							{
+							WoW.CastSpell("SymbolsOfDeath");
+							return;
+							}							
 //symbols_of_death,if=(talent.death_from_above.enabled&cooldown.death_from_above.remains<=3&(dot.nightblade.remains>=cooldown.death_from_above.remains+3|target.time_to_die-dot.nightblade.remains<=6)&(time>=3|set_bonus.tier20_4pc))						
 							if(WoW.CanCast("SymbolsOfDeath") && WoW.Talent(7) ==3 && stealth && WoW.SpellCooldownTimeRemaining("DeathFromAbove") <= 300 &&(WoW.TargetDebuffTimeRemaining("NightBlade") >= (WoW.SpellCooldownTimeRemaining("DeathFromAbove")+300)) && ((pullwatch.ElapsedMilliseconds >= 3000) || T204pc)  && WoW.IsSpellInRange("NightBlade") && WoW.Energy >=35 )
 							{
 							WoW.CastSpell("SymbolsOfDeath");
 							return;
 							}
+//	marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit
+							
 //shadow_blades,if=(time>10&combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin)|(time<10&(!talent.marked_for_death.enabled|combo_points.deficit>=3|dot.nightblade.ticking))
 							if (WoW.CanCast("ShadowBlades") && ((pullwatch.ElapsedMilliseconds > 10000 && WoW.CurrentComboPoints <=4 && stealth) || (pullwatch.ElapsedMilliseconds < 10000 &&(WoW.Talent(7) != 2 || WoW.CurrentComboPoints <=3 || WoW.TargetHasDebuff("Nightblade")))) && WoW.IsSpellInRange("NightBlade"))
 							{
@@ -921,6 +937,13 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
 //	call_action_list,name=cds	
 						if (combatRoutine.UseCooldowns)
 						{
+//	use_item,name=vial_of_ceaseless_toxins,if=(!talent.dark_shadow.enabled|buff.shadow_dance.up)&(buff.symbols_of_death.up|(!talent.death_from_above.enabled&((mantle_duration>=3|!equipped.mantle_of_the_master_assassin)|cooldown.vanish.remains>=60)))
+/*							if (WoW.CanCast("VOCT") && !WoW.IsSpellOnCooldown ("VOCT") && !stealth && !WoW.ItemOnCooldown ("VOCT") && (WoW.Talent(6)!=1 || WoW.PlayerHasBuff("ShadowDance")) && (WoW.PlayerHasBuff("SymbolsOfDeath") || (WoW.Talent(7) !=3 &&((MantleDuration >=300 || !MantleoftheMaster) || WoW.SpellCooldownTimeRemaining("Vanish") >=60))))
+							{
+								WoW.CastSpell("VOCT");
+								return;
+							}
+*/							
 							if (WoW.CanCast("Berserking") && !WoW.IsSpellOnCooldown ("Berserking") && WoW.PlayerRace == "Troll" && stealth)
 							{
 								WoW.CastSpell("Berserking");
@@ -936,6 +959,12 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
 								WoW.CastSpell("Blood Fury");
 								return;
 							}
+//symbols_of_death,if=!talent.death_from_above.enabled&((time>10&energy.deficit>=40-stealthed.all*30)|(time<10&dot.nightblade.ticking))
+							if(WoW.CanCast("SymbolsOfDeath") && WoW.Talent(6) !=1 && stealth && ((pullwatch.ElapsedMilliseconds > 10000 && WoW.Energy >=40) ||pullwatch.ElapsedMilliseconds < 10000 && WoW.TargetHasDebuff("NightBlade") ))
+							{
+							WoW.CastSpell("SymbolsOfDeath");
+							return;
+							}								
 //symbols_of_death,if=(talent.death_from_above.enabled&cooldown.death_from_above.remains<=3&(dot.nightblade.remains>=cooldown.death_from_above.remains+3|target.time_to_die-dot.nightblade.remains<=6)&(time>=3|set_bonus.tier20_4pc))						
 							if(WoW.CanCast("SymbolsOfDeath") && WoW.Talent(7) ==3 && stealth && WoW.SpellCooldownTimeRemaining("DeathFromAbove") <= 300 &&(WoW.TargetDebuffTimeRemaining("NightBlade") >= (WoW.SpellCooldownTimeRemaining("DeathFromAbove")+300)) && ((pullwatch.ElapsedMilliseconds >= 3000) || T204pc)  && WoW.IsSpellInRange("NightBlade") && WoW.Energy >=35 )
 							{
@@ -1057,6 +1086,7 @@ AddonName=myspellpriority
 WoWVersion=Legion - 70200
 [SpellBook.db]
 Spell,152150,DeathFromAbove,D5
+Spell,147011,VOCT,D0
 Spell,185311,CrimsonVial,F3
 Spell,212283,SymbolsOfDeath,D2
 Spell,185438,ShadowStrike,D1
@@ -1083,4 +1113,5 @@ Aura,115192,Subterfuge
 Aura,185422,ShadowDance
 Aura,195452,NightBlade
 Aura,11327,Vanish
+Item,147011,VOCT
 */
