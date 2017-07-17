@@ -1071,7 +1071,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
 					}
 	
 //aspect_of_the_wild,if=buff.bestial_wrath.up|target.time_to_die<12
-					if (WoW.CanCast("Aspect of the Wild") && !WoW.IsSpellOnCooldown("Aspect of the WIld") && WoW.Level >= 26&& UseCooldowns && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD && WoW.PlayerHasBuff("Bestial Wrath") && WoW.IsSpellInRange("Cobra Shot"))
+					if (WoW.CanCast("Aspect of the Wild") && !WoW.IsSpellOnCooldown("Aspect of the Wild") && WoW.Level >= 26&& UseCooldowns && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD && WoW.PlayerHasBuff("Bestial Wrath") && WoW.IsSpellInRange("Cobra Shot"))
                     {
                         WoW.CastSpell("Aspect of the Wild");
                         return;
