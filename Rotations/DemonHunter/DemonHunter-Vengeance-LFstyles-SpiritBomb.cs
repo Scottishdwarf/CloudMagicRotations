@@ -1,4 +1,4 @@
-// winifix@gmail.com
+//
 // ReSharper disable UnusedMember.Global
 
 using System.Diagnostics;
@@ -56,7 +56,7 @@ namespace CloudMagic.Rotation
             Log.DrawHorizontalLine();            
             Log.WriteCloudMagic("Welcome to LFstyles Vengeance Demon Hunter ", Color.Black);
             Log.Write("Suggested build: 1222331", Color.Green);
-			Log.Write("Must Use this Macro to manually use infernal strike: #showtooltip /cast [@cursor] Infernal strike", Color.Purple);
+	    Log.Write("Must Use this Macro to manually use infernal strike: #showtooltip /cast [@cursor] Infernal strike", Color.Purple);
         }
 
         public override void Stop()
@@ -168,21 +168,21 @@ namespace CloudMagic.Rotation
 			}
 			if (WoW.PlayerHasBuff("Metamorphosis"))
 				{
-				if (WoW.CanCast("Spirit Bomb") && !WoW.IsSpellOnCooldown("Spirit Bomb") && (WoW.PlayerHasBuff("Soul Fragments") && (WoW.PlayerBuffStacks("Soul Fragments") >= 3)))
+					if (WoW.CanCast("Throw Glaive") && !WoW.IsSpellOnCooldown("Throw Glaive") && !WoW.IsSpellInRange("Soul Carver"))
+					{
+						WoW.CastSpell("Throw Glaive");
+						return; 
+					}
+					if (WoW.CanCast("Spirit Bomb") && !WoW.IsSpellOnCooldown("Spirit Bomb") && (WoW.PlayerHasBuff("Soul Fragments") && (WoW.PlayerBuffStacks("Soul Fragments") >= 3)))
 					{
 						WoW.CastSpell("Spirit Bomb");
 						return;
 					}
-				// if (WoW.CanCast("Sever") && !WoW.CanCast("Soul Carver") && WoW.PlayerBuffStacks("Soul Fragments") < 5)
+				 // if (WoW.CanCast("Sever") && !WoW.CanCast("Soul Carver") && WoW.PlayerBuffStacks("Soul Fragments") < 5)
 					// {
 						// WoW.CastSpell("Sever");
 						// return;
 					// }
-					if (WoW.CanCast("Sever") && !WoW.CanCast("Soul Carver"))
-					{
-						WoW.CastSpell("Sever");
-						return;
-					}
 					if (WoW.CanCast("Soul Carver") && WoW.IsSpellInRange("Soul Carver"))
 					{
 						WoW.CastSpell("Soul Carver");
@@ -191,6 +191,16 @@ namespace CloudMagic.Rotation
 					if (WoW.CanCast("Soul Cleave") && WoW.Pain > 80 && WoW.PlayerBuffStacks("Soul Fragments") > 4)
 					{
 						WoW.CastSpell("Soul Cleave");
+						return;
+					}
+					if (WoW.CanCast("Sigil of Flame") && (!WoW.TargetHasDebuff("Sigil of Flame") && WoW.IsSpellInRange("Soul Carver")))
+					{
+						WoW.CastSpell("Sigil of Flame");  // NB must have "Concentrated Sigil's" talent
+						return;
+					}
+					if (WoW.CanCast("Sever") && WoW.IsSpellInRange("Soul Carver") && !WoW.CanCast("Soul Carver"))
+					{
+						WoW.CastSpell("Sever");
 						return;
 					}
 				}
