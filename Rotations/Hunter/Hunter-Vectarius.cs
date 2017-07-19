@@ -883,7 +883,12 @@ if(WoW.PlayerSpec == "Beast Mastery")
             {
 
 			if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat && !WoW.IsMounted)
-                {	
+                {
+						if (WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2)
+                    {			
+                        WoW.CastSpell("Cobra Shot");
+                        return;
+                    }		
 					if (WoW.CanCast("Chimaera Shot") 
 						&& WoW.Focus <90
 						&& WoW.IsSpellOnCooldown("Dire Frenzy")
@@ -919,11 +924,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
 
                         return;
                     }
-						if (WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2)
-                    {			
-                        WoW.CastSpell("Cobra Shot");
-                        return;
-                    }		    
+		    
 //dire_beast,if=cooldown.bestial_wrath.remains>3	
 					if (WoW.CanCast("Dire Beast") && WoW.Level >= 12 && WoW.Talent(2) != 2 && !WoW.IsSpellOnCooldown ("Dire Beast") && WoW.SpellCooldownTimeRemaining("Bestial Wrath") > 300 && WoW.IsSpellInRange("Cobra Shot"))
                     {
@@ -1042,7 +1043,11 @@ if(WoW.PlayerSpec == "Beast Mastery")
 	
 				if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat)
                 {
-																					
+						if (WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2)
+                    {			
+                        WoW.CastSpell("Cobra Shot");
+                        return;
+                    }																					
 				
                     if (WoW.CanCast("Barrage") 
 						&& WoW.Talent(6) == 2 
@@ -1119,11 +1124,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         WoW.CastSpell("Bestial Wrath");
                         return;
                     }
-						if (WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2)
-                    {			
-                        WoW.CastSpell("Cobra Shot");
-                        return;
-                    }		    
+		    
 //kill_command
 					if (WoW.CanCast("Kill Command") && !WoW.IsSpellOnCooldown("Kill Command") && WoW.Level >= 10&& ((WoW.Focus >= 70-FocusRegen) || (WoW.PlayerHasBuff("Roar of the Seven Lions") && (WoW.Focus >= 59-FocusRegen)))  &&  WoW.IsSpellInRange("Cobra Shot"))
                     {
