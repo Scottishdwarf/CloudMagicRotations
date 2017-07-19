@@ -2774,7 +2774,7 @@ Spell,186387,Bursting Shot,D7
 Spell,198670,Piercing Shot,D1
 Spell,193526,Trueshot,C
 Aura,120694,Dire Beast
-Aura,151805,Parsels Tongue
+Aura,248085,Parsels Tongue
 Aura,217200,Dire Frenzy
 Aura,246152,DireFrenzy1
 Aura,186265,AspectoftheTurtle
