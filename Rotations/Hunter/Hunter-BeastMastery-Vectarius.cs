@@ -977,7 +977,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         WoW.CastSpell("Cobra Shot");
                         return;
                     }	
-						if (WoW.Legendary(1) == 5 && WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2)
+						if (WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2)
                     {			
                         WoW.CastSpell("Cobra Shot");
                         return;
@@ -1001,7 +1001,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         WoW.CastSpell("Cobra Shot");
                         return;
                     }	
-						if (WoW.Legendary(1) == 5 && WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2)
+						if (WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2)
                     {			
                         WoW.CastSpell("Cobra Shot");
                         return;
@@ -1139,7 +1139,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         WoW.CastSpell("Cobra Shot");
                         return;
                     }	
-						if (WoW.Legendary(1) == 5 && WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2)
+						if (WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2)
                     {			
                         WoW.CastSpell("Cobra Shot");
                         return;
