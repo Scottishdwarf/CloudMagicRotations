@@ -836,7 +836,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
 //	marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit
 							
 //shadow_blades,if=(time>10&combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin)|(time<10&(!talent.marked_for_death.enabled|combo_points.deficit>=3|dot.nightblade.ticking))
-							if (WoW.CanCast("ShadowBlades") && ((pullwatch.ElapsedMilliseconds > 10000 && WoW.CurrentComboPoints <=4 && stealth) || (pullwatch.ElapsedMilliseconds < 10000 &&(WoW.Talent(7) != 2 || WoW.CurrentComboPoints <=3 || WoW.TargetHasDebuff("Nightblade")))) && WoW.IsSpellInRange("NightBlade"))
+							if (WoW.CanCast("ShadowBlades") && ((pullwatch.ElapsedMilliseconds > 10000 && WoW.CurrentComboPoints <=4 && stealth && MantleoftheMaster) || (pullwatch.ElapsedMilliseconds < 10000 &&(WoW.Talent(7) != 2 || WoW.CurrentComboPoints <=3 || WoW.TargetHasDebuff("Nightblade")))) && WoW.IsSpellInRange("NightBlade"))
 							{
 								WoW.CastSpell("ShadowBlades");
 								return;
@@ -996,7 +996,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
 							return;
 							}
 //shadow_blades,if=(time>10&combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin)|(time<10&(!talent.marked_for_death.enabled|combo_points.deficit>=3|dot.nightblade.ticking))
-							if (WoW.CanCast("ShadowBlades") && ((pullwatch.ElapsedMilliseconds > 10000 && WoW.CurrentComboPoints <=4 && stealth) || (pullwatch.ElapsedMilliseconds < 10000 &&(WoW.Talent(7) != 2 || WoW.CurrentComboPoints <=3 || WoW.TargetHasDebuff("Nightblade")))) && WoW.IsSpellInRange("NightBlade"))
+							if (WoW.CanCast("ShadowBlades") && ((pullwatch.ElapsedMilliseconds > 10000 && WoW.CurrentComboPoints <=4 && stealth && MantleoftheMaster) || (pullwatch.ElapsedMilliseconds < 10000 &&(WoW.Talent(7) != 2 || WoW.CurrentComboPoints <=3 || WoW.TargetHasDebuff("Nightblade")))) && WoW.IsSpellInRange("NightBlade"))
 							{
 								WoW.CastSpell("ShadowBlades");
 								return;
