@@ -848,7 +848,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
 							return;
 							}
 //Marked for Death <= 1 Combo Point
-							if (WoW.CanCast("MarkedForDeath") && !WoW.IsSpellOnCooldown ("MarkedForDeath") && WoW.CurrentComboPoints <=1)
+							if (WoW.CanCast("MarkedForDeath") && WoW.Talent(7) ==2 && !WoW.IsSpellOnCooldown ("MarkedForDeath") && WoW.CurrentComboPoints <=1)
 							{
 								WoW.CastSpell("MarkedForDeath");
 								return;
@@ -1014,7 +1014,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
 							return;
 							}
 //Marked for Death <= 1 Combo Point
-							if (WoW.CanCast("MarkedForDeath") && !WoW.IsSpellOnCooldown ("MarkedForDeath") && WoW.CurrentComboPoints <=1)
+							if (WoW.CanCast("MarkedForDeath") && WoW.Talent(7) ==2 && !WoW.IsSpellOnCooldown ("MarkedForDeath") && WoW.CurrentComboPoints <=1)
 							{
 								WoW.CastSpell("MarkedForDeath");
 								return;
