@@ -21,7 +21,7 @@ namespace CloudMagic.Rotation
 		private NumericUpDown nudEvasionPercentValue;
 		private NumericUpDown nudPlaceholder1PercentValue;
 		private NumericUpDown nudKickPercentValue;
-		private NumericUpDown nudIntimidationPercentValue;	
+		private NumericUpDown nudPlaceholder2PercentValue;	
 		private NumericUpDown nudPotionPercentValue;		
 		
 
@@ -106,7 +106,7 @@ namespace CloudMagic.Rotation
 
 		//Pet Control	
 		private CheckBox MantleoftheMasterBox;
-		private CheckBox IntimidationBox;
+		private CheckBox Placeholder2Box;
 		// Items
 		private CheckBox KilJaedenBox;			
 		private CheckBox PotionBox;
@@ -166,15 +166,15 @@ namespace CloudMagic.Rotation
             set { ConfigFile.WriteValue("RogueSubtlety", "MantleoftheMaster", value.ToString()); }
         }
 		
-        private static bool Intimidation
+        private static bool Placeholder2
         {
             get
             {
-                var Intimidation = ConfigFile.ReadValue("RogueSubtlety", "Intimidation").Trim();
+                var Placeholder2 = ConfigFile.ReadValue("RogueSubtlety", "Placeholder2").Trim();
 
-                return Intimidation != "" && Convert.ToBoolean(Intimidation);
+                return Placeholder2 != "" && Convert.ToBoolean(Placeholder2);
             }
-            set { ConfigFile.WriteValue("RogueSubtlety", "Intimidation", value.ToString()); }
+            set { ConfigFile.WriteValue("RogueSubtlety", "Placeholder2", value.ToString()); }
         }		
 		
 		
@@ -274,9 +274,9 @@ namespace CloudMagic.Rotation
             {
                 ConfigFile.WriteValue("Rogue", "Kick Percent", "65");
             }	
-			if (ConfigFile.ReadValue("Rogue", "Intimidation Percent") == "")
+			if (ConfigFile.ReadValue("Rogue", "Placeholder2 Percent") == "")
             {
-                ConfigFile.WriteValue("Rogue", "Intimidation Percent", "80");
+                ConfigFile.WriteValue("Rogue", "Placeholder2 Percent", "80");
             }	
 			if (ConfigFile.ReadValue("Rogue", "Potion Percent") == "")
             {
@@ -322,13 +322,13 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
 			};
 			SettingsForm.Controls.Add(nudKickPercentValue);			
 
-            nudIntimidationPercentValue = new NumericUpDown 
-			{Minimum = 0, Maximum = 100, Value = ConfigFile.ReadValue<decimal>("Rogue", "Intimidation Percent"), 
+            nudPlaceholder2PercentValue = new NumericUpDown 
+			{Minimum = 0, Maximum = 100, Value = ConfigFile.ReadValue<decimal>("Rogue", "Placeholder2 Percent"), 
 			Left = 215, 
 			Top =272,
 			Size = new Size (40, 10)
 			};
-			SettingsForm.Controls.Add(nudIntimidationPercentValue);			
+			SettingsForm.Controls.Add(nudPlaceholder2PercentValue);			
 
             nudPotionPercentValue = new NumericUpDown 
 			{Minimum = 0, Maximum = 100, Value = ConfigFile.ReadValue<decimal>("Rogue", "Potion Percent"), 
@@ -475,17 +475,17 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
 			lblMantleoftheMasterBox.ForeColor = Color.Black;
             SettingsForm.Controls.Add(lblMantleoftheMasterBox);	
 			
-			var lblIntimidationBox = new Label
+			var lblPlaceholder2Box = new Label
             {
                 Text =
-                    "Intimidation @",
+                    "Placeholder2 @",
                 Size = new Size(270, 15),
                 Left = 100,
                 Top = 275
             };
 			
-			lblIntimidationBox.ForeColor = Color.Black;
-            SettingsForm.Controls.Add(lblIntimidationBox);				
+			lblPlaceholder2Box.ForeColor = Color.Black;
+            SettingsForm.Controls.Add(lblPlaceholder2Box);				
 
 			var lblKilJaedenBox = new Label
             {
@@ -542,9 +542,9 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
             SettingsForm.Controls.Add(PotBox);			
 //pet control			
 			MantleoftheMasterBox = new CheckBox {Checked = MantleoftheMaster, TabIndex = 8, Size = new Size(14, 14), Left = 70, Top = 250};		
-			IntimidationBox = new CheckBox {Checked = Intimidation, TabIndex = 8, Size = new Size(14, 14), Left = 70, Top = 275};				
+			Placeholder2Box = new CheckBox {Checked = Placeholder2, TabIndex = 8, Size = new Size(14, 14), Left = 70, Top = 275};				
             SettingsForm.Controls.Add(MantleoftheMasterBox);
-            SettingsForm.Controls.Add(IntimidationBox);			
+            SettingsForm.Controls.Add(Placeholder2Box);			
 			
 			// Checkboxes
             KickBox = new CheckBox {Checked = Kick, TabIndex = 8, Size = new Size(14, 14), Left = 70, Top = 100};		
@@ -580,7 +580,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
 			PotionBox.CheckedChanged += Potion_Click;  
 			PotBox.CheckedChanged += Pot_Click; 			
             MantleoftheMasterBox.CheckedChanged += MantleoftheMaster_Click;		
-            IntimidationBox.CheckedChanged += Intimidation_Click;				
+            Placeholder2Box.CheckedChanged += Placeholder2_Click;				
 			
             T204pcBox.CheckedChanged += T204pc_Click;    
             CloakOfShadowsBox.CheckedChanged += CloakOfShadows_Click; 
@@ -608,7 +608,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
             PotionBox.BringToFront();
             PotBox.BringToFront();			
             MantleoftheMasterBox.BringToFront();	
-            IntimidationBox.BringToFront();				
+            Placeholder2Box.BringToFront();				
 			
             T204pcBox.BringToFront();	
             KickBox.BringToFront();	
@@ -629,7 +629,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
             Potion = PotionBox.Checked;	
             Pot = PotionBox.Checked;				
             MantleoftheMaster = MantleoftheMasterBox.Checked;			
-            Intimidation = IntimidationBox.Checked;				
+            Placeholder2 = Placeholder2Box.Checked;				
 			
             T204pc = T204pcBox.Checked;		
             Kick = KickBox.Checked;	
@@ -673,9 +673,9 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
         {
             MantleoftheMaster = MantleoftheMasterBox.Checked;
         }	
-		private void Intimidation_Click(object sender, EventArgs e)
+		private void Placeholder2_Click(object sender, EventArgs e)
         {
-            Intimidation = IntimidationBox.Checked;
+            Placeholder2 = Placeholder2Box.Checked;
         }			
 
 			
@@ -780,7 +780,6 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
 //shadow_dance,if=talent.dark_shadow.enabled&!stealthed.all&buff.death_from_above.up&buff.death_from_above.remains<=0.15			
 				if (WoW.CanCast("ShadowDance") && (WoW.PlayerHasBuff("DeathFromAbove")|| WoW.LastSpell == "DeathFromAbove")&& !stealth && WoW.Talent(6)==1 )
 						{
-							Thread.Sleep(1000);
                         WoW.CastSpell("ShadowDance");
                         return;
 						}
@@ -791,7 +790,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
                         return;
 						}
 //	death_from_above,if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)
-						if (WoW.CanCast("DeathFromAbove")&& WoW.IsSpellInRange("NightBlade") && WoW.Talent(6) !=1  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
+						if (WoW.CanCast("DeathFromAbove")&& WoW.Talent(7)==3&& WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1 ||  !WoW.PlayerHasBuff("ShadowDance"))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
 						{
                             WoW.CastSpell("DeathFromAbove");
                             return;
@@ -907,10 +906,10 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
                             return;
 						}
 //	death_from_above,if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)
-						if (WoW.CanCast("DeathFromAbove")&& WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade")   && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
+						if (WoW.CanCast("DeathFromAbove")&& WoW.Talent(7)==3&& WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1 || !WoW.PlayerHasBuff("ShadowDance"))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
 						{
                             WoW.CastSpell("DeathFromAbove");
-							Thread.Sleep(1000); 
+							
 							WoW.CastSpell("ShadowDance");
 								if (WoW.CanCast("ShadowDance") && !WoW.IsSpellOnCooldown("ShadowDance") && !stealth )
 								{
@@ -948,7 +947,6 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
 //shadow_dance,if=talent.dark_shadow.enabled&!stealthed.all&buff.death_from_above.up&buff.death_from_above.remains<=0.15			
 				if (WoW.CanCast("ShadowDance") && (WoW.PlayerHasBuff("DeathFromAbove")|| WoW.LastSpell == "DeathFromAbove")&& !stealth && WoW.Talent(6)==1 )
 						{
-							Thread.Sleep(1000);
                         WoW.CastSpell("ShadowDance");
                         return;
 						}
@@ -959,11 +957,22 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
                         return;
 						}
 //	death_from_above,if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)
-						if (WoW.CanCast("DeathFromAbove")&& WoW.IsSpellInRange("NightBlade") && WoW.Talent(6) !=1  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
+						if (WoW.CanCast("DeathFromAbove") && WoW.Talent(7)==3 && WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1 || WoW.npcCount >=4 || !WoW.PlayerHasBuff("ShadowDance"))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
 						{
                             WoW.CastSpell("DeathFromAbove");
-                            return;
-						} 						
+							
+							WoW.CastSpell("ShadowDance");
+								if (WoW.CanCast("ShadowDance") && !WoW.IsSpellOnCooldown("ShadowDance") && !stealth )
+								{
+								WoW.CastSpell("ShadowDance");
+									if (WoW.CanCast("ShadowDance") && !WoW.IsSpellOnCooldown("ShadowDance") && !stealth )
+									{
+									WoW.CastSpell("ShadowDance");
+									
+									}
+								}
+								return;
+						}  						
 //	call_action_list,name=cds	
 						if (combatRoutine.UseCooldowns)
 						{
@@ -1073,10 +1082,10 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
                             return;
 						}
 //	death_from_above,if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)
-						if (WoW.CanCast("DeathFromAbove")&& WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade")   && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
+						if (WoW.CanCast("DeathFromAbove")&& WoW.Talent(7)==3&& WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1 || WoW.npcCount >=4 || !WoW.PlayerHasBuff("ShadowDance"))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
 						{
                             WoW.CastSpell("DeathFromAbove");
-							Thread.Sleep(1000); 
+							
 							WoW.CastSpell("ShadowDance");
 								if (WoW.CanCast("ShadowDance") && !WoW.IsSpellOnCooldown("ShadowDance") && !stealth )
 								{
