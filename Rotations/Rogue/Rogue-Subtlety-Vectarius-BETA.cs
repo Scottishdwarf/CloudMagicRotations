@@ -62,7 +62,7 @@ namespace CloudMagic.Rotation
         {
             get
             {
-				if (WoW.Talent(7) == 3 && WoW.Talent(6) ==1)
+				if (WoW.Talent(7) == 3 && WoW.Talent(6) ==1) && WoW.CountEnemyNPCsInRange <= 3
 				{
 					return true;
 				}
@@ -790,7 +790,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
                         return;
 						}
 //	death_from_above,if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)
-						if (WoW.CanCast("DeathFromAbove")&& WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1 ||  !WoW.PlayerHasBuff("ShadowDance"))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
+						if (WoW.CanCast("DeathFromAbove")&& WoW.Talent(7)==3&& WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1  ||  !WoW.PlayerHasBuff("ShadowDance"))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
 						{
                             WoW.CastSpell("DeathFromAbove");
                             return;
@@ -819,7 +819,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
 							{
 								WoW.CastSpell("Blood Fury");
 								return;
-							}
+							}							
 //symbols_of_death,if=!talent.death_from_above.enabled&((time>10&energy.deficit>=40-stealthed.all*30)|(time<10&dot.nightblade.ticking))
 							if(WoW.CanCast("SymbolsOfDeath") && WoW.Talent(6) !=1 && stealth && ((pullwatch.ElapsedMilliseconds > 10000 && WoW.Energy >=40) ||pullwatch.ElapsedMilliseconds < 10000 && WoW.TargetHasDebuff("NightBlade") ))
 							{
@@ -845,6 +845,12 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
 							{
 							WoW.CastSpell("GoremawsBite");
 							return;
+							}
+//Marked for Death <= 1 Combo Point
+							if (WoW.CanCast("MarkedForDeath") && WoW.Talent(7) ==2 && !WoW.IsSpellOnCooldown ("MarkedForDeath") && WoW.CurrentComboPoints <=1)
+							{
+								WoW.CastSpell("MarkedForDeath");
+								return;
 							}
 //vanish,if=energy>=55-talent.shadow_focus.enabled*10&variable.dsh_dfa&(!equipped.mantle_of_the_master_assassin|buff.symbols_of_death.up)&cooldown.shadow_dance.charges_fractional<=variable.shd_fractional				&!buff.shadow_dance.up&!buff.stealth.up&mantle_duration=0&(dot.nightblade.remains>=cooldown.death_from_above.remains+6|target.time_to_die-dot.nightblade.remains<=6)&cooldown.death_from_above.remains<=1&(time<10|combo_points>=3)|target.time_to_die<=7						
 							if (WoW.CanCast("Vanish") && WoW.IsSpellInRange("NightBlade") && (WoW.Energy >=50 || (WoW.Talent(2) ==3 && WoW.Energy >=45)) && dshdfa &&(!MantleoftheMaster|| WoW.PlayerHasBuff("SymbolsOfDeath")) && WoW.PlayerSpellCharges("ShadowDance") < 2 && !stealth && (WoW.TargetDebuffTimeRemaining("NightBlade") >= (WoW.SpellCooldownTimeRemaining("DeathFromAbove")+600)) && WoW.SpellCooldownTimeRemaining("DeathFromAbove") <=100 &&((pullwatch.ElapsedMilliseconds < 10000) || WoW.CurrentComboPoints>=3))
@@ -891,7 +897,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
                             return;
 						}
 //finish,if=combo_points>=5+(talent.deeper_stratagem.enabled&!buff.shadow_blades.up&(mantle_duration=0|set_bonus.tier20_4pc))|(combo_points>=4&combo_points.deficit<=2&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)|(target.time_to_die<=1&combo_points>=3)						
-						if((WoW.CurrentComboPoints >=5    &&(MantleDuration==0 || T204pc)))
+						if(((WoW.CurrentComboPoints >=5 && (WoW.Talent(3) ==1 && !WoW.PlayerHasBuff("ShadowBlades") && (MantleDuration ==0 || T204pc ))) || (WoW.CurrentComboPoints >=4 && WoW.CurrentComboPoints <=4 && WoW.CountEnemyNPCsInRange >=3 && WoW.CountEnemyNPCsInRange <=4)  ))
 					{
 //nightblade,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&(mantle_duration=0|remains<=mantle_duration)&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time*2)
 						if (WoW.CanCast("NightBlade") && WoW.IsSpellInRange("NightBlade")&& WoW.Energy >= 25 && (WoW.Talent(6) !=1 || !WoW.PlayerHasBuff("ShadowDance")) && (!WoW.TargetHasDebuff("NightBlade") || WoW.TargetDebuffTimeRemaining("NightBlade") <= 600) ) 
@@ -900,7 +906,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
                             return;
 						}
 //	death_from_above,if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)
-						if (WoW.CanCast("DeathFromAbove")&& WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1 || !WoW.PlayerHasBuff("ShadowDance"))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
+						if (WoW.CanCast("DeathFromAbove")&& WoW.Talent(7)==3&& WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1 || !WoW.PlayerHasBuff("ShadowDance"))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
 						{
                             WoW.CastSpell("DeathFromAbove");
 							
@@ -951,7 +957,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
                         return;
 						}
 //	death_from_above,if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)
-						if (WoW.CanCast("DeathFromAbove")&& WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1 || WoW.npcCount >=4 || !WoW.PlayerHasBuff("ShadowDance"))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
+						if (WoW.CanCast("DeathFromAbove") && WoW.Talent(7)==3 && WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1 || (WoW.CountEnemyNPCsInRange >=4 && WoW.PlayerHasBuff("ShadowDance")) || (WoW.CountEnemyNPCsInRange < 4 && !WoW.PlayerHasBuff("ShadowDance")))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
 						{
                             WoW.CastSpell("DeathFromAbove");
 							
@@ -1016,6 +1022,12 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
 							WoW.CastSpell("GoremawsBite");
 							return;
 							}
+//Marked for Death <= 1 Combo Point
+							if (WoW.CanCast("MarkedForDeath") && WoW.Talent(7) ==2 && !WoW.IsSpellOnCooldown ("MarkedForDeath") && WoW.CurrentComboPoints <=1)
+							{
+								WoW.CastSpell("MarkedForDeath");
+								return;
+							}							
 //vanish,if=energy>=55-talent.shadow_focus.enabled*10&variable.dsh_dfa&(!equipped.mantle_of_the_master_assassin|buff.symbols_of_death.up)&cooldown.shadow_dance.charges_fractional<=variable.shd_fractional				&!buff.shadow_dance.up&!buff.stealth.up&mantle_duration=0&(dot.nightblade.remains>=cooldown.death_from_above.remains+6|target.time_to_die-dot.nightblade.remains<=6)&cooldown.death_from_above.remains<=1&(time<10|combo_points>=3)|target.time_to_die<=7						
 							if (WoW.CanCast("Vanish") && WoW.IsSpellInRange("NightBlade") && (WoW.Energy >=50 || (WoW.Talent(2) ==3 && WoW.Energy >=45)) && dshdfa &&(!MantleoftheMaster|| WoW.PlayerHasBuff("SymbolsOfDeath")) && WoW.PlayerSpellCharges("ShadowDance") < 2 && !stealth && (WoW.TargetDebuffTimeRemaining("NightBlade") >= (WoW.SpellCooldownTimeRemaining("DeathFromAbove")+600)) && WoW.SpellCooldownTimeRemaining("DeathFromAbove") <=100 &&((pullwatch.ElapsedMilliseconds < 10000) || WoW.CurrentComboPoints>=3))
 							{
@@ -1061,7 +1073,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
                             return;
 						}
 //finish,if=combo_points>=5+(talent.deeper_stratagem.enabled&!buff.shadow_blades.up&(mantle_duration=0|set_bonus.tier20_4pc))|(combo_points>=4&combo_points.deficit<=2&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)|(target.time_to_die<=1&combo_points>=3)						
-						if((WoW.CurrentComboPoints >=5    &&(MantleDuration==0 || T204pc)))
+						if(((WoW.CurrentComboPoints >=5 && (WoW.Talent(3) ==1 && !WoW.PlayerHasBuff("ShadowBlades") && (MantleDuration ==0 || T204pc ))) || (WoW.CurrentComboPoints >=4 && WoW.CurrentComboPoints <=4 && WoW.CountEnemyNPCsInRange >=3 && WoW.CountEnemyNPCsInRange <=4)  ))
 					{
 //nightblade,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&(mantle_duration=0|remains<=mantle_duration)&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time*2)
 						if (WoW.CanCast("NightBlade") && WoW.IsSpellInRange("NightBlade")&& WoW.Energy >= 25 && (WoW.Talent(6) !=1 || !WoW.PlayerHasBuff("ShadowDance")) && (!WoW.TargetHasDebuff("NightBlade") || WoW.TargetDebuffTimeRemaining("NightBlade") <= 600) ) 
@@ -1070,7 +1082,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
                             return;
 						}
 //	death_from_above,if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)
-						if (WoW.CanCast("DeathFromAbove")&& WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1 || WoW.npcCount >=4 || !WoW.PlayerHasBuff("ShadowDance"))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
+						if (WoW.CanCast("DeathFromAbove")&& WoW.Talent(7)==3&& WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1 || WoW.npcCount >=4 || !WoW.PlayerHasBuff("ShadowDance"))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
 						{
                             WoW.CastSpell("DeathFromAbove");
 							
@@ -1138,6 +1150,7 @@ Spell,115191,Stealth,R
 Spell,26297,Berserking,F2
 Spell,25046,Arcane Torrent,F2
 Spell,20572,Blood Fury,F2
+Spell,137619,MarkedforDeath
 Aura,197496,Eviscerate
 Aura,121471,ShadowBlades
 Aura,212283,SymbolsOfDeath
