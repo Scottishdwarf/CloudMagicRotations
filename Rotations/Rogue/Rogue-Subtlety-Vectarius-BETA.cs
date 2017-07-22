@@ -62,7 +62,7 @@ namespace CloudMagic.Rotation
         {
             get
             {
-				if (WoW.Talent(7) == 3 && WoW.Talent(6) ==1) && WoW.CountEnemyNPCsInRange <= 3
+				if (WoW.Talent(7) == 3 && WoW.Talent(6) ==1 && WoW.CountEnemyNPCsInRange <= 3)
 				{
 					return true;
 				}
@@ -1082,7 +1082,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
                             return;
 						}
 //	death_from_above,if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)
-						if (WoW.CanCast("DeathFromAbove")&& WoW.Talent(7)==3&& WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1 || WoW.npcCount >=4 || !WoW.PlayerHasBuff("ShadowDance"))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
+						if (WoW.CanCast("DeathFromAbove")&& WoW.Talent(7)==3&& WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1 || WoW.CountEnemyNPCsInRange >=4 || !WoW.PlayerHasBuff("ShadowDance"))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
 						{
                             WoW.CastSpell("DeathFromAbove");
 							
@@ -1131,7 +1131,7 @@ AddonName=myspellpriority
 WoWVersion=Legion - 70200
 [SpellBook.db]
 Spell,152150,DeathFromAbove,D5
-Spell,31224,CloakOfShadows
+Spell,31224,CloakOfShadows,NumPad1
 Spell,5277,Evasion,F
 Spell,147011,VOCT,D0
 Spell,185311,CrimsonVial,F3
@@ -1150,7 +1150,7 @@ Spell,115191,Stealth,R
 Spell,26297,Berserking,F2
 Spell,25046,Arcane Torrent,F2
 Spell,20572,Blood Fury,F2
-Spell,137619,MarkedforDeath
+Spell,137619,MarkedforDeath,NumPad2
 Aura,197496,Eviscerate
 Aura,121471,ShadowBlades
 Aura,212283,SymbolsOfDeath
