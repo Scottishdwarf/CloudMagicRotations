@@ -957,7 +957,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
                         return;
 						}
 //	death_from_above,if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)
-						if (WoW.CanCast("DeathFromAbove") && WoW.Talent(7)==3 && WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1 || WoW.npcCount >=4 || !WoW.PlayerHasBuff("ShadowDance"))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
+						if (WoW.CanCast("DeathFromAbove") && WoW.Talent(7)==3 && WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1 || !WoW.PlayerHasBuff("ShadowDance"))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
 						{
                             WoW.CastSpell("DeathFromAbove");
 							
@@ -1082,7 +1082,7 @@ SettingsForm = new Form {Text = "Subtlety Rogue", StartPosition = FormStartPosit
                             return;
 						}
 //	death_from_above,if=!talent.dark_shadow.enabled|spell_targets>=4&buff.shadow_dance.up|spell_targets<4&!buff.shadow_dance.up&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)
-						if (WoW.CanCast("DeathFromAbove")&& WoW.Talent(7)==3&& WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1 || WoW.npcCount >=4 || !WoW.PlayerHasBuff("ShadowDance"))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
+						if (WoW.CanCast("DeathFromAbove")&& WoW.Talent(7)==3&& WoW.Energy >=25 && WoW.IsSpellInRange("NightBlade") && (WoW.Talent(6) !=1  || !WoW.PlayerHasBuff("ShadowDance"))  && (WoW.PlayerHasBuff("SymbolsOfDeath") || WoW.SpellCooldownTimeRemaining("SymbolsOfDeath") >= 1000))
 						{
                             WoW.CastSpell("DeathFromAbove");
 							
