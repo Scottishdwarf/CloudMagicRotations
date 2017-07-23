@@ -1042,7 +1042,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
 //(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)					
 						if ( !WoW.PlayerHasBuff("Aspect of the Wild")&&(WoW.SpellCooldownTimeRemaining("Kill Command") > (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100)) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100)))
                     {
-Log.Write("focusreg:" +  (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100), Color.Red);							
+							
                         WoW.CastSpell("Cobra Shot");
                         return;
                     }
