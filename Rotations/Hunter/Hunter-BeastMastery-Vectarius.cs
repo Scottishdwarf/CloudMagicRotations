@@ -891,7 +891,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
                             return;
                         }						
 					}
-					if (WoW.CanCast("Kil'jaeden's Burning Wish") && KilJaeden && !WoW.ItemOnCooldown("Kil'jaeden's Burning Wish") && !WoW.IsSpellOnCooldown("Kil'jaeden's Burning Wish"))  
+					if (WoW.CanCast("Kil'jaeden's Burning Wish")&& UseCooldowns && KilJaeden && !WoW.ItemOnCooldown("Kil'jaeden's Burning Wish") && !WoW.IsSpellOnCooldown("Kil'jaeden's Burning Wish"))  
                     {
                         WoW.CastSpell("Kil'jaeden's Burning Wish");
                         return;
@@ -1041,13 +1041,14 @@ if(WoW.PlayerSpec == "Beast Mastery")
 				{
 //(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)					
 						if ( !WoW.PlayerHasBuff("Aspect of the Wild")&&(WoW.SpellCooldownTimeRemaining("Kill Command") > (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100)) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100)))
-                    {			
+                    {
+Log.Write("focusreg:" +  (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100), Color.Red);							
                         WoW.CastSpell("Cobra Shot");
                         return;
                     }
 					//with AotW
 						if ((WoW.SpellCooldownTimeRemaining("Kill Command") > (((120f - WoW.Focus) /((FocusRegen+DireBeastCount*1.5)+10)) *100)) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (((120f - WoW.Focus) /((FocusRegen+DireBeastCount*1.5)+10)) *100))&& WoW.PlayerHasBuff("Aspect of the Wild"))
-                    {			
+                    {						
                         WoW.CastSpell("Cobra Shot");
                         return;			
                     }	
