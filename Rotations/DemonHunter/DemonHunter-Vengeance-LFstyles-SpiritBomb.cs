@@ -87,7 +87,7 @@ namespace CloudMagic.Rotation
                             return;
                         }
                     }
-
+		    
             if (UseCooldowns)
             {
             }
@@ -127,26 +127,20 @@ namespace CloudMagic.Rotation
 					WoW.CastSpell("Immolation Aura");
 					return;
 				}
-
-
-
-
 				if (WoW.CanCast("Soul Carver") && WoW.IsSpellInRange("Soul Carver"))
 				{
 					WoW.CastSpell("Soul Carver");
 					return;
 				}
-			    if (WoW.CanCast("Soul Cleave") && !WoW.IsSpellOnCooldown("Soul Cleave") && WoW.IsSpellInRange("Soul Carver") && WoW.Pain > 100) 
+			    if (WoW.CanCast("Soul Cleave") && !WoW.IsSpellOnCooldown("Soul Cleave") && WoW.IsSpellInRange("Soul Carver") && WoW.Pain > 100)
 				{
 					WoW.CastSpell("Soul Cleave");
 					return;
 				}
 				// if (WoW.CanCast("Demon Spikes") && !WoW.PlayerHasBuff("Demon Spikes") && !WoW.IsSpellOnCooldown("Demon Spikes") && (WoW.Pain == 80 || WoW.HealthPercent < 80 && WoW.Pain > 20 )) // to not waste cd and pain
                 // {
-
 					// WoW.CastSpell("Demon Spikes");
                 // }
-
 				if (WoW.CanCast("Fracture") && WoW.IsSpellInRange("Soul Carver") && (WoW.Pain > 30 && (WoW.PlayerBuffStacks("Soul Fragments") < 3)))
 				{
 					WoW.CastSpell("Fracture");
@@ -198,7 +192,7 @@ namespace CloudMagic.Rotation
 						WoW.CastSpell("Soul Carver");
 						return;
 					}
-					if (WoW.CanCast("Soul Cleave") && WoW.Pain > 50 && WoW.PlayerBuffStacks("Soul Fragments") > 4)
+					if (WoW.CanCast("Soul Cleave") && !WoW.IsSpellOnCooldown("Soul Cleave") && WoW.IsSpellInRange("Soul Carver") && WoW.Pain > 50 && WoW.PlayerBuffStacks("Soul Fragments") > 4)
 					{
 						WoW.CastSpell("Soul Cleave");
 						return;
@@ -286,7 +280,7 @@ Spell,232893,Felblade,D7
 Spell,209795,Fracture,F7
 Spell,183752,Consume Magic,J
 Spell,6603,Auto Attack,I
-Spell,0,HealthstoneKeybind,F10
+Spell,0,HealthstoneKeybind,F9
 Spell,247454,Spirit Bomb,F2
 Aura,203819,Demon Spikes
 Aura,235543,Spirit of the Darkness Flame
