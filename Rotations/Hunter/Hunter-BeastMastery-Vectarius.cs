@@ -977,7 +977,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         return;
                     }					
 //aspect_of_the_wild,if=(equipped.call_of_the_wild&equipped.convergence_of_fates&talent.one_with_the_pack.enabled)|buff.bestial_wrath.remains>7|target.time_to_die<12	
-					if (UseCooldowns && WoW.CanCast("Aspect of the Wild") && ((ConvergenceOfFates && CallOfTheWild) || WoW.PlayerBuffTimeRemaining("Bestial Wrath") >700) && WoW.IsSpellInRange("Cobra Shot") && !WoW.IsSpellOnCooldown("Aspect of the Wild"))
+					if (UseCooldowns && WoW.CanCast("Aspect of the Wild") && ((ConvergenceOfFates && CallOfTheWild && WoW.Talent(4)==1) || WoW.PlayerBuffTimeRemaining("Bestial Wrath") >700) && WoW.IsSpellInRange("Cobra Shot") && !WoW.IsSpellOnCooldown("Aspect of the Wild"))
                     {
                         WoW.CastSpell("Aspect of the Wild");
                         return;
@@ -989,11 +989,16 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         return;
                     }					
 //dire_beast,if=((!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=3)&(set_bonus.tier19_2pc|!buff.bestial_wrath.up))|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1	
-					if (WoW.CanCast("Dire Beast") && WoW.Level >= 12 && WoW.Talent(2) != 2 &&(((!Qapla || WoW.SpellCooldownTimeRemaining("Kill Command")>=300)&& (WoW.SetBonus(19) >= 2 || !WoW.PlayerHasBuff("Bestial Wrath"))) || (WoW.PlayerSpellCharges("Dire Beast") >=2) || (WoW.IsSpellOnCooldown("Titan's Thunder"))) &&WoW.IsSpellInRange("Cobra Shot"))
+					if (WoW.CanCast("Dire Beast") && !WoW.PlayerHasBuff("Bestial Wrath")&& WoW.Level >= 12 && WoW.Talent(2) != 2 &&(((!Qapla || WoW.SpellCooldownTimeRemaining("Kill Command")>=100)&& (WoW.SetBonus(19) >= 2 || !WoW.PlayerHasBuff("Bestial Wrath"))) || (WoW.PlayerSpellCharges("Dire Beast") >=2) || (WoW.IsSpellOnCooldown("Titan's Thunder"))) &&WoW.IsSpellInRange("Cobra Shot"))
                     {
                         WoW.CastSpell("Dire Beast");
                         return;
                     }
+					if (WoW.CanCast("Dire Beast") && WoW.PlayerHasBuff("Bestial Wrath") && WoW.SpellCooldownTimeRemaining("Kill Command") > GCD && WoW.Level >= 12 && WoW.Talent(2) != 2 &&(((!Qapla || WoW.SpellCooldownTimeRemaining("Kill Command")>=100)&& (WoW.SetBonus(19) >= 2 || !WoW.PlayerHasBuff("Bestial Wrath"))) || (WoW.PlayerSpellCharges("Dire Beast") >=2) || (WoW.IsSpellOnCooldown("Titan's Thunder"))) &&WoW.IsSpellInRange("Cobra Shot"))
+                    {
+                        WoW.CastSpell("Dire Beast");
+                        return;
+                    }					
 					
 //dire_frenzy,if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|(charges_fractional>=1.8)|target.time_to_die<9
 					if (WoW.CanCast("Dire Frenzy") && WoW.Talent(2) == 2 && WoW.IsSpellInRange("Cobra Shot") && !WoW.IsSpellOnCooldown("Dire Frenzy"))
@@ -1016,17 +1021,13 @@ if(WoW.PlayerSpec == "Beast Mastery")
 
 
 	
-//titans_thunder,if=															(talent.dire_frenzy.enabled&(buff.bestial_wrath.up        |   cooldown.bestial_wrath.remains>35))                  |cooldown.dire_beast.remains>=3                      |(buff.bestial_wrath.up&pet.dire_beast.active)	
-					if (WoW.CanCast("Titan's Thunder") && WoW.IsSpellInRange("Cobra Shot")&& !WoW.IsSpellOnCooldown("Titan's Thunder")&& WoW.Level >= 110&& (WoW.Talent(2) == 2 && ( WoW.PlayerHasBuff("Bestial Wrath") || WoW.SpellCooldownTimeRemaining("Bestial Wrath") > 350)))
+//titans_thunder,if=																																		(talent.dire_frenzy.enabled&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains>35))|buff.bestial_wrath.up	
+					if (WoW.CanCast("Titan's Thunder") && WoW.IsSpellInRange("Cobra Shot")&& !WoW.IsSpellOnCooldown("Titan's Thunder")&& WoW.Level >= 110&& ((WoW.Talent(2) == 2 && ( WoW.PlayerHasBuff("Bestial Wrath") || WoW.SpellCooldownTimeRemaining("Bestial Wrath") > 3500)) || WoW.PlayerHasBuff("Bestial Wrath")))
                     {
                         WoW.CastSpell("Titan's Thunder");
                         return;
                     }					
-					if (WoW.CanCast("Titan's Thunder") && WoW.IsSpellInRange("Cobra Shot")&& !WoW.IsSpellOnCooldown("Titan's Thunder")&& WoW.Level >= 110 && WoW.SpellCooldownTimeRemaining("Dire Beast") >=300 || (WoW.PlayerHasBuff ("Bestial Wrath") && WoW.PetHasBuff("Dire Beast")))
-                    {
-                        WoW.CastSpell("Titan's Thunder");
-                        return;
-                    }	
+	
 
 	    
 //kill_command
@@ -1088,7 +1089,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         return;
                     }				
                     if (WoW.CanCast("Barrage") 
-						&& WoW.Talent(6) == 2 
+						&& WoW.Talent(6) == 2 && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") >= GCD
 						&& !WoW.IsSpellOnCooldown("Barrage") 
 						&& WoW.IsSpellInRange("Cobra Shot") 
 						&& WoW.Focus >= 60)
@@ -1109,7 +1110,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
                     }
 					
 //	stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14	
-					if (WoW.CanCast("Stampede") && WoW.Talent(7) == 1 && WoW.IsSpellInRange("Cobra Shot") && ((WoW.PlayerHasBuff("Bestial Wrath")) || (WoW.SpellCooldownTimeRemaining("Bestial Wrath") <=2))						
+					if (WoW.CanCast("Stampede") && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") >= GCD&& WoW.Talent(7) == 1 && WoW.IsSpellInRange("Cobra Shot") && ((WoW.PlayerHasBuff("Bestial Wrath")) || (WoW.SpellCooldownTimeRemaining("Bestial Wrath") <=2))						
 						&& !WoW.PlayerHasBuff("AspectoftheTurtle")
 						&& !WoW.IsSpellOnCooldown("Stampede")) 
                     {
@@ -1117,13 +1118,13 @@ if(WoW.PlayerSpec == "Beast Mastery")
 						return;
                     }				
 //bestial_wrath if=!buff.bestial_wrath.up
-					if (WoW.CanCast("Bestial Wrath") && !WoW.PlayerHasBuff("Bestial Wrath") && WoW.Level >= 40&&  WoW.IsSpellInRange("Cobra Shot"))
+					if (WoW.CanCast("Bestial Wrath") && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") >= GCD&& !WoW.PlayerHasBuff("Bestial Wrath") && WoW.Level >= 40&&  WoW.IsSpellInRange("Cobra Shot"))
                     {
                         WoW.CastSpell("Bestial Wrath");
                         return;
                     }					
 //aspect_of_the_wild,if=(equipped.call_of_the_wild&equipped.convergence_of_fates&talent.one_with_the_pack.enabled)|buff.bestial_wrath.remains>7|target.time_to_die<12	
-					if (UseCooldowns && WoW.CanCast("Aspect of the Wild") && ((ConvergenceOfFates && CallOfTheWild) || WoW.PlayerBuffTimeRemaining("Bestial Wrath") >700) && WoW.IsSpellInRange("Cobra Shot") && !WoW.IsSpellOnCooldown("Aspect of the Wild"))
+					if (UseCooldowns && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") >= GCD&& WoW.CanCast("Aspect of the Wild") && ((ConvergenceOfFates && CallOfTheWild && WoW.Talent(4)==1) || WoW.PlayerBuffTimeRemaining("Bestial Wrath") >700) && WoW.IsSpellInRange("Cobra Shot") && !WoW.IsSpellOnCooldown("Aspect of the Wild"))
                     {
                         WoW.CastSpell("Aspect of the Wild");
                         return;
@@ -1136,18 +1137,13 @@ if(WoW.PlayerSpec == "Beast Mastery")
                     }					
 //dire_beast,if=((!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=3)&(set_bonus.tier19_2pc|!buff.bestial_wrath.up))|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1	
 					if (WoW.CanCast("Dire Beast") && WoW.PetHasBuff("Beast Cleave") 
-						&& WoW.PetBuffTimeRemaining("Beast Cleave") >= GCD && WoW.Level >= 12 && WoW.Talent(2) != 2 &&(((!Qapla || WoW.SpellCooldownTimeRemaining("Kill Command")>=300)&& (WoW.SetBonus(19) >= 2 || !WoW.PlayerHasBuff("Bestial Wrath"))) || (WoW.PlayerSpellCharges("Dire Beast") >=2) || (WoW.IsSpellOnCooldown("Titan's Thunder"))) &&WoW.IsSpellInRange("Cobra Shot"))
+						&& WoW.PetBuffTimeRemaining("Beast Cleave") >= GCD && WoW.Level >= 12 && WoW.Talent(2) != 2 &&(((!Qapla || WoW.SpellCooldownTimeRemaining("Kill Command")>=100)&& (WoW.SetBonus(19) >= 2 || !WoW.PlayerHasBuff("Bestial Wrath"))) || (WoW.PlayerSpellCharges("Dire Beast") >=2) || (WoW.IsSpellOnCooldown("Titan's Thunder"))) &&WoW.IsSpellInRange("Cobra Shot"))
                     {
                         WoW.CastSpell("Dire Beast");
                         return;
                     }
-//titans_thunder,if=															(talent.dire_frenzy.enabled&(buff.bestial_wrath.up        |   cooldown.bestial_wrath.remains>35))                  |cooldown.dire_beast.remains>=3                      |(buff.bestial_wrath.up&pet.dire_beast.active)	
-					if (WoW.CanCast("Titan's Thunder") && WoW.IsSpellInRange("Cobra Shot")&& !WoW.IsSpellOnCooldown("Titan's Thunder")&& WoW.Level >= 110&& (WoW.Talent(2) == 2 && ( WoW.PlayerHasBuff("Bestial Wrath") || WoW.SpellCooldownTimeRemaining("Bestial Wrath") > 350)))
-                    {
-                        WoW.CastSpell("Titan's Thunder");
-                        return;
-                    }					
-					if (WoW.CanCast("Titan's Thunder") && WoW.IsSpellInRange("Cobra Shot")&& !WoW.IsSpellOnCooldown("Titan's Thunder")&& WoW.Level >= 110 && WoW.SpellCooldownTimeRemaining("Dire Beast") >=300 || (WoW.PlayerHasBuff ("Bestial Wrath") && WoW.PetHasBuff("Dire Beast")))
+//titans_thunder,if=																																		(talent.dire_frenzy.enabled&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains>35))|buff.bestial_wrath.up	
+					if (WoW.CanCast("Titan's Thunder") && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") >= GCD&& WoW.IsSpellInRange("Cobra Shot")&& !WoW.IsSpellOnCooldown("Titan's Thunder")&& WoW.Level >= 110&& ((WoW.Talent(2) == 2 && ( WoW.PlayerHasBuff("Bestial Wrath") || WoW.SpellCooldownTimeRemaining("Bestial Wrath") > 3500)) || WoW.PlayerHasBuff("Bestial Wrath")))
                     {
                         WoW.CastSpell("Titan's Thunder");
                         return;
@@ -1177,7 +1173,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         return;
                     }		    
 
-				if(WoW.CanCast("Cobra Shot") &&((WoW.SpellCooldownTimeRemaining("Kill Command") > GCD && WoW.SpellCooldownTimeRemaining("Bestial Wrath") > GCD) || (WoW.PlayerHasBuff("Bestial Wrath"))) && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") >= GCD && WoW.IsSpellOnCooldown("Kill Command") && ((WoW.Focus >= (72 - (FocusRegen+DireBeastCount*1.5))) || (WoW.PlayerHasBuff("Roar of the Seven Lions") && (WoW.Focus >= (61-(FocusRegen+DireBeastCount*1.5)))))&& WoW.IsSpellInRange("Cobra Shot"))
+				if(WoW.CanCast("Cobra Shot") &&((WoW.SpellCooldownTimeRemaining("Kill Command") > GCD && WoW.SpellCooldownTimeRemaining("Bestial Wrath") > GCD) || (WoW.PlayerHasBuff("Bestial Wrath"))) && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") > GCD && WoW.IsSpellOnCooldown("Kill Command") && ((WoW.Focus >= (72 - (FocusRegen+DireBeastCount*1.5))) || (WoW.PlayerHasBuff("Roar of the Seven Lions") && (WoW.Focus >= (61-(FocusRegen+DireBeastCount*1.5)))))&& WoW.IsSpellInRange("Cobra Shot"))
 				{
 //(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)					
 						if (!WoW.PlayerHasBuff("Aspect of the Wild")&&(WoW.SpellCooldownTimeRemaining("Kill Command") > (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100)) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100)))
