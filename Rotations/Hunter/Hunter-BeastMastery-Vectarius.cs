@@ -1137,7 +1137,7 @@ if(WoW.PlayerSpec == "Beast Mastery")
                     }					
 //dire_beast,if=((!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=3)&(set_bonus.tier19_2pc|!buff.bestial_wrath.up))|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1	
 					if (WoW.CanCast("Dire Beast") && WoW.PetHasBuff("Beast Cleave") 
-						&& WoW.PetBuffTimeRemaining("Beast Cleave") >= GCD && WoW.Level >= 12 && WoW.Talent(2) != 2 &&(((!Qapla || WoW.SpellCooldownTimeRemaining("Kill Command")>=100)&& (WoW.SetBonus(19) >= 2 || !WoW.PlayerHasBuff("Bestial Wrath"))) || (WoW.PlayerSpellCharges("Dire Beast") >=2) || (WoW.IsSpellOnCooldown("Titan's Thunder"))) &&WoW.IsSpellInRange("Cobra Shot"))
+						&& WoW.PetBuffTimeRemaining("Beast Cleave") >= GCD && WoW.Level >= 12 && WoW.Talent(2) != 2 &&(((!Qapla || WoW.SpellCooldownTimeRemaining("Kill Command")>=100)&& (WoW.SetBonus(19) >= 2 || !WoW.PlayerHasBuff("Bestial Wrath"))) || (WoW.PlayerSpellCharges("Dire Beast") >=2) || (WoW.IsSpellOnCooldown("Titan's Thunder")) || (combatRoutine.Type == RotationType.AOE)) &&WoW.IsSpellInRange("Cobra Shot"))
                     {
                         WoW.CastSpell("Dire Beast");
                         return;
