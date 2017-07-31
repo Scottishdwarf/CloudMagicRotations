@@ -1142,6 +1142,23 @@ if(WoW.PlayerSpec == "Beast Mastery")
                         WoW.CastSpell("Dire Beast");
                         return;
                     }
+//dire_frenzy,if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|(charges_fractional>=1.8)|target.time_to_die<9
+					if (WoW.CanCast("Dire Frenzy") && WoW.Talent(2) == 2 && WoW.IsSpellInRange("Cobra Shot") && !WoW.IsSpellOnCooldown("Dire Frenzy"))
+					{
+						if (WoW.PetBuffTimeRemaining("Dire Frenzy") <= (GCD*1.8)) 
+						{
+                        WoW.CastSpell("Dire Frenzy");
+						Log.Write("Dire 1"  , Color.Red);
+                        return;
+						}
+						if (WoW.PlayerSpellCharges("Dire Frenzy") >=2)  
+						{
+                        WoW.CastSpell("Dire Frenzy");
+												Log.Write("Dire 2"  , Color.Red);
+                        return;
+						}						
+					}
+							    
 //titans_thunder,if=																																		(talent.dire_frenzy.enabled&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains>35))|buff.bestial_wrath.up	
 					if (WoW.CanCast("Titan's Thunder") && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") >= GCD&& WoW.IsSpellInRange("Cobra Shot")&& !WoW.IsSpellOnCooldown("Titan's Thunder")&& WoW.Level >= 110&& ((WoW.Talent(2) == 2 && ( WoW.PlayerHasBuff("Bestial Wrath") || WoW.SpellCooldownTimeRemaining("Bestial Wrath") > 3500)) || WoW.PlayerHasBuff("Bestial Wrath")))
                     {
