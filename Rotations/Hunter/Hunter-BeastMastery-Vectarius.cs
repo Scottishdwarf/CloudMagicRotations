@@ -1,4 +1,5 @@
 // ReSharper disable UnusedMember.Global
+// capcommueller@freenet.de
 
 using System;
 using System.Diagnostics;
@@ -33,7 +34,7 @@ public int DireBeastCount
         {
             get
             {
-                string[] idBuffs = { "Dire Beast", "DireFrenzy1", "DireFrenzy2", "DireFrenzy3" };
+                string[] idBuffs = { "Dire Beast" };
                 var buffs = 0;
                 for (var i = 0; i < idBuffs.Length; i++)
                     if (WoW.PlayerBuffStacks(idBuffs[i])>0)
@@ -42,7 +43,19 @@ public int DireBeastCount
             }
             
         }
-
+        public int DireFrenzyCount
+        {
+            get
+            {
+                string[] idBuffs = {"DireFrenzy1", "DireFrenzy2", "DireFrenzy3"};
+                var buffs = 0;
+                for (var i = 0; i < idBuffs.Length; i++)
+                    if (WoW.PlayerHasBuff(idBuffs[i]))
+                        buffs++;
+                return buffs;
+            }
+        }
+		
         private bool BL
         {
             get
@@ -830,9 +843,11 @@ SettingsForm = new Form {Text = "Beast Mastery Hunter", StartPosition = FormStar
 if(WoW.PlayerSpec == "Beast Mastery")
 {
 //Log.Write("FocusRegen*SpellCooldownTimeRemainingKill Command" + FocusRegen*WoW.SpellCooldownTimeRemaining("Kill Command")  , Color.Red);
-//Log.Write("focusregdire" + (FocusRegen+DireBeastCount*1.5) , Color.Red);
+//Log.Write("focusregdire" + (FocusRegen+DireBeastCount*1.5+DireFrenzyCount*1.5) , Color.Red);
 //Log.Write("focusreg" + (FocusRegen)  , Color.Red);
-Log.Write("DireBeast/Frenzy" + DireBeastCount  , Color.Red);
+//Log.Write("spellchargesdirebeast" + WoW.PlayerSpellCharges("Dire Beast")  , Color.Red);
+//Log.Write("DireBeastcount" + DireBeastCount  , Color.Red);
+//*Log.Write("DireFrenzycount" + DireFrenzyCount  , Color.Red);
 
 //Log.Write("timetomax" + (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100) , Color.Red);
 //Log.Write("timetomax" + (((120f - WoW.Focus) /((10f* (1f + (WoW.HastePercent / 100f)))+WoW.PlayerBuffStacks("Dire Beast")*1.5)) *100f) , Color.Red);
@@ -936,7 +951,13 @@ Log.Write("DireBeast/Frenzy" + DireBeastCount  , Color.Red);
                     {			
                         WoW.CastSpell("Cobra Shot");
                         return;
+                    }
+					if (WoW.CanCast("Dire Frenzy")&& WoW.PetBuffTimeRemaining("Dire Frenzy") <= (GCD*1.2) && WoW.Talent(2) == 2 && WoW.IsSpellInRange("Cobra Shot") && !WoW.IsSpellOnCooldown("Dire Frenzy") && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") >GCD)
+					{	
+                        WoW.CastSpell("Dire Frenzy");
+                        return;
                     }		
+					
 					if (WoW.CanCast("Chimaera Shot") 
 						&& WoW.Focus <90
 						&& WoW.IsSpellOnCooldown("Dire Frenzy")
@@ -1006,16 +1027,14 @@ Log.Write("DireBeast/Frenzy" + DireBeastCount  , Color.Red);
 //dire_frenzy,if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|(charges_fractional>=1.8)|target.time_to_die<9
 					if (WoW.CanCast("Dire Frenzy") && WoW.Talent(2) == 2 && WoW.IsSpellInRange("Cobra Shot") && !WoW.IsSpellOnCooldown("Dire Frenzy"))
 					{
-						if (WoW.PetBuffTimeRemaining("Dire Frenzy") <= (GCD*1.2)) 
+						if (WoW.PetBuffTimeRemaining("Dire Frenzy") <= (GCD*1.2) && WoW.PetHasBuff("Dire Frenzy"))
 						{
                         WoW.CastSpell("Dire Frenzy");
-						Log.Write("Dire 1"  , Color.Red);
                         return;
 						}
-						if (WoW.PlayerSpellCharges("Dire Frenzy") >=2)  
+						if (WoW.PlayerSpellCharges("Dire Frenzy") ==2 )  
 						{
                         WoW.CastSpell("Dire Frenzy");
-												Log.Write("Dire 2"  , Color.Red);
                         return;
 						}						
 					}
@@ -1044,14 +1063,14 @@ Log.Write("DireBeast/Frenzy" + DireBeastCount  , Color.Red);
 				if(WoW.CanCast("Cobra Shot") && ((WoW.SpellCooldownTimeRemaining("Kill Command") > GCD && WoW.SpellCooldownTimeRemaining("Bestial Wrath") > GCD) || (WoW.PlayerHasBuff("Bestial Wrath"))) && WoW.IsSpellOnCooldown("Kill Command") && (WoW.Focus > 32 || (WoW.PlayerHasBuff("Roar of the Seven Lions") && WoW.Focus >= 25))&& WoW.IsSpellInRange("Cobra Shot"))
 				{
 //(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)					
-						if ( !WoW.PlayerHasBuff("Aspect of the Wild")&&(WoW.SpellCooldownTimeRemaining("Kill Command") > (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100)) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5)) *100)))
+						if ( !WoW.PlayerHasBuff("Aspect of the Wild")&&(WoW.SpellCooldownTimeRemaining("Kill Command") > (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5+DireFrenzyCount*1.5)) *100)) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (((120f - WoW.Focus) /(FocusRegen+DireBeastCount*1.5+DireFrenzyCount*1.5)) *100)))
                     {
 							
                         WoW.CastSpell("Cobra Shot");
                         return;
                     }
 					//with AotW
-						if ((WoW.SpellCooldownTimeRemaining("Kill Command") > (((120f - WoW.Focus) /((FocusRegen+DireBeastCount*1.5)+10)) *100)) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (((120f - WoW.Focus) /((FocusRegen+DireBeastCount*1.5)+10)) *100))&& WoW.PlayerHasBuff("Aspect of the Wild"))
+						if ((WoW.SpellCooldownTimeRemaining("Kill Command") > (((120f - WoW.Focus) /((FocusRegen+DireBeastCount*1.5+DireFrenzyCount*1.5)+10)) *100)) && (WoW.SpellCooldownTimeRemaining("Bestial Wrath") > (((120f - WoW.Focus) /((FocusRegen+DireBeastCount*1.5+DireFrenzyCount*1.5)+10)) *100))&& WoW.PlayerHasBuff("Aspect of the Wild"))
                     {						
                         WoW.CastSpell("Cobra Shot");
                         return;			
@@ -1077,6 +1096,7 @@ Log.Write("DireBeast/Frenzy" + DireBeastCount  , Color.Red);
                     }						
 					
 				}	
+				
                 }
             }
             if (combatRoutine.Type == RotationType.SingleTargetCleave)
@@ -1085,11 +1105,16 @@ Log.Write("DireBeast/Frenzy" + DireBeastCount  , Color.Red);
 				if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat && !WoW.PlayerHasBuff("AspectoftheTurtle"))
                 {
 																					
-						if (WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2)
+						if (WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2 && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") >= GCD)
                     {			
                         WoW.CastSpell("Cobra Shot");
                         return;
-                    }				
+                    }
+					if (WoW.CanCast("Dire Frenzy")&& WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") >= GCD&& WoW.PetBuffTimeRemaining("Dire Frenzy") <= (GCD*1.2) && WoW.Talent(2) == 2 && WoW.IsSpellInRange("Cobra Shot") && !WoW.IsSpellOnCooldown("Dire Frenzy") && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") >GCD)
+					{	
+                        WoW.CastSpell("Dire Frenzy");
+                        return;
+                    }					
                     if (WoW.CanCast("Barrage") 
 						&& WoW.Talent(6) == 2 && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") >= GCD
 						&& !WoW.IsSpellOnCooldown("Barrage") 
@@ -1150,13 +1175,11 @@ Log.Write("DireBeast/Frenzy" + DireBeastCount  , Color.Red);
 						if (WoW.PetBuffTimeRemaining("Dire Frenzy") <= (GCD*1.2)) 
 						{
                         WoW.CastSpell("Dire Frenzy");
-						Log.Write("Dire 1"  , Color.Red);
                         return;
 						}
 						if (WoW.PlayerSpellCharges("Dire Frenzy") >=2)  
 						{
                         WoW.CastSpell("Dire Frenzy");
-												Log.Write("Dire 2"  , Color.Red);
                         return;
 						}						
 					}
@@ -1234,11 +1257,16 @@ Log.Write("DireBeast/Frenzy" + DireBeastCount  , Color.Red);
 				if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat && !WoW.PlayerHasBuff("AspectoftheTurtle"))
                 {
 																					
-						if (WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2)
+						if (WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2&& WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") >= GCD )
                     {			
                         WoW.CastSpell("Cobra Shot");
                         return;
-                    }				
+                    }
+					if (WoW.CanCast("Dire Frenzy")&& WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") >= GCD&& WoW.PetBuffTimeRemaining("Dire Frenzy") <= (GCD*1.2) && WoW.Talent(2) == 2 && WoW.IsSpellInRange("Cobra Shot") && !WoW.IsSpellOnCooldown("Dire Frenzy") && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") >GCD)
+					{	
+                        WoW.CastSpell("Dire Frenzy");
+                        return;
+                    }						
                     if (WoW.CanCast("Barrage") 
 						&& WoW.Talent(6) == 2 && WoW.PetHasBuff("Beast Cleave") && WoW.PetBuffTimeRemaining("Beast Cleave") >= GCD
 						&& !WoW.IsSpellOnCooldown("Barrage") 
@@ -1299,13 +1327,11 @@ Log.Write("DireBeast/Frenzy" + DireBeastCount  , Color.Red);
 						if (WoW.PetBuffTimeRemaining("Dire Frenzy") <= (GCD*1.2)) 
 						{
                         WoW.CastSpell("Dire Frenzy");
-						Log.Write("Dire 1"  , Color.Red);
                         return;
 						}
 						if (WoW.PlayerSpellCharges("Dire Frenzy") >=2)  
 						{
                         WoW.CastSpell("Dire Frenzy");
-												Log.Write("Dire 2"  , Color.Red);
                         return;
 						}						
 					}
