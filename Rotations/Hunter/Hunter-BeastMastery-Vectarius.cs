@@ -1064,7 +1064,7 @@ Log.Write("DireBeast/Frenzy" + DireBeastCount  , Color.Red);
                     }
 					*/
 					//(buff.bestial_wrath.up&(spell_targets.multishot=1
-						if (WoW.PlayerHasBuff("Bestial Wrath") && WoW.IsSpellOnCooldown("Kill Command"))
+						if (WoW.PlayerHasBuff("Bestial Wrath") && WoW.Talent(7)==2 && WoW.IsSpellOnCooldown("Kill Command"))
                     {			
                         WoW.CastSpell("Cobra Shot");
                         return;
@@ -1213,7 +1213,11 @@ Log.Write("DireBeast/Frenzy" + DireBeastCount  , Color.Red);
                         return;
                     }	
 */					
-	
+						if (WoW.PlayerHasBuff("Bestial Wrath") && WoW.Talent(7)==2 && WoW.IsSpellOnCooldown("Kill Command"))
+                    {			
+                        WoW.CastSpell("Cobra Shot");
+                        return;
+                    }	
 						if (WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2)
                     {			
                         WoW.CastSpell("Cobra Shot");
@@ -1358,7 +1362,11 @@ Log.Write("DireBeast/Frenzy" + DireBeastCount  , Color.Red);
                         return;
                     }	
 */					
-	
+						if (WoW.PlayerHasBuff("Bestial Wrath") && WoW.Talent(7)==2 && WoW.IsSpellOnCooldown("Kill Command"))
+                    {			
+                        WoW.CastSpell("Cobra Shot");
+                        return;
+                    }	
 						if (WoW.PlayerHasBuff("Parsels Tongue") && WoW.PlayerBuffTimeRemaining("Parsels Tongue") <= GCD*2)
                     {			
                         WoW.CastSpell("Cobra Shot");
