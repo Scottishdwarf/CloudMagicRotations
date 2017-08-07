@@ -96,7 +96,7 @@ namespace CloudMagic.Rotation
 
             if (!WoW.HasTarget || !WoW.TargetIsEnemy) return;
 
-			if (WoW.HealthPercent < 40 && !WoW.IsSpellOnCooldown("Metamorphosis"))
+			if (WoW.HealthPercent < 30 && !WoW.IsSpellOnCooldown("Metamorphosis"))
             {
                 Log.Write("Health low < 40% using CDs...", Color.Red);
                 WoW.CastSpell("Metamorphosis"); // Off the GCD no return needed
@@ -104,9 +104,29 @@ namespace CloudMagic.Rotation
 			{
 			if (!WoW.PlayerHasBuff("Metamorphosis"))
 			{
-				if (!WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.ItemCount("Healthstone") >= 1 && !WoW.ItemOnCooldown("Healthstone") && WoW.HealthPercent < 40)
+				if (!WoW.PlayerIsCasting && WoW.ItemCount("Healthstone") >= 1 && !WoW.ItemOnCooldown("Healthstone") && WoW.HealthPercent < 40)
 				{
 					WoW.CastSpell("HealthstoneKeybind");
+				}
+				if (WoW.CanCast("Throw Glaive") && !WoW.IsSpellOnCooldown("Throw Glaive") && !WoW.IsSpellInRange("Soul Carver"))
+				{
+					WoW.CastSpell("Throw Glaive");
+					return; 
+				}
+				if (WoW.CanCast("Immolation Aura") && WoW.IsSpellInRange("Soul Carver"))  
+				{
+					WoW.CastSpell("Immolation Aura");
+					return;
+				}
+				if (WoW.CanCast("Soul Carver") && WoW.IsSpellInRange("Soul Carver"))
+				{
+					WoW.CastSpell("Soul Carver");
+					return;
+				}
+				if (WoW.CanCast("Fracture") && WoW.IsSpellInRange("Soul Carver") && (WoW.Pain > 30 && (WoW.PlayerBuffStacks("Soul Fragments") < 3)))
+				{
+					WoW.CastSpell("Fracture");
+					return;
 				}
 				if (WoW.CanCast("Spirit Bomb") && !WoW.IsSpellOnCooldown("Spirit Bomb") && (WoW.PlayerHasBuff("Soul Fragments") && !WoW.TargetHasDebuff("Frailty")))
 				{	
@@ -122,16 +142,6 @@ namespace CloudMagic.Rotation
 				{
 					WoW.CastSpell("Fiery Brand");
 				}
-				if (WoW.CanCast("Immolation Aura") && WoW.IsSpellInRange("Soul Carver"))  
-				{
-					WoW.CastSpell("Immolation Aura");
-					return;
-				}
-				if (WoW.CanCast("Soul Carver") && WoW.IsSpellInRange("Soul Carver"))
-				{
-					WoW.CastSpell("Soul Carver");
-					return;
-				}
 			    if (WoW.CanCast("Soul Cleave") && !WoW.IsSpellOnCooldown("Soul Cleave") && WoW.IsSpellInRange("Soul Carver") && WoW.Pain > 100)
 				{
 					WoW.CastSpell("Soul Cleave");
@@ -141,12 +151,8 @@ namespace CloudMagic.Rotation
                 // {
 					// WoW.CastSpell("Demon Spikes");
                 // }
-				if (WoW.CanCast("Fracture") && WoW.IsSpellInRange("Soul Carver") && (WoW.Pain > 30 && (WoW.PlayerBuffStacks("Soul Fragments") < 3)))
-				{
-					WoW.CastSpell("Fracture");
-					return;
-				}
-				if (WoW.CanCast("Shear") && WoW.IsSpellInRange("Soul Carver") && (WoW.Pain < 30 || WoW.Pain < 100 && !WoW.PlayerHasBuff("Soul Fragments"))) // Pain Generator
+
+				if (WoW.CanCast("Shear") && WoW.IsSpellInRange("Soul Carver") && WoW.Pain < 30 || WoW.Pain < 100 && !WoW.PlayerHasBuff("Soul Fragments")) // Pain Generator
 				{
 					WoW.CastSpell("Shear");
 					return;
@@ -155,20 +161,29 @@ namespace CloudMagic.Rotation
 				{
 					WoW.CastSpell("Demon Spikes");
 				}
-				if (WoW.CanCast("Throw Glaive") && !WoW.IsSpellOnCooldown("Throw Glaive") && !WoW.IsSpellInRange("Soul Carver"))
-				{
-					WoW.CastSpell("Throw Glaive");
-					return; 
-				}
 				if (WoW.CanCast("Sigil of Flame") && (!WoW.TargetHasDebuff("Sigil of Flame") && WoW.IsSpellInRange("Soul Carver")))
 				{
 					WoW.CastSpell("Sigil of Flame");  // Must have "Concentrated Sigil's" talent and macro set up
 					return;
 				}
+				//if (WoW.ItemCount("Trinket") == 1 && !WoW.ItemOnCooldown("Trinket") && WoW.IsSpellInRange("Soul Carver"))
+				//{
+				//	WoW.CastSpell("TrinketKeybind");
+				//}
 			}
 			if (WoW.PlayerHasBuff("Metamorphosis"))
-				{
-					if (!WoW.PlayerIsCasting && !WoW.PlayerIsChanneling && WoW.ItemCount("Healthstone") >= 1 && !WoW.ItemOnCooldown("Healthstone") && WoW.HealthPercent < 40)
+			{
+					if (WoW.CanCast("Soul Carver") && WoW.IsSpellInRange("Soul Carver"))
+					{
+						WoW.CastSpell("Soul Carver");
+						return;
+					}
+					if (WoW.CanCast("Sever") && WoW.IsSpellInRange("Soul Carver"))
+					{
+						WoW.CastSpell("Sever");
+						return;
+					}
+					if (!WoW.PlayerIsCasting && WoW.ItemCount("Healthstone") >= 1 && !WoW.ItemOnCooldown("Healthstone") && WoW.HealthPercent < 30)
 					{
 						WoW.CastSpell("HealthstoneKeybind");
 					}
@@ -177,7 +192,17 @@ namespace CloudMagic.Rotation
 						WoW.CastSpell("Throw Glaive");
 						return; 
 					}
-					if (WoW.CanCast("Spirit Bomb") && !WoW.IsSpellOnCooldown("Spirit Bomb") && (WoW.PlayerHasBuff("Soul Fragments") && (WoW.PlayerBuffStacks("Soul Fragments") >= 3)))
+					if (WoW.CanCast("Immolation Aura") && WoW.IsSpellInRange("Soul Carver"))  
+					{
+						WoW.CastSpell("Immolation Aura");
+						return;
+					}
+					if (WoW.CanCast("Soul Cleave") && !WoW.IsSpellOnCooldown("Soul Cleave") && WoW.IsSpellInRange("Soul Carver") && WoW.Pain > 100)
+					{
+						WoW.CastSpell("Soul Cleave");
+						return;
+					}
+					if (WoW.CanCast("Spirit Bomb") && !WoW.IsSpellOnCooldown("Spirit Bomb") && (WoW.PlayerHasBuff("Soul Fragments") && (WoW.PlayerBuffStacks("Soul Fragments") >= 4)))
 					{
 						WoW.CastSpell("Spirit Bomb");
 						return;
@@ -187,30 +212,26 @@ namespace CloudMagic.Rotation
 						// WoW.CastSpell("Sever");
 						// return;
 					// }
-					if (WoW.CanCast("Soul Carver") && WoW.IsSpellInRange("Soul Carver"))
-					{
-						WoW.CastSpell("Soul Carver");
-						return;
-					}
-					if (WoW.CanCast("Soul Cleave") && !WoW.IsSpellOnCooldown("Soul Cleave") && WoW.IsSpellInRange("Soul Carver") && WoW.Pain > 50 && WoW.PlayerBuffStacks("Soul Fragments") > 4)
-					{
-						WoW.CastSpell("Soul Cleave");
-						return;
-					}
+					// if (WoW.CanCast("Soul Cleave") && !WoW.IsSpellOnCooldown("Soul Cleave") && WoW.IsSpellInRange("Soul Carver") && WoW.Pain > 50 && WoW.PlayerBuffStacks("Soul Fragments") > 4)
+					// {
+						// WoW.CastSpell("Soul Cleave");
+						// return;
+					// }
+
 					if (WoW.CanCast("Sigil of Flame") && (!WoW.TargetHasDebuff("Sigil of Flame") && WoW.IsSpellInRange("Soul Carver")))
 					{
 						WoW.CastSpell("Sigil of Flame");  // NB must have "Concentrated Sigil's" talent
 						return;
 					}
-					if (WoW.CanCast("Sever") && WoW.IsSpellInRange("Soul Carver") && !WoW.CanCast("Soul Carver"))
-					{
-						WoW.CastSpell("Sever");
-						return;
-					}
-				}
-			if (WoW.TargetCastingSpellID != 233441)
-				{
-				}
+
+					//if (WoW.ItemCount("Trinket") == 1 && !WoW.ItemOnCooldown("Trinket") && WoW.IsSpellInRange("Soul Carver"))
+					//{
+					//	WoW.CastSpell("TrinketKeybind");
+					//}
+			}
+			// if (WoW.TargetCastingSpellID != 233441)
+				// {
+				// }
 			// if (WoW.CanCast("Fiery Brand") && !WoW.TargetHasDebuff("Fiery Demise") && WoW.PlayerHasBuff("Spirit of the Darkness Flame") && (WoW.PlayerBuffStacks("Spirit of the Darkness Flame") >= 7))
             // {
                 // WoW.CastSpell("Fiery Brand");
@@ -259,7 +280,7 @@ namespace CloudMagic.Rotation
 /*
 [AddonDetails.db]
 AddonAuthor=LFstyles
-AddonName=_AXCM
+AddonName=
 WoWVersion=Legion - 70200
 [SpellBook.db]
 Spell,203782,Shear,D2
@@ -280,8 +301,9 @@ Spell,232893,Felblade,D7
 Spell,209795,Fracture,F7
 Spell,183752,Consume Magic,J
 Spell,6603,Auto Attack,I
-Spell,0,HealthstoneKeybind,F9
 Spell,247454,Spirit Bomb,F2
+Spell,0,HealthstoneKeybind,F9
+Spell,1,TrinketKeybind,F3
 Aura,203819,Demon Spikes
 Aura,235543,Spirit of the Darkness Flame
 Aura,212818,Fiery Demise
@@ -292,4 +314,5 @@ Aura,187827,Metamorphosis
 Aura,203981,Soul Fragments
 Aura,247456,Frailty
 Item,5512,Healthstone
+Item,142168,Trinket
 */
