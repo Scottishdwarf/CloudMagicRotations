@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -159,16 +159,7 @@ namespace CloudMagic.Rotation
                     {
                         WoW.CastSpell("Stampede");
                         return;
-                    }
-
-                    //Aspect of the Wild
-                    if (WoW.CanCast("Aspect of the Wild")
-                        && !WoW.PlayerHasBuff("Aspect of the Turtle")
-                        && WoW.PlayerHasBuff("Bestial Wrath")
-                        && WoW.PlayerBuffTimeRemaining("Bestial Wrath") >= 700)
-                    {
-                        WoW.CastSpell("Aspect of the Wild");
-                    }
+                    }                    
 
                     //SINGLE TARGET
                     //A Murder of Crows
