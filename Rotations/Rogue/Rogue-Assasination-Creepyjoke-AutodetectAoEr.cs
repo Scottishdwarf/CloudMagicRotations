@@ -62,6 +62,20 @@ namespace CloudMagic.Rotation
 				return 4; 
 			} 
 		}
+		public override int AoE_Range  
+		{
+			get 
+			{ 
+				return 10; 
+			} 
+		}
+        public override int Interrupt_Ability_Id 
+		{ 
+			get 
+			{ 
+				return 1766; 
+			}
+		}
        private readonly Stopwatch stopwatch = new Stopwatch();
 		private  bool lastNamePlate = false;
         public  void SelectRotation(int aoe, int cleave, int single)
@@ -82,28 +96,11 @@ namespace CloudMagic.Rotation
 
         }
        public override void Pulse()
-        {
-			if (stopwatch.ElapsedMilliseconds == 0)
-                    {
-						stopwatch.Start ();
-						Log.WriteCloudMagic("The Cooldown toggle button is now Active (Numpad9). The delay is set to 500ms ( 0.5 second )", Color.Black);	
-						return;
-					}		
+        {		
             {
-			if (DetectKeyPress.GetKeyState(DetectKeyPress.VK_NUMPAD9) < 0)
-            {
-                if(stopwatch.ElapsedMilliseconds > 500)
-                { 
-                    combatRoutine.UseCooldowns = !combatRoutine.UseCooldowns;
-                    stopwatch.Restart();
-                }
-            }
             if (combatRoutine.Type == RotationType.SingleTarget)
-            {
-				
-				if (WoW.IsSpellInRange("Rupture") && WoW.IsInCombat)
-					
-				
+            {				
+				if (WoW.IsSpellInRange("Rupture") && WoW.IsInCombat && !WoW.IsMounted)				
 				{
 					if ( UseCooldowns &&
                         WoW.CanCast("Kingsbane") && WoW.CurrentComboPoints <= 4 && WoW.Energy >= 35 && WoW.PlayerHasBuff("Envenom") && WoW.PlayerBuffTimeRemaining("Envenom") >= 150 &&
@@ -115,7 +112,17 @@ namespace CloudMagic.Rotation
                          {
                         WoW.CastSpell("Kingsbane");
                         return;
-                    }
+                    }			
+					if (!WoW.PlayerHasBuff("Vanish") && WoW.CanCast("Toxic Blade") && WoW.Energy >= 20 && !WoW.IsSpellOnCooldown("Toxic Blade") && WoW.CurrentComboPoints <= 4 && WoW.IsSpellInRange("Garrote") && WoW.Talent (6) == 1)
+					{
+						WoW.CastSpell("Toxic Blade");
+						return;
+					}
+					if (!WoW.PlayerHasBuff("Vanish") && WoW.CanCast("Exsanguinate") && WoW.Energy >= 25 && !WoW.IsSpellOnCooldown("Exsanguinate") && WoW.IsSpellInRange("Garrote") && WoW.Talent (6) == 3)
+					{
+						WoW.CastSpell("Exsanguinate");
+						return;
+					}					
 					if (!WoW.PlayerHasBuff("Vanish") && WoW.CanCast("Garrote") && WoW.Energy >= 45 && !WoW.TargetHasDebuff("Garrote") && !WoW.IsSpellOnCooldown("Garrote") && WoW.CurrentComboPoints <= 4 && WoW.IsSpellInRange("Garrote"))
 					{
 						WoW.CastSpell("Garrote");
@@ -235,11 +242,21 @@ namespace CloudMagic.Rotation
 
             if (combatRoutine.Type == RotationType.AOE || combatRoutine.Type == RotationType.SingleTargetCleave) // Do AoE Target Stuff here
             {
-                if (WoW.HasTarget && WoW.IsSpellInRange("Rupture") && WoW.IsInCombat)
+                if (WoW.HasTarget && WoW.IsSpellInRange("Rupture") && WoW.IsInCombat && !WoW.IsMounted)
 				{
 					if (WoW.Energy >= 35 && WoW.CurrentComboPoints <= 4 && WoW.CanCast("Fan Of Knives"))
 					{
 						WoW.CastSpell("Fan Of Knives");
+						return;
+					}
+					if (!WoW.PlayerHasBuff("Vanish") && WoW.CanCast("Toxic Blade") && WoW.Energy >= 20 && !WoW.IsSpellOnCooldown("Toxic Blade") && WoW.CurrentComboPoints <= 4 && WoW.IsSpellInRange("Garrote") && WoW.Talent (6) == 1)
+					{
+						WoW.CastSpell("Toxic Blade");
+						return;
+					}
+					if (!WoW.PlayerHasBuff("Vanish") && WoW.CanCast("Exsanguinate") && WoW.Energy >= 25 && !WoW.IsSpellOnCooldown("Exsanguinate") && WoW.IsSpellInRange("Garrote") && WoW.Talent (6) == 3)
+					{
+						WoW.CastSpell("Exsanguinate");
 						return;
 					}
 					if (WoW.Energy >= 35 && WoW.CurrentComboPoints == 4 && WoW.TargetHealthPercent <= 35 && WoW.CanCast("Envenom"))
@@ -287,7 +304,7 @@ namespace CloudMagic.Rotation
 [AddonDetails.db]
 AddonAuthor=Creepyjoker
 AddonName=smartie
-WoWVersion=Legion - 70100
+WoWVersion=Legion - 70200
 [SpellBook.db]
 Spell,1943,Rupture,D2
 Spell,79140,Vendetta,D5
@@ -298,6 +315,8 @@ Spell,192759,Kingsbane,D3
 Spell,32645,Envenom,Q
 Spell,51723,Fan Of Knives,X
 Spell,26297,Berserk,D0
+Spell,245388,Toxic Blade,D0
+Spell,200806,Exsanguinate,D0
 Aura,1943,Rupture
 Aura,1784,Stealth
 Aura,703,Garrote

@@ -59,6 +59,20 @@ namespace CloudMagic.Rotation
 				return 3; 
 			} 
 		}
+		public override int AoE_Range  
+		{
+			get 
+			{ 
+				return 8; 
+			} 
+		}
+        public override int Interrupt_Ability_Id 
+		{ 
+			get 
+			{ 
+				return 1766; 
+			}
+		}
         /*public string GetRolltheBonesBuffs()
 	{
 		string[] = new string[] idBuffs { "Shark Infested Waters", "True Bearing", "Jolly Roger", "Broadsides", "Buried Treasure", "Grand Melee"};
@@ -430,31 +444,27 @@ namespace CloudMagic.Rotation
 
         public override void Pulse()
         {
-            if (stopwatch.ElapsedMilliseconds == 0)
             {
-                stopwatch.Start();
-                Log.WriteCloudMagic("The Cooldown toggle button is now Active (Numpad0). The delay is set to 1000ms ( 1 second )", Color.Black);
-                return;
-            }
-            {
-                if (DetectKeyPress.GetKeyState(DetectKeyPress.VK_NUMPAD0) < 0)
-                {
-                    if (stopwatch.ElapsedMilliseconds > 1000)
-                    {
-                        combatRoutine.UseCooldowns = !combatRoutine.UseCooldowns;
-                        stopwatch.Restart();
-                    }
-                }
                 if (combatRoutine.Type == RotationType.SingleTarget)
                 {
-                    if (WoW.IsInCombat && WoW.HasTarget && WoW.IsSpellInRange("Saber Slash"))
+                    if (WoW.IsInCombat && WoW.HasTarget && WoW.IsSpellInRange("Saber Slash") && !WoW.IsMounted)
                     {
-                        /*if (WoW.CanCast("Blade Flurry") && WoW.PlayerHasBuff("Blade Flurry"))
-                {
-                    WoW.CastSpell("Blade Flurry");
-                    Log.Write("Getting Blade Flurry off *Single Target rotation*");
-                    return;
-                }*/
+                        if (WoW.PlayerHasBuff("Blade Flurry"))
+						{
+							WoW.CastSpell("CancleBF");
+							Log.Write("Getting Blade Flurry off *Single Target rotation*");
+							return;
+						}
+						if (UseCooldowns && WoW.CanCast("Berserk") && !WoW.IsSpellOnCooldown("Berserk") && !WoW.PlayerHasBuff ("Adrenaline Rush") && WoW.PlayerRace == "Troll")
+						{
+							WoW.CastSpell("Berserk");
+							return;
+						}
+						if (UseCooldowns && WoW.CanCast("KBW") && !WoW.ItemOnCooldown("KBW") && WoW.PlayerHasBuff ("Adrenaline Rush"))
+						{
+							WoW.CastSpell("KBW") ;
+							return;
+						}
                         if (isTalentSND && !isTalentRTB && WoW.CanCast("Slice and Dice") && !WoW.PlayerHasBuff("Slice and Dice") && WoW.Energy >= RTBEnergy && WoW.CurrentComboPoints >= 5 ||
                             isTalentSND && !isTalentRTB && WoW.CanCast("Slice and Dice") && WoW.PlayerHasBuff("Slice and Dice") && WoW.PlayerBuffTimeRemaining("Slice and Dice") <= 10 &&
                             WoW.Energy >= RTBEnergy && WoW.CurrentComboPoints >= 5)
@@ -608,14 +618,14 @@ namespace CloudMagic.Rotation
 
                 if (combatRoutine.Type == RotationType.AOE)
                 {
-                    if (WoW.IsInCombat && WoW.HasTarget && WoW.IsSpellInRange("Saber Slash"))
+                    if (WoW.IsInCombat && WoW.HasTarget && WoW.IsSpellInRange("Saber Slash") && !WoW.IsMounted)
                     {
-                        /*if (WoW.CanCast("Blade Flurry") && WoW.PlayerHasBuff("Blade Flurry"))
-                {
-                    WoW.CastSpell("Blade Flurry");
-                    Log.Write("Getting Blade Flurry off *Single Target rotation*");
-                    return;
-                }*/
+                        if (WoW.CanCast("Blade Flurry") && !WoW.PlayerHasBuff("Blade Flurry"))
+						{
+							WoW.CastSpell("Blade Flurry");
+							Log.Write("Getting Blade Flurry on *AoE rotation*");
+							return;
+						}
                         if (isTalentSND && !isTalentRTB && WoW.CanCast("Slice and Dice") && !WoW.PlayerHasBuff("Slice and Dice") && WoW.Energy >= RTBEnergy && WoW.CurrentComboPoints >= 5 ||
                             isTalentSND && !isTalentRTB && WoW.CanCast("Slice and Dice") && WoW.PlayerHasBuff("Slice and Dice") && WoW.PlayerBuffTimeRemaining("Slice and Dice") <= 10 &&
                             WoW.Energy >= RTBEnergy && WoW.CurrentComboPoints >= 5)
@@ -623,6 +633,16 @@ namespace CloudMagic.Rotation
                             WoW.CastSpell("Slice and Dice");
                             return;
                         }
+						if (UseCooldowns && WoW.CanCast("Berserk") && !WoW.IsSpellOnCooldown("Berserk") && !WoW.PlayerHasBuff ("Adrenaline Rush") && WoW.PlayerRace == "Troll")
+						{
+							WoW.CastSpell("Berserk");
+							return;
+						}
+						if (UseCooldowns && WoW.CanCast("KBW") && !WoW.ItemOnCooldown("KBW") && WoW.PlayerHasBuff ("Adrenaline Rush"))
+						{
+							WoW.CastSpell("KBW") ;
+							return;
+						}
                         if (isTalentSND && !isTalentRTB && WoW.CanCast("Run Through") && WoW.PlayerHasBuff("Slice and Dice") && WoW.Energy >= RunThroughEnergy && WoW.CurrentComboPoints >= 5 &&
                             WoW.IsSpellInRange("Run Through") && WoW.PlayerBuffTimeRemaining("Slice and Dice") > 10)
                         {
@@ -1104,7 +1124,7 @@ namespace CloudMagic.Rotation
 /*
 [AddonDetails.db]
 AddonAuthor=Creepyjoker
-AddonName=Sucstobeyou
+AddonName=smartie
 WoWVersion=Legion - 70100
 [SpellBook.db]
 Spell,137619,Marked for Death,F
@@ -1119,6 +1139,9 @@ Spell,196937,Ghostly Strike,D4
 Spell,13750,Adrenaline Rush,E
 Spell,193316,Roll the Bones,D5
 Spell,5171,Slice and Dice,D5
+Spell,1,CancleBF,NumPad1
+Spell,26297,Berserk,D0
+Spell,235991,KBW,T
 Aura,13877,Blade Flurry
 Aura,195627,Opportunity
 Aura,5171,Slice and Dice
@@ -1131,4 +1154,5 @@ Aura,51690,Killing Spree
 Aura,196937,Ghostly Strike
 Aura,193356,Broadsides
 Aura,13750,Adrenaline Rush
+Item,144259,KBW
 */
