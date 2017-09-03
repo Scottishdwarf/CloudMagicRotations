@@ -62,7 +62,7 @@ namespace CloudMagic.Rotation
                     && WoW.HealthPercent <= 15
                     && !WoW.IsMounted
                     && WoW.IsInCombat
-                    && WoW.HealthPercent != 0)
+                    && WoW.HealthPercent > 1)
                 {
                     Thread.Sleep(500);
                     WoW.CastSpell("Healthstone");
@@ -75,7 +75,7 @@ namespace CloudMagic.Rotation
                     && WoW.HealthPercent <= 25
                     && !WoW.IsMounted
                     && !WoW.PlayerHasBuff("Feign Death")
-                    && WoW.HealthPercent != 0)
+                    && WoW.HealthPercent > 1)
                 {
                     WoW.CastSpell("Exhilaration");
                     return;
@@ -83,7 +83,7 @@ namespace CloudMagic.Rotation
 
                 //Counter Shot
                 if (WoW.CanCast("Counter Shot")
-                    && WoW.TargetIsCastingAndSpellIsInterruptible
+                    && (WoW.TargetIsCastingAndSpellIsInterruptible)
                     && !WoW.IsSpellOnCooldown("Counter Shot")
                     && WoW.TargetIsCasting
                     && WoW.IsSpellInRange("Counter Shot")
@@ -93,19 +93,29 @@ namespace CloudMagic.Rotation
                     return;
                 }
 
-                ////Revive Pet Call pet
-                if ((!WoW.HasPet || WoW.PetHealthPercent <= 0)
-                    && !WoW.IsMounted
-                    && WoW.HealthPercent != 0
-                    && !WoW.PlayerHasBuff("Feign Death")
-                    && WoW.HealthPercent != 0)
+                //Mend Pet
+                if (WoW.HasPet
+                    && WoW.CanCast("Mend Pet")
+                    && WoW.HealthPercent > 1
+                    && WoW.PetHealthPercent <= 40
+                    && !WoW.PlayerHasBuff("Feign Death"))
                 {
+                    WoW.CastSpell("Mend Pet");
+                    return;
+                }
+
+                //Revive Pet Call pet
+                if (!WoW.HasPet
+                    && !WoW.IsMounted
+                    && WoW.HealthPercent > 1
+                    && !WoW.PlayerHasBuff("Feign Death"))
+                {                    
+                    WoW.CastSpell("Call Pet");
+                    Thread.Sleep(500);
                     WoW.CastSpell("Heart of the Phoenix");
                     WoW.CastSpell("Revive Pet");
-                    Thread.Sleep(500);
-                    WoW.CastSpell("Call Pet");
                     return;
-                }                
+                }
 
                 //Voley
                 if (WoW.CanCast("Voley")
@@ -145,7 +155,7 @@ namespace CloudMagic.Rotation
                     return;
                 }
 
-                if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat && !WoW.IsMounted && !WoW.PlayerIsChanneling && !WoW.PlayerHasBuff("Feign Death") && WoW.HealthPercent != 0 && !WoW.TargetHasBuff("Nether Gale"))
+                if (WoW.HasTarget && WoW.TargetIsEnemy && WoW.IsInCombat && !WoW.IsMounted && !WoW.PlayerIsChanneling && !WoW.PlayerHasBuff("Feign Death") && WoW.HealthPercent > 1 && !WoW.TargetHasBuff("Nether Gale"))
                 {
                     //Cooldowns
                     if (UseCooldowns)
@@ -445,309 +455,30 @@ namespace CloudMagic.Rotation
                 }            
         }
 
-#region Functions
+        #region Functions
 
-        private float GCD
+        public override int Interrupt_Ability_Id
         {
             get
             {
-                if (Convert.ToSingle(150f / (1 + (WoW.HastePercent / 100f))) > 75f)
-                {
-                    return Convert.ToSingle(150f / (1 + (WoW.HastePercent / 100f)));
-                }
-                else
-                {
-                    return 75f;
-                }
+                return 6552;
             }
         }
-
-        private void interruptcast()
-        {
-            Random random = new Random();
-            int randomNumber = random.Next(60, 80);
-            if (WoW.TargetPercentCast > randomNumber && WoW.TargetIsCastingAndSpellIsInterruptible)
-            {
-                if (WoW.PlayerRace == "BloodElf" && WoW.CanCast("Arcane Torrent", true, true, false, false, true) && !WoW.IsSpellOnCooldown("Wind Shear") && WoW.TargetIsCastingAndSpellIsInterruptible) //interupt every spell, not a boss.
-                {
-                    WoW.CastSpell("Arcane Torrent");
-                    return;
-                }
-                if (WoW.PlayerRace == "Pandaren" && WoW.CanCast("Quaking palm", true, true, true, false, true)) //interupt every spell, not a boss.
-                {
-                    WoW.CastSpell("Quaking palm");
-                    return;
-                }
-            }
-        }
-
-        private void DBMPrePull()
-        {
-            if (dbmOn && dbmTimer <= 18 && dbmTimer > 0 && WoW.HasTarget)
-            {
-                if (!WoW.ItemOnCooldown("Prolonged Power"))
-                {
-                    WoW.CastSpell("Prolonged Power");
-                    return;
-                }
-            }
-        }
-
-        private void Defensive()
-        {
-            if (WoW.PlayerRace == "Dreanei" && WoW.HealthPercent < 80 && !WoW.IsSpellOnCooldown("Gift Naaru"))
-            {
-                WoW.CastSpell("Gift Naaru");
-            }
-        }
-
-        private void Stuns()
-        {
-            if (!WoW.PlayerIsCasting)
-            {
-                if (WoW.PlayerRace == "Tauren​" && !WoW.IsMoving && WoW.CanCast("War Stomp") && !WoW.IsSpellOnCooldown("War Stomp"))
-                {
-                    WoW.CastSpell("War Stomp");
-                    return;
-                }
-            }
-        }
-
-        private void DPSRacial()
-        {
-            if (!WoW.PlayerIsCasting)
-            {                
-                if (WoW.PlayerRace == "Troll" && WoW.CanCast("Berserking") && !WoW.IsSpellOnCooldown("Berserking"))
-                {
-                    WoW.CastSpell("Berserking");
-                    return;
-                }
-
-                if (WoW.PlayerRace == "Orc" && WoW.CanCast("Blood Fury") && !WoW.IsSpellOnCooldown("Blood Fury"))
-                {
-                    WoW.CastSpell("Blood Fury");
-                    return;
-                }
-            }
-
-        }
-
-        private void UsePotion()
-        {
-            if (!WoW.ItemOnCooldown("Prolonged Power"))
-            {
-                WoW.CastSpell("Prolonged Power");
-                return;
-            }
-        }        
 
         private static bool lastNamePlate = true;
-        public void SelectRotation(int aoe, int cleave, int single)
+        public override int AoE_Range
         {
-            int count = WoW.CountEnemyNPCsInRange;
-            if (!lastNamePlate)
+            get
             {
-                combatRoutine.ChangeType(RotationType.SingleTarget);
-                lastNamePlate = true;
+                return 8;
             }
-            lastNamePlate = WoW.Nameplates;
-            if (count >= aoe)
-                combatRoutine.ChangeType(RotationType.AOE);
-            if (count == cleave)
-                combatRoutine.ChangeType(RotationType.SingleTargetCleave);
-            if (count <= single)
-                combatRoutine.ChangeType(RotationType.SingleTarget);
-
         }
 
         public override int SINGLE { get { return 1; } }   //please Set between 1-99 NpC in range for ST if not desired set to 99
         public override int CLEAVE { get { return 2; } }   //please Set between 1-99 NpC in range for AOE  if not desired set to 99
         public override int AOE { get { return 4; } }      //please Set between 1-99 NpC in range for Cleave if not desired set to 99
 
-      /*  private void ChangeTarget()
-        {
-            await Task.Run(() =>
-            {
-                if (PlayerSpec == "Enhancement" && !TargetInfo.Melee)
-                    WoW.KeyPressRelease(WoW.Keys.Tab);
-                if (PlayerSpec == "Elemental " && !TargetInfo.Range)
-                    WoW.KeyPressRelease(WoW.Keys.Tab);
-            });
-        }*/
-
-        private static bool setBonus2Pc
-        {
-            get
-            {
-                var control = WoW.GetBlockColor(9, 24);
-                if (Convert.ToInt32(Math.Round(Convert.ToSingle(control.G))) == 0 && Convert.ToInt32(Math.Round(Convert.ToSingle(control.R) * 100 / 255)) >= 2)
-                {
-
-                    return true;
-                }
-                else
-                    return false;
-            }
-        }
-
-        private static bool setBonus4Pc
-        {
-            get
-            {
-                var control = WoW.GetBlockColor(9, 24);
-                //Log.Write("Bonus location: " + Convert.ToInt32(Math.Round(Convert.ToSingle(control.R) * 100 / 255)));
-                if (Convert.ToInt32(Math.Round(Convert.ToSingle(control.G))) == 0 && Convert.ToInt32(Math.Round(Convert.ToSingle(control.R) * 100 / 255)) >= 4)
-                {
-
-                    return true;
-                }
-                else
-                    return false;
-            }
-        }
-
-        private static string PlayerSpec
-        {
-            get
-            {
-                var c = WoW.GetBlockColor(10, 24);
-                try
-                {
-                    if (c.B == 0) return "none";
-                    string[] Spec = new string[] { "None", "Blood", "Frost", "Unholy", "Havoc", "Vengeance", "Balance", "Feral", "Guardian", "Restoration", "Beast Mastery", "Marksmanship", "Survival", "Arcane", "Fire", "Frost", "Brewmaster", "Mistweaver", "Windwalker", "Holy", "Protection", "Retribution", "Discipline", "HolyPriest", "Shadow", "Assassination", "Outlaw", "Subtlety", "Elemental", "Enhancement", "RestorationShaman", "Affliction", "Arms", "Fury", "Protection", "Demonology", "Destruction", "none" };
-                    var race = Convert.ToInt32(Math.Round(Convert.ToSingle(c.G))) * 100 / 255;
-                    var spec = Spec[race];
-
-                    return spec;
-                }
-                catch (Exception ex)
-                {
-                    Log.Write("Error in Spec  Green = " + c.G);
-
-                    Log.Write(ex.Message, Color.Red);
-                }
-                return "none";
-            }
-        }
-
-        private static int npcCount
-        {
-            get
-            {
-                var c = WoW.GetBlockColor(11, 23);
-                try
-                {
-                    return Convert.ToInt32(Math.Round(Convert.ToSingle(c.G) * 100 / 255));
-                }
-                catch (Exception ex)
-                {
-                    Log.Write("Error in NamePlate  Green = " + c.G);
-
-                    Log.Write(ex.Message, Color.Red);
-                }
-                return 1;
-            }
-        }
-
-        private static bool Nameplates
-        {
-            get
-            {
-                var c = WoW.GetBlockColor(11, 23);
-                try
-                {
-                    if (Convert.ToInt32(Math.Round(Convert.ToSingle(c.B) / 255)) == 1)
-                        return true;
-                    else
-                        return false;
-
-                }
-                catch (Exception ex)
-                {
-                    Log.Write("Error in NamePlate  Green = " + c.G);
-
-                    Log.Write(ex.Message, Color.Red);
-                }
-                return false;
-            }
-        }
-
-        private static int RaidSize
-        {
-            get
-            {
-                var c = WoW.GetBlockColor(11, 23);
-                try
-                {
-                    int players = 0;
-                    if (Convert.ToInt32(Math.Round(Convert.ToSingle(c.R)) * 100 / 255) > 0)
-                        players = (Convert.ToInt32(Math.Round(Convert.ToSingle(c.R)) * 100 / 255));
-                    if (Convert.ToInt32(Math.Round(Convert.ToSingle(c.R)) * 100 / 255) == 100)
-                        players = 1;
-                    if (players > 30)
-                        players = 30;
-                    if (players <= 5)
-                        players = players - 1;
-                    return players;
-                }
-                catch (Exception ex)
-                {
-                    Log.Write("Error in Players  Green = " + c.G);
-
-                    Log.Write(ex.Message, Color.Red);
-                }
-                return 1;
-            }
-        }
-
-        private static bool dbmOn
-        {
-            get
-            {
-                Color pixelColor = Color.FromArgb(0);
-                var c = WoW.GetBlockColor(6, 24);
-                try
-                {
-                    if (Convert.ToInt32(Math.Round(Convert.ToSingle(pixelColor.R) / 255)) == 1)
-                        return true;
-                    else
-                        return false;
-
-                }
-                catch (Exception ex)
-                {
-                    Log.Write("Error in DBMON  Green = " + c.G);
-
-                    Log.Write(ex.Message, Color.Red);
-                }
-                return false;
-            }
-        }
-
-        private static int dbmTimer
-        {
-            get
-            {
-                Color pixelColor = Color.FromArgb(0);
-                var c = WoW.GetBlockColor(6, 24);
-                try
-                {
-                    if (Convert.ToInt32(Math.Round(Convert.ToSingle(pixelColor.R) / 255)) == 1)
-                        return Convert.ToInt32(Math.Round(Convert.ToSingle(pixelColor.G) * 100 / 255));
-                    else
-                        return 0;
-                }
-                catch (Exception ex)
-                {
-                    Log.Write("Error in Dbm Timer Green = " + c.G);
-
-                    Log.Write(ex.Message, Color.Red);
-                }
-                return 0;
-            }
-        }
-
-#endregion 
+        #endregion 
 
     }
 }
