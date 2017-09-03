@@ -1,18 +1,16 @@
-//
-// ReSharper disable UnusedMember.Global
-
+using CloudMagic.Helpers;
 using System.Diagnostics;
 using System.Drawing;
+using System;
+using System.Threading;
 using System.Windows.Forms;
 using CloudMagic.GUI;
-using CloudMagic.Helpers;
+
 
 namespace CloudMagic.Rotation
 {
     public class DemonHunterVeng : CombatRoutine
     {
-        private readonly Stopwatch interruptwatch = new Stopwatch();
-		
         public override string Name 
 		{
 			get
@@ -27,6 +25,23 @@ namespace CloudMagic.Rotation
 			{
 				return "DemonHunter";
 			}
+		}
+		
+		// AoE_Range
+        //  5,6,8,10,15,20,25,30,35,40,45,50,60,70,80,90,100 Will default to 5 if set incorrectly
+        public override int AoE_Range
+        { 
+			get 
+			{ 
+				return 8; 
+			} 
+		}
+        public override int Interrupt_Ability_Id
+        { 
+			get 
+			{ 
+				return 183752; /*Consume Magic ID*/ 
+			} 
 		}
 		public override int SINGLE 
 		{
@@ -67,27 +82,26 @@ namespace CloudMagic.Rotation
     {		
 			if (WoW.IsMounted) return;
 		
-            if (WoW.TargetIsCasting && interruptwatch.ElapsedMilliseconds > 1200)
-                    {
-                        if (!WoW.IsSpellOnCooldown("Sigil of Silence") && WoW.WasLastCasted("Arcane Torrent"))
-                        {
+            // if (WoW.TargetIsCasting && interruptwatch.ElapsedMilliseconds > 1200)
+                    // {
+                        // if (!WoW.IsSpellOnCooldown("Sigil of Silence") && WoW.WasLastCasted("Arcane Torrent"))
+                        // {
                             
-                            WoW.CastSpell("Sigil of Silence");
-                            interruptwatch.Reset();
-                            interruptwatch.Start();
-                            return;
-                        }
+                            // WoW.CastSpell("Sigil of Silence");
+                            // interruptwatch.Reset();
+                            // interruptwatch.Start();
+                            // return;
+                        // }
 
-                        if (!WoW.IsSpellOnCooldown("Arcane Torrent") && WoW.WasLastCasted("Sigil of Silence"))
-                        {
+                        // if (!WoW.IsSpellOnCooldown("Arcane Torrent") && WoW.WasLastCasted("Sigil of Silence"))
+                        // {
                             
-                            WoW.CastSpell("Arcane Torrent");
-                            interruptwatch.Reset();
-                            interruptwatch.Start();
-                            return;
-                        }
-                    }
-		    
+                            // WoW.CastSpell("Arcane Torrent");
+                            // interruptwatch.Reset();
+                            // interruptwatch.Start();
+                            // return;
+                        // }
+                    // }
             if (UseCooldowns)
             {
             }
@@ -104,7 +118,7 @@ namespace CloudMagic.Rotation
 			{
 			if (!WoW.PlayerHasBuff("Metamorphosis"))
 			{
-				if (!WoW.PlayerIsCasting && WoW.ItemCount("Healthstone") >= 1 && !WoW.ItemOnCooldown("Healthstone") && WoW.HealthPercent < 40)
+				if (!WoW.PlayerIsCasting && WoW.ItemCount("Healthstone") >= 1 && !WoW.ItemOnCooldown("Healthstone") && WoW.HealthPercent < 25)
 				{
 					WoW.CastSpell("HealthstoneKeybind");
 				}
@@ -166,10 +180,11 @@ namespace CloudMagic.Rotation
 					WoW.CastSpell("Sigil of Flame");  // Must have "Concentrated Sigil's" talent and macro set up
 					return;
 				}
-				//if (WoW.ItemCount("Trinket") == 1 && !WoW.ItemOnCooldown("Trinket") && WoW.IsSpellInRange("Soul Carver"))
-				//{
-				//	WoW.CastSpell("TrinketKeybind");
-				//}
+				// if (WoW.ItemCount("Trinket") == 1 && !WoW.ItemOnCooldown("Trinket") && WoW.IsSpellInRange("Soul Carver"))
+				// {
+					// WoW.CastSpell("TrinketKeybind");
+					// return;
+				// }
 			}
 			if (WoW.PlayerHasBuff("Metamorphosis"))
 			{
@@ -178,7 +193,7 @@ namespace CloudMagic.Rotation
 						WoW.CastSpell("Soul Carver");
 						return;
 					}
-					if (WoW.CanCast("Sever") && WoW.IsSpellInRange("Soul Carver"))
+					if (WoW.CanCast("Sever") && WoW.IsSpellInRange("Soul Carver") && WoW.PlayerBuffStacks("Soul Fragments") <= 3)
 					{
 						WoW.CastSpell("Sever");
 						return;
@@ -197,39 +212,34 @@ namespace CloudMagic.Rotation
 						WoW.CastSpell("Immolation Aura");
 						return;
 					}
-					if (WoW.CanCast("Soul Cleave") && !WoW.IsSpellOnCooldown("Soul Cleave") && WoW.IsSpellInRange("Soul Carver") && WoW.Pain > 100)
+					if (WoW.CanCast("Soul Cleave") && !WoW.IsSpellOnCooldown("Soul Cleave") && WoW.IsSpellInRange("Soul Carver") && (WoW.Pain > 50 && WoW.PlayerBuffStacks("Soul Fragments") >= 3))
 					{
 						WoW.CastSpell("Soul Cleave");
 						return;
 					}
-					if (WoW.CanCast("Spirit Bomb") && !WoW.IsSpellOnCooldown("Spirit Bomb") && (WoW.PlayerHasBuff("Soul Fragments") && (WoW.PlayerBuffStacks("Soul Fragments") >= 4)))
-					{
-						WoW.CastSpell("Spirit Bomb");
-						return;
-					}
+					// if (WoW.CanCast("Spirit Bomb") && !WoW.IsSpellOnCooldown("Spirit Bomb") && (WoW.PlayerHasBuff("Soul Fragments") && (WoW.PlayerBuffStacks("Soul Fragments") >= 5)))
+					// {
+						// WoW.CastSpell("Spirit Bomb");
+						// return;
+					// }
 				 // if (WoW.CanCast("Sever") && !WoW.CanCast("Soul Carver") && WoW.PlayerBuffStacks("Soul Fragments") < 5)
 					// {
 						// WoW.CastSpell("Sever");
 						// return;
 					// }
-					// if (WoW.CanCast("Soul Cleave") && !WoW.IsSpellOnCooldown("Soul Cleave") && WoW.IsSpellInRange("Soul Carver") && WoW.Pain > 50 && WoW.PlayerBuffStacks("Soul Fragments") > 4)
-					// {
-						// WoW.CastSpell("Soul Cleave");
-						// return;
-					// }
-
 					if (WoW.CanCast("Sigil of Flame") && (!WoW.TargetHasDebuff("Sigil of Flame") && WoW.IsSpellInRange("Soul Carver")))
 					{
 						WoW.CastSpell("Sigil of Flame");  // NB must have "Concentrated Sigil's" talent
 						return;
 					}
 
-					//if (WoW.ItemCount("Trinket") == 1 && !WoW.ItemOnCooldown("Trinket") && WoW.IsSpellInRange("Soul Carver"))
-					//{
-					//	WoW.CastSpell("TrinketKeybind");
-					//}
+					// if (WoW.ItemCount("Trinket") == 1 && !WoW.ItemOnCooldown("Trinket") && WoW.IsSpellInRange("Soul Carver"))
+					// {
+						// WoW.CastSpell("TrinketKeybind");
+						// return;
+					// }
 			}
-			// if (WoW.TargetCastingSpellID != 233441)
+			// if (WoW.TargetCastingSpellID == 233441)
 				// {
 				// }
 			// if (WoW.CanCast("Fiery Brand") && !WoW.TargetHasDebuff("Fiery Demise") && WoW.PlayerHasBuff("Spirit of the Darkness Flame") && (WoW.PlayerBuffStacks("Spirit of the Darkness Flame") >= 7))
