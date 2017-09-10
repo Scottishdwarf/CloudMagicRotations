@@ -72,6 +72,7 @@ namespace CloudMagic.Rotation
             Log.WriteCloudMagic("Welcome to LFstyles Vengeance Demon Hunter ", Color.Black);
             Log.Write("Suggested build: 1222331", Color.Green);
 			Log.Write("Must Use this Macro to manually use infernal strike: #showtooltip /cast [@cursor] Infernal strike", Color.Purple);
+			Log.Write("To place sigils at the cursor without the concentrated sigils talent use the following macro and replace spell with the sigil you intend to use, you can add a macro for any sigil to land at the cursor location: #showtooltip /cast [@cursor] spell", Color.Purple);
         }
 
         public override void Stop()
@@ -127,6 +128,11 @@ namespace CloudMagic.Rotation
 					WoW.CastSpell("Throw Glaive");
 					return; 
 				}
+				if (WoW.CanCast("Sigil of Flame") && (!WoW.TargetHasDebuff("Sigil of Flame") && WoW.IsSpellInRange("Soul Carver")))
+				{
+					WoW.CastSpell("Sigil of Flame");  // Must have "Concentrated Sigil's" talent or macro set up
+					return;
+				}
 				if (WoW.CanCast("Immolation Aura") && WoW.IsSpellInRange("Soul Carver"))  
 				{
 					WoW.CastSpell("Immolation Aura");
@@ -166,7 +172,13 @@ namespace CloudMagic.Rotation
 					// WoW.CastSpell("Demon Spikes");
                 // }
 
-				if (WoW.CanCast("Shear") && WoW.IsSpellInRange("Soul Carver") && WoW.Pain < 30 || WoW.Pain < 100 && !WoW.PlayerHasBuff("Soul Fragments")) // Pain Generator
+				// if (WoW.CanCast("Shear") && WoW.IsSpellInRange("Soul Carver") && WoW.Pain < 30 || WoW.Pain < 100 && !WoW.PlayerHasBuff("Soul Fragments")) // Pain Generator
+				// {
+					// WoW.CastSpell("Shear");
+					// return;
+				// }
+				
+				if (WoW.CanCast("Shear") && WoW.IsSpellInRange("Soul Carver") && WoW.Pain < 30 && !WoW.PlayerHasBuff("Soul Fragments"))// Pain Generator
 				{
 					WoW.CastSpell("Shear");
 					return;
@@ -175,11 +187,7 @@ namespace CloudMagic.Rotation
 				{
 					WoW.CastSpell("Demon Spikes");
 				}
-				if (WoW.CanCast("Sigil of Flame") && (!WoW.TargetHasDebuff("Sigil of Flame") && WoW.IsSpellInRange("Soul Carver")))
-				{
-					WoW.CastSpell("Sigil of Flame");  // Must have "Concentrated Sigil's" talent and macro set up
-					return;
-				}
+
 				// if (WoW.ItemCount("Trinket") == 1 && !WoW.ItemOnCooldown("Trinket") && WoW.IsSpellInRange("Soul Carver"))
 				// {
 					// WoW.CastSpell("TrinketKeybind");
@@ -188,6 +196,11 @@ namespace CloudMagic.Rotation
 			}
 			if (WoW.PlayerHasBuff("Metamorphosis"))
 			{
+					if (WoW.CanCast("Sigil of Flame") && (!WoW.TargetHasDebuff("Sigil of Flame") && WoW.IsSpellInRange("Soul Carver")))
+					{
+						WoW.CastSpell("Sigil of Flame");  // NB must have "Concentrated Sigil's" talent or macro setup
+						return;
+					}
 					if (WoW.CanCast("Soul Carver") && WoW.IsSpellInRange("Soul Carver"))
 					{
 						WoW.CastSpell("Soul Carver");
@@ -227,11 +240,7 @@ namespace CloudMagic.Rotation
 						// WoW.CastSpell("Sever");
 						// return;
 					// }
-					if (WoW.CanCast("Sigil of Flame") && (!WoW.TargetHasDebuff("Sigil of Flame") && WoW.IsSpellInRange("Soul Carver")))
-					{
-						WoW.CastSpell("Sigil of Flame");  // NB must have "Concentrated Sigil's" talent
-						return;
-					}
+
 
 					// if (WoW.ItemCount("Trinket") == 1 && !WoW.ItemOnCooldown("Trinket") && WoW.IsSpellInRange("Soul Carver"))
 					// {
@@ -239,9 +248,10 @@ namespace CloudMagic.Rotation
 						// return;
 					// }
 			}
-			// if (WoW.TargetCastingSpellID == 233441)
-				// {
-				// }
+			// if (WoW.TargetIsChanneling == 233441)
+					// {
+							// WoW.CastSpell("Empower Wards");
+					// }
 			// if (WoW.CanCast("Fiery Brand") && !WoW.TargetHasDebuff("Fiery Demise") && WoW.PlayerHasBuff("Spirit of the Darkness Flame") && (WoW.PlayerBuffStacks("Spirit of the Darkness Flame") >= 7))
             // {
                 // WoW.CastSpell("Fiery Brand");
@@ -314,6 +324,7 @@ Spell,6603,Auto Attack,I
 Spell,247454,Spirit Bomb,F2
 Spell,0,HealthstoneKeybind,F9
 Spell,1,TrinketKeybind,F3
+Spell,218256,Empower Wards,F6
 Aura,203819,Demon Spikes
 Aura,235543,Spirit of the Darkness Flame
 Aura,212818,Fiery Demise
