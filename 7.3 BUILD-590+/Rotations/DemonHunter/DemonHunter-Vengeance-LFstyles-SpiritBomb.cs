@@ -143,7 +143,7 @@ namespace CloudMagic.Rotation
 					WoW.CastSpell("Soul Carver");
 					return;
 				}
-				if (WoW.CanCast("Fracture") && WoW.IsSpellInRange("Soul Carver") && (WoW.Pain > 30 && (WoW.PlayerBuffStacks("Soul Fragments") < 3)))
+				if (WoW.CanCast("Fracture") && WoW.IsSpellInRange("Soul Carver") && (WoW.Pain > 30 && (WoW.PlayerBuffStacks("Soul Fragments") < 4)))
 				{
 					WoW.CastSpell("Fracture");
 					return;
@@ -153,7 +153,7 @@ namespace CloudMagic.Rotation
 					WoW.CastSpell("Spirit Bomb");
 					return;
 				}
-				if (WoW.CanCast("Spirit Bomb") && !WoW.IsSpellOnCooldown("Spirit Bomb") && (WoW.PlayerHasBuff("Soul Fragments") && (WoW.PlayerBuffStacks("Soul Fragments") >= 3)))
+				if (WoW.CanCast("Spirit Bomb") && !WoW.IsSpellOnCooldown("Spirit Bomb") && (WoW.PlayerHasBuff("Soul Fragments") && (WoW.PlayerBuffStacks("Soul Fragments") >= 4)))
 				{
 					WoW.CastSpell("Spirit Bomb");
 					return;
@@ -178,7 +178,12 @@ namespace CloudMagic.Rotation
 					// return;
 				// }
 				
-				if (WoW.CanCast("Shear") && WoW.IsSpellInRange("Soul Carver") && WoW.Pain < 30 && !WoW.PlayerHasBuff("Soul Fragments"))// Pain Generator
+				if (WoW.CanCast("Shear") && WoW.IsSpellInRange("Soul Carver") && WoW.Pain <= 30 && !WoW.PlayerHasBuff("Soul Fragments"))// Pain Generator
+				{
+					WoW.CastSpell("Shear");
+					return;
+				}
+				if (WoW.CanCast("Shear") && WoW.IsSpellInRange("Soul Carver") && WoW.Pain <= 30)// Pain Generator
 				{
 					WoW.CastSpell("Shear");
 					return;
@@ -206,7 +211,7 @@ namespace CloudMagic.Rotation
 						WoW.CastSpell("Soul Carver");
 						return;
 					}
-					if (WoW.CanCast("Sever") && WoW.IsSpellInRange("Soul Carver") && WoW.PlayerBuffStacks("Soul Fragments") <= 3)
+					if (WoW.CanCast("Sever") && WoW.IsSpellInRange("Soul Carver") && WoW.PlayerBuffStacks("Soul Fragments") <= 3 && WoW.Pain <=90)
 					{
 						WoW.CastSpell("Sever");
 						return;
@@ -230,11 +235,11 @@ namespace CloudMagic.Rotation
 						WoW.CastSpell("Soul Cleave");
 						return;
 					}
-					// if (WoW.CanCast("Spirit Bomb") && !WoW.IsSpellOnCooldown("Spirit Bomb") && (WoW.PlayerHasBuff("Soul Fragments") && (WoW.PlayerBuffStacks("Soul Fragments") >= 5)))
-					// {
-						// WoW.CastSpell("Spirit Bomb");
-						// return;
-					// }
+					if (WoW.CanCast("Spirit Bomb") && !WoW.IsSpellOnCooldown("Spirit Bomb") && (WoW.PlayerHasBuff("Soul Fragments") && (WoW.Pain >=90)))
+					{
+						WoW.CastSpell("Spirit Bomb");
+						return;
+					}
 				 // if (WoW.CanCast("Sever") && !WoW.CanCast("Soul Carver") && WoW.PlayerBuffStacks("Soul Fragments") < 5)
 					// {
 						// WoW.CastSpell("Sever");
