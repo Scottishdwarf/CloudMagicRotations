@@ -258,6 +258,11 @@ namespace CloudMagic.Rotation
 						WoW.CastSpell("Soul Cleave");
 						return;
 					}
+					if (WoW.CanCast("Fracture") && WoW.IsSpellInRange("Soul Carver") && (WoW.Pain >= 90 && (!WoW.PlayerHasBuff("Soul Fragments"))))
+				    	{
+						WoW.CastSpell("Fracture");
+					    	return;
+				    	}
 					// if (WoW.CanCast("Spirit Bomb") && !WoW.IsSpellOnCooldown("Spirit Bomb") && (WoW.PlayerHasBuff("Soul Fragments") && (WoW.PlayerBuffStacks("Soul Fragments") >= 5)))
 					// {
 						// WoW.CastSpell("Spirit Bomb");
