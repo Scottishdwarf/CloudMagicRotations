@@ -134,7 +134,7 @@ namespace CloudMagic.Rotation
                             WoW.CastSpell("Felblade"); //Felblade only at melee range to not make worse (if you need to gtfo)
                             return;
                         }
-                        if (WoW.CanCast("Eye Beam") && WoW.Fury >= 50 && WoW.IsSpellInRange("Chaos Strike") && (DetectKeyPress.GetKeyState(0x5A) < 0))
+                        if (WoW.CanCast("Eye Beam") && WoW.Fury >= 50 && WoW.IsSpellInRange("Chaos Strike") && (DetectKeyPress.GetAsyncKeyState(0x5A) < 0))
                         {																
                             WoW.CastSpell("Eye Beam"); //Use Eyebeam by Z press
                             return;
@@ -189,7 +189,7 @@ namespace CloudMagic.Rotation
                         WoW.CastSpell("Felblade"); //Felblade only at melee range to not make worse (if you need to gtfo)
                         return;
                     }
-                    if (WoW.CanCast("Eye Beam") && WoW.Fury >= 50 && WoW.IsSpellInRange("Chaos Strike") && (DetectKeyPress.GetKeyState(0x5A) < 0))
+                    if (WoW.CanCast("Eye Beam") && WoW.Fury >= 50 && WoW.IsSpellInRange("Chaos Strike") && (DetectKeyPress.GetAsyncKeyState(0x5A) < 0))
                     {
                        WoW.CastSpell("Eye Beam"); //Use Eyebeam by Z press
                         return;
