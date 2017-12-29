@@ -88,9 +88,9 @@ namespace CloudMagic.Rotation
 					WoW.CastSpell("Healing Elixier");
 					return;
 				}
-				if (WoW.CanCast("Überschwung") && !WoW.IsSpellOnCooldown("Überschwung") && WoW.HealthPercent <= 10 && WoW.Energy >= 30)
+				if (WoW.CanCast("Effuse") && !WoW.IsSpellOnCooldown("Effuse") && WoW.HealthPercent <= 10 && WoW.Energy >= 30)
 				{
-					WoW.CastSpell("Überschwung");
+					WoW.CastSpell("Effuse");
 					return;
 				}	
 				if (WoW.TargetIsCastingAndSpellIsInterruptible && WoW.TargetPercentCast >= 60 && WoW.CanCast("Spear Hand Strike") && !WoW.IsSpellOnCooldown("Spear Hand Strike") && WoW.IsSpellInRange("Spear Hand Strike"))
@@ -111,12 +111,12 @@ namespace CloudMagic.Rotation
 						WoW.CastSpell("Serenity");
 						return;
 					}
-					if (!WoW.ItemOnCooldown("Vial of Ceaseless Toxins") && !WoW.IsSpellOnCooldown("Vial of Ceaseless Toxins"))
+					/*if (!WoW.ItemOnCooldown("Vial of Ceaseless Toxins") && !WoW.IsSpellOnCooldown("Vial of Ceaseless Toxins"))
 					{
 						WoW.CastSpell("Vial of Ceaseless Toxins") ;
 						return;
 					}
-					/*if (WoW.CanCast("EWF") && !WoW.IsSpellOnCooldown("EWF") && WoW.Talent (7) != 3 && WoW.IsSpellInRange("Tiger Palm"))
+					if (WoW.CanCast("EWF") && !WoW.IsSpellOnCooldown("EWF") && WoW.Talent (7) != 3 && WoW.IsSpellInRange("Tiger Palm"))
 					{
 						WoW.CastSpell("EWF");
 						return;
@@ -223,7 +223,7 @@ Spell,101546,Spinning Crane Kick,D3
 Spell,152173,Serenity,T
 Spell,152175,WhirlingDragonPunch,F7
 Spell,122281,Healing Elixier,F2
-Spell,116694,Überschwung,F3
+Spell,116694,Effuse,F3
 Spell,115288,Energizing Elixir,D8
 Spell,116705,Spear Hand Strike,F12
 Spell,147011,Vial of Ceaseless Toxins,D7
