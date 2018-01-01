@@ -461,205 +461,236 @@ namespace CloudMagic.Rotation
 					
 				}
                 // Moonkin in Combat
-                if (!WoW.PlayerIsCasting && WoW.IsInCombat && WoW.CanCast("Moonkin") && !WoW.PlayerHasBuff("Moonkin"))
+                if (!WoW.PlayerIsCasting && WoW.IsInCombat && WoW.CanCast("Moonkin") && !WoW.PlayerHasBuff("Moonkin") && !WoW.PlayerHasBuff("Bear Form"))
                 {
                     WoW.CastSpell("Moonkin");
                     
                     return;
                 }
-                // If Blessing of the Ancients get it up.
-                if (BlessingOfAncients && WoW.IsInCombat && WoW.CanCast("BlessingOfAncients") && !WoW.PlayerHasBuff("BlessingOfElune") && !WoW.PlayerHasBuff("BlessingOfAnshe") && WoW.HealthPercent >= 10)
-                {
-                    WoW.CastSpell("BlessingOfAncients");
-                    
-                    return;
-                }
-                if (BlessingOfAncients && WoW.IsInCombat && WoW.CanCast("BlessingOfAncients") && WoW.PlayerHasBuff("BlessingOfAnshe") && WoW.HealthPercent >= 10)
-                {
-                    WoW.CastSpell("BlessingOfAncients");
-                    
-                    return;
-                }
-                // Restoration Affinity
-                if (HealingLowHP && !WoW.PlayerHasBuff("Moonkin") && WoW.HealthPercent >= 1)
-                {
-                    // If dont have rejuvenation buff
-                    if (WoW.CanCast("Rejuvenation") && !WoW.PlayerHasBuff("Rejuvenation") && WoW.HealthPercent <= 50 && WoW.HealthPercent >= 1)
+				if (WoW.PlayerHasBuff("Bear Form") && WoW.Talent (3) == 2)
+				{
+					if (!WoW.IsSpellOnCooldown("Frenzied Regeneration") && WoW.Level >= 40 && WoW.HealthPercent <= 70 && !WoW.PlayerHasBuff("Frenzied Regeneration") && WoW.Rage >= 10)
+					{
+						WoW.CastSpell("Frenzied Regeneration");
+					}
+					if (WoW.CanCast("Moonfire") && !WoW.TargetHasDebuff("Moonfire"))
+					{
+						WoW.CastSpell("Moonfire");
+						return;
+					}
+					if (WoW.CanCast("Ironfur") && WoW.Level >= 20 && WoW.HealthPercent <= 90 && WoW.Rage >= 45)
+					{
+						WoW.CastSpell("Ironfur");
+						return;
+					}
+					if (WoW.IsSpellInRange("Moonfire") && WoW.CanCast("Moonfire") && !WoW.TargetHasDebuff ("Moonfire"))
                     {
-                        WoW.CastSpell("Rejuvenation");
+                        WoW.CastSpell("Moonfire");
                         return;
                     }
-                    // If can cast swiftment
-                    if (WoW.CanCast("Swiftmend") && WoW.HealthPercent <= 50 && !WoW.IsSpellOnCooldown("Swiftmend") && WoW.HealthPercent >= 1)
-                    {
-                        WoW.CastSpell("Swiftmend");
+					if (WoW.CanCast("ThrashBear") && WoW.Level >= 12 && !WoW.IsSpellOnCooldown("ThrashBear") && WoW.IsSpellInRange("Mangle"))
+					{
+                        WoW.CastSpell("ThrashBear");
                         return;
                     }
-                    // Return to moonkin pew pew
-                    if (WoW.CanCast("Moonkin") && WoW.IsSpellOnCooldown("Swiftmend") && WoW.PlayerHasBuff("Rejuvenation"))
+                    if (WoW.CanCast("Mangle") && WoW.Level >= 10 && WoW.IsSpellInRange("Mangle"))
                     {
-                        WoW.CastSpell("Moonkin");
-                        return;
-                    }
-                }
-                // Renewal if under 30% HP
-                if (Renewal && WoW.CanCast("Renewal") && WoW.HealthPercent >= 1 && WoW.HealthPercent <= 30)
-                {
-                    WoW.CastSpell("Renewal");
-                    return;
-                }
-                // Emerald Dreamcatcher Rotation
-                if (EmeraldDreamcatcher && WoW.IsInCombat && WoW.HasTarget && WoW.TargetIsEnemy && WoW.PlayerHasBuff("Moonkin"))
-                {
-                    // actions.ed=astral_communion,if=astral_power.deficit>=75&buff.the_emerald_dreamcatcher.up
-                    if (AstralCommunion && UseCooldowns && WoW.CanCast("AstralCommunion") && !WoW.IsSpellOnCooldown("AstralCommunion") && WoW.CurrentAstralPower <= 25 && WoW.PlayerHasBuff("EmeraldDreamcatcherBuff"))
-                    {
-                        WoW.CastSpell("AstralCommunion");
-                        return;
-                    }
-                    // actions.ed+=/incarnation,if=astral_power>=85&!buff.the_emerald_dreamcatcher.up|buff.bloodlust.up
-                    if (Incarnation && UseCooldowns && WoW.CanCast("Incarnation") && !WoW.IsSpellOnCooldown("Incarnation") &&WoW.CurrentAstralPower >= 85 && (!WoW.PlayerHasBuff("EmeraldDreamcatcherBuff") || WoW.PlayerHasBuff("Bloodlust")))
-                    {
-                        WoW.CastSpell("Incarnation");
-                        return;
-                    }
-                    // actions.ed+=/celestial_alignment,if=astral_power>=85&!buff.the_emerald_dreamcatcher.up
-                    if (!Incarnation && UseCooldowns && WoW.CanCast("CelestialAlignment") && !WoW.IsSpellOnCooldown("CelestialAlignment") && WoW.CurrentAstralPower >= 85 && !WoW.PlayerHasBuff("EmeraldDreamcatcherBuff"))
-                    {
-                        WoW.CastSpell("CelestialAlignment");
-                        return;
-                    }
-                    // (EXECUTE_TIME NOT CODED) actions.ed+=/starsurge,if=(buff.celestial_alignment.up&buff.celestial_alignment.remains<(10))|(buff.incarnation.up&buff.incarnation.remains<(3*execute_time)&astral_power>78)|(buff.incarnation.up&buff.incarnation.remains<(2*execute_time)&astral_power>52)|(buff.incarnation.up&buff.incarnation.remains<execute_time&astral_power>26)
-                    if (WoW.CanCast("Starsurge")
-                        && (WoW.PlayerHasBuff("CelestialAlignment") && WoW.PlayerBuffTimeRemaining("CelestialAlignment") < 100)
+                        WoW.CastSpell("Mangle");
+						return;
+                    }	
+				}
+				if (WoW.PlayerHasBuff("Moonkin"))
+				{
+					// If Blessing of the Ancients get it up.
+					if (BlessingOfAncients && WoW.IsInCombat && WoW.CanCast("BlessingOfAncients") && !WoW.PlayerHasBuff("BlessingOfElune") && !WoW.PlayerHasBuff("BlessingOfAnshe") && WoW.HealthPercent >= 10)
+					{
+						WoW.CastSpell("BlessingOfAncients");
+						return;
+					}
+					if (BlessingOfAncients && WoW.IsInCombat && WoW.CanCast("BlessingOfAncients") && WoW.PlayerHasBuff("BlessingOfAnshe") && WoW.HealthPercent >= 10)
+					{
+						WoW.CastSpell("BlessingOfAncients");
+						return;
+					}
+					// Restoration Affinity
+					if (HealingLowHP && !WoW.PlayerHasBuff("Moonkin") && WoW.HealthPercent >= 1)
+					{
+						// If dont have rejuvenation buff
+						if (WoW.CanCast("Rejuvenation") && !WoW.PlayerHasBuff("Rejuvenation") && WoW.HealthPercent <= 50 && WoW.HealthPercent >= 1)
+						{
+							WoW.CastSpell("Rejuvenation");
+							return;
+						}
+						// If can cast swiftment
+						if (WoW.CanCast("Swiftmend") && WoW.HealthPercent <= 50 && !WoW.IsSpellOnCooldown("Swiftmend") && WoW.HealthPercent >= 1)
+						{
+							WoW.CastSpell("Swiftmend");
+							return;
+						}
+						// Return to moonkin pew pew
+						if (WoW.CanCast("Moonkin") && WoW.IsSpellOnCooldown("Swiftmend") && WoW.PlayerHasBuff("Rejuvenation"))
+						{
+							WoW.CastSpell("Moonkin");
+							return;
+						}
+					}
+					// Renewal if under 30% HP
+					if (Renewal && WoW.CanCast("Renewal") && WoW.HealthPercent >= 1 && WoW.HealthPercent <= 30)
+					{
+						WoW.CastSpell("Renewal");
+						return;
+					}
+					// Emerald Dreamcatcher Rotation
+					if (EmeraldDreamcatcher && WoW.IsInCombat && WoW.HasTarget && WoW.TargetIsEnemy && WoW.PlayerHasBuff("Moonkin"))
+					{
+						// actions.ed=astral_communion,if=astral_power.deficit>=75&buff.the_emerald_dreamcatcher.up
+						if (AstralCommunion && UseCooldowns && WoW.CanCast("AstralCommunion") && !WoW.IsSpellOnCooldown("AstralCommunion") && WoW.CurrentAstralPower <= 25 && WoW.PlayerHasBuff("EmeraldDreamcatcherBuff"))
+						{
+							WoW.CastSpell("AstralCommunion");
+							return;
+						}
+						// actions.ed+=/incarnation,if=astral_power>=85&!buff.the_emerald_dreamcatcher.up|buff.bloodlust.up
+						if (Incarnation && UseCooldowns && WoW.CanCast("Incarnation") && !WoW.IsSpellOnCooldown("Incarnation") &&WoW.CurrentAstralPower >= 85 && (!WoW.PlayerHasBuff("EmeraldDreamcatcherBuff") || WoW.PlayerHasBuff("Bloodlust")))
+						{
+							WoW.CastSpell("Incarnation");
+							return;
+						}
+						// actions.ed+=/celestial_alignment,if=astral_power>=85&!buff.the_emerald_dreamcatcher.up
+						if (!Incarnation && UseCooldowns && WoW.CanCast("CelestialAlignment") && !WoW.IsSpellOnCooldown("CelestialAlignment") && WoW.CurrentAstralPower >= 85 && !WoW.PlayerHasBuff("EmeraldDreamcatcherBuff"))
+						{
+							WoW.CastSpell("CelestialAlignment");
+							return;
+						}
+						// (EXECUTE_TIME NOT CODED) actions.ed+=/starsurge,if=(buff.celestial_alignment.up&buff.celestial_alignment.remains<(10))|(buff.incarnation.up&buff.incarnation.remains<(3*execute_time)&astral_power>78)|(buff.incarnation.up&buff.incarnation.remains<(2*execute_time)&astral_power>52)|(buff.incarnation.up&buff.incarnation.remains<execute_time&astral_power>26)
+						if (WoW.CanCast("Starsurge") && (WoW.PlayerHasBuff("CelestialAlignment") && WoW.PlayerBuffTimeRemaining("CelestialAlignment") < 100)
                         || (WoW.PlayerHasBuff("Incarnation") && WoW.PlayerBuffTimeRemaining("Incarnation") <= 300 && WoW.CurrentAstralPower >= 78)
                         || (WoW.PlayerHasBuff("Incarnation") && WoW.PlayerBuffTimeRemaining("Incarnation") <= 200 && WoW.CurrentAstralPower >= 52)
                         || (WoW.PlayerHasBuff("Incarnation") && WoW.PlayerBuffTimeRemaining("Incarnation") <= 100 && WoW.CurrentAstralPower >= 26))
-                    {
-                        WoW.CastSpell("Starsurge");
-                        return;
-                    }
-                    // actions.ed+=/stellar_flare,cycle_targets=1,max_cycle_targets=4,if=active_enemies<4&remains<7.2&astral_power>=15
-                    // need add multiple target detection
-                    if (StellarFlare && WoW.CanCast("StellarFlare") && WoW.TargetDebuffTimeRemaining("StellarFlare") <= 700 && WoW.CurrentAstralPower >= 15)
-                    {
-                        WoW.CastSpell("StellarFlare");
-                        return;
-                    }
-                    // moonfire if not in target
-                    if (WoW.CanCast("Moonfire") && !WoW.TargetHasDebuff("Moonfire"))
-                    {
-                        WoW.CastSpell("Moonfire");
-                        return;
-                    }
-                    // actions.ed+=/moonfire,if=((talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
-                    if (WoW.CanCast("Moonfire")
-                        && ((NaturesBalance && WoW.TargetHasDebuff("Moonfire") && WoW.TargetDebuffTimeRemaining("Moonfire") < 300) || (!NaturesBalance && WoW.TargetHasDebuff("Moonfire") && WoW.TargetDebuffTimeRemaining("Moonfire") < 660))
-                        && (WoW.PlayerBuffTimeRemaining("EmeraldDreamcatcherBuff") > 100 || !WoW.PlayerHasBuff("EmeraldDreamcatcherBuff")))
-                    {
-                        WoW.CastSpell("Moonfire");
-                        return;
-                    }
-                    // sunfire if not in target
-                    if (WoW.CanCast("Sunfire") && !WoW.TargetHasDebuff("Sunfire"))
-                    {
-                        WoW.CastSpell("Sunfire");
-                        return;
-                    }
-                    // actions.ed+=/sunfire,if=((talent.natures_balance.enabled&remains<3)|(remains<5.4&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
-                    if (WoW.CanCast("Sunfire")
+						{
+							WoW.CastSpell("Starsurge");
+							return;
+						}
+						// actions.ed+=/stellar_flare,cycle_targets=1,max_cycle_targets=4,if=active_enemies<4&remains<7.2&astral_power>=15
+						// need add multiple target detection
+						if (StellarFlare && WoW.CanCast("StellarFlare") && WoW.TargetDebuffTimeRemaining("StellarFlare") <= 700 && WoW.CurrentAstralPower >= 15)
+						{
+							WoW.CastSpell("StellarFlare");
+							return;
+						}
+						// moonfire if not in target
+						if (WoW.CanCast("Moonfire") && !WoW.TargetHasDebuff("Moonfire"))
+						{
+							WoW.CastSpell("Moonfire");
+							return;
+						}
+						// actions.ed+=/moonfire,if=((talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
+						if (WoW.CanCast("Moonfire")
+							&& ((NaturesBalance && WoW.TargetHasDebuff("Moonfire") && WoW.TargetDebuffTimeRemaining("Moonfire") < 300) || (!NaturesBalance && WoW.TargetHasDebuff("Moonfire") && WoW.TargetDebuffTimeRemaining("Moonfire") < 660))
+							&& (WoW.PlayerBuffTimeRemaining("EmeraldDreamcatcherBuff") > 100 || !WoW.PlayerHasBuff("EmeraldDreamcatcherBuff")))
+						{
+							WoW.CastSpell("Moonfire");
+							return;
+						}
+						// sunfire if not in target
+						if (WoW.CanCast("Sunfire") && !WoW.TargetHasDebuff("Sunfire"))
+						{
+							WoW.CastSpell("Sunfire");
+							return;
+						}
+						// actions.ed+=/sunfire,if=((talent.natures_balance.enabled&remains<3)|(remains<5.4&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
+						if (WoW.CanCast("Sunfire")
                         && ((NaturesBalance && WoW.TargetHasDebuff("Sunfire") && WoW.TargetDebuffTimeRemaining("Sunfire") < 300) || (!NaturesBalance && WoW.TargetHasDebuff("Sunfire") && WoW.TargetDebuffTimeRemaining("Sunfire") < 540))
                         && (WoW.PlayerBuffTimeRemaining("EmeraldDreamcatcherBuff") > 100 || !WoW.PlayerHasBuff("EmeraldDreamcatcherBuff")))
-                    {
-                        WoW.CastSpell("Moonfire");
-                        return;
-                    }
-                    // actions.ed+=/starfall,if=buff.oneths_overconfidence.up&buff.the_emerald_dreamcatcher.remains>execute_time&remains<2
-                    if (StarfallMacro && WoW.CanCast("Starfall") && WoW.PlayerHasBuff("OnethsOverconfidence") && WoW.PlayerHasBuff("EmeraldDreamcatcherBuff") && WoW.PlayerBuffTimeRemaining("EmeraldDreamcatcherBuff") > 100)
-                    {
-                        WoW.CastSpell("Starfall");
-                        return;
-                    }
-                    // actions.ed+=/half_moon,if=astral_power<=80&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=6
-                    if (WoW.CanCast("HalfMoon") && WoW.CurrentAstralPower <= 80 && WoW.PlayerBuffTimeRemaining("EmeraldDreamcatcherBuff") > 150 && WoW.CurrentAstralPower > 6)
-                    {
-                        WoW.CastSpell("HalfMoon");
-                        return;
-                    }
-                    // actions.ed+=/full_moon,if=astral_power<=60&buff.the_emerald_dreamcatcher.remains>execute_time
-                    if (WoW.CanCast("HalfMoon") && WoW.CurrentAstralPower <= 60 && WoW.PlayerBuffTimeRemaining("EmeraldDreamcatcherBuff") > 250)
-                    {
-                        WoW.CastSpell("FullMoon");
-                        return;
-                    }
-                    // actions.ed+=/solar_wrath,if=buff.solar_empowerment.stack>1&buff.the_emerald_dreamcatcher.remains>2*execute_time&astral_power>=6&(dot.moonfire.remains>5|(dot.sunfire.remains<5.4&dot.moonfire.remains>6.6))&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=90|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=85)
-                    if (WoW.CanCast("SolarW") && WoW.PlayerBuffStacks("SolarEmp") > 1 && WoW.PlayerBuffTimeRemaining("EmeraldDreamcatcherBuff") > 300 && WoW.CurrentAstralPower >= 6 && (WoW.TargetDebuffTimeRemaining("Moonfire") > 500 || (WoW.TargetDebuffTimeRemaining("Sunfire") > 660)) && ((!WoW.PlayerHasBuff("CelestialAlignment") || !WoW.PlayerHasBuff("Incarnation")) && WoW.CurrentAstralPower <= 90 || (WoW.PlayerHasBuff("CelestialAlignment") || WoW.PlayerHasBuff("Incarnation")) && WoW.CurrentAstralPower <= 85))
-                    {
-                        WoW.CastSpell("SolarW");
-                        return;
-                    }
-                    // actions.ed+=/lunar_strike,if=buff.lunar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=11&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=85|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=77.5)
-                    if (WoW.CanCast("LStrike") && WoW.PlayerHasBuff("LunarEmp") && WoW.PlayerBuffTimeRemaining("EmeraldDreamcatcherBuff") > 250 && WoW.CurrentAstralPower>=11&&((!WoW.PlayerHasBuff("CelestialAlignment")||!WoW.PlayerHasBuff("Incarnation")&&WoW.CurrentAstralPower<=85||(WoW.PlayerHasBuff("CelestialAlignment")||WoW.PlayerHasBuff("Incarnation"))&&WoW.CurrentAstralPower<=77)))
-                    {
-                        WoW.CastSpell("LStrike");
-                        return;
-                    }
-                    // actions.ed+=/solar_wrath,if=buff.solar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=16&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=90|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=85)
-                    if (WoW.CanCast("SolarW") && WoW.PlayerHasBuff("SolarEmp") && WoW.PlayerBuffTimeRemaining("EmeraldDreamcatcherBuff") > 150 && WoW.CurrentAstralPower >= 16 && ((!WoW.PlayerHasBuff("CelestialAlignment") || !WoW.PlayerHasBuff("Incarnation") && WoW.CurrentAstralPower <= 90 || (WoW.PlayerHasBuff("CelestialAlignment") || WoW.PlayerHasBuff("Incarnation")) && WoW.CurrentAstralPower <= 85)))
-                    {
-                        WoW.CastSpell("SolarW");
-                        return;
-                    }
-                    // actions.ed+=/starsurge,if=(buff.the_emerald_dreamcatcher.up&buff.the_emerald_dreamcatcher.remains<gcd.max)|astral_power>90|((buff.celestial_alignment.up|buff.incarnation.up)&astral_power>=85)|(buff.the_emerald_dreamcatcher.up&astral_power>=77.5&(buff.celestial_alignment.up|buff.incarnation.up))
-                    if (WoW.CanCast("Starsurge") && (WoW.PlayerHasBuff("EmeraldDreamcatcherBuff") && WoW.PlayerBuffTimeRemaining("EmeraldDreamcatcherBuff") < 100) || WoW.CurrentAstralPower > 90 || ((WoW.PlayerHasBuff("CelestialAlignment") || WoW.PlayerHasBuff("Incarnation")) && WoW.CurrentAstralPower >= 85) || (WoW.PlayerHasBuff("EmeraldDreamcatcherBuff") && WoW.CurrentAstralPower >= 77 && (WoW.PlayerHasBuff("CelestialAlignment") || (WoW.PlayerHasBuff("Incarnation")))))
-                    {
-                        WoW.CastSpell("Starsurge");
-                        return;
-                    }
-                    // actions.ed+=/starfall,if=buff.oneths_overconfidence.up&remains<2
-                    if (StarfallMacro && WoW.CanCast("Starfall") && WoW.PlayerHasBuff("OnethsOverconfidence"))
-                    {
-                        WoW.CastSpell("Starfall");
-                        return;
-                    }
-                    // actions.ed+=/new_moon,if=astral_power<=90
-                    if (WoW.CanCast("Moon") && WoW.CurrentAstralPower <= 90)
-                    {
-                        WoW.CastSpell("Moon");
-                        return;
-                    }
-                    // actions.ed+=/half_moon,if=astral_power<=80
-                    if (WoW.CanCast("HalfMoon") && WoW.CurrentAstralPower <= 80)
-                    {
-                        WoW.CastSpell("HalfMoon");
-                        return;
-                    }
-                    // actions.ed+=/full_moon,if=astral_power<=60&((cooldown.incarnation.remains>65&cooldown.full_moon.charges>0)|(cooldown.incarnation.remains>50&cooldown.full_moon.charges>1)|(cooldown.incarnation.remains>25&cooldown.full_moon.charges>2))
-                    if (WoW.CanCast("FullMoon") && WoW.CurrentAstralPower <= 60&&((Incarnation && WoW.SpellCooldownTimeRemaining("Incarnation") > 6500 && WoW.PlayerSpellCharges("FullMoon") > 0) || (WoW.SpellCooldownTimeRemaining("Incarnation") > 5000 && WoW.PlayerSpellCharges("FullMoon") > 1) || (WoW.SpellCooldownTimeRemaining("Incarnation") > 2500 && WoW.PlayerSpellCharges("FullMoon") > 2)))
-                    {
-                        WoW.CastSpell("FullMoon");
-                        return;
-                    }
-                    // actions.ed+=/solar_wrath,if=buff.solar_empowerment.up
-                    if (WoW.CanCast("SolarW") && WoW.PlayerHasBuff("SolarEmp")) 
-                    {
-                        WoW.CastSpell("SolarW");
-                        return;
-                    }
-                    // actions.ed+=/lunar_strike,if=buff.lunar_empowerment.up
-                    if (WoW.CanCast("LStrike") && WoW.PlayerHasBuff("LunarEmp"))
-                    {
-                        WoW.CastSpell("LStrike");
-                        return;
-                    }
-                    // actions.ed+=/solar_wrath
-                    if (WoW.CanCast("SolarW"))
-                    {
-                        WoW.CastSpell("SolarW");
-                        return;
-                    }
-                }
-                // Pull
+						{
+							WoW.CastSpell("Moonfire");
+							return;
+						}
+						// actions.ed+=/starfall,if=buff.oneths_overconfidence.up&buff.the_emerald_dreamcatcher.remains>execute_time&remains<2
+						if (StarfallMacro && WoW.CanCast("Starfall") && WoW.PlayerHasBuff("OnethsOverconfidence") && WoW.PlayerHasBuff("EmeraldDreamcatcherBuff") && WoW.PlayerBuffTimeRemaining("EmeraldDreamcatcherBuff") > 100)
+						{
+							WoW.CastSpell("Starfall");
+							return;
+						}
+						// actions.ed+=/half_moon,if=astral_power<=80&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=6
+						if (WoW.CanCast("HalfMoon") && WoW.CurrentAstralPower <= 80 && WoW.PlayerBuffTimeRemaining("EmeraldDreamcatcherBuff") > 150 && WoW.CurrentAstralPower > 6)
+						{
+							WoW.CastSpell("HalfMoon");
+							return;
+						}
+						// actions.ed+=/full_moon,if=astral_power<=60&buff.the_emerald_dreamcatcher.remains>execute_time
+						if (WoW.CanCast("HalfMoon") && WoW.CurrentAstralPower <= 60 && WoW.PlayerBuffTimeRemaining("EmeraldDreamcatcherBuff") > 250)
+						{
+							WoW.CastSpell("FullMoon");
+							return;
+						}
+						// actions.ed+=/solar_wrath,if=buff.solar_empowerment.stack>1&buff.the_emerald_dreamcatcher.remains>2*execute_time&astral_power>=6&(dot.moonfire.remains>5|(dot.sunfire.remains<5.4&dot.moonfire.remains>6.6))&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=90|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=85)
+						if (WoW.CanCast("SolarW") && WoW.PlayerBuffStacks("SolarEmp") > 1 && WoW.PlayerBuffTimeRemaining("EmeraldDreamcatcherBuff") > 300 && WoW.CurrentAstralPower >= 6 && (WoW.TargetDebuffTimeRemaining("Moonfire") > 500 || (WoW.TargetDebuffTimeRemaining("Sunfire") > 660)) && ((!WoW.PlayerHasBuff("CelestialAlignment") || !WoW.PlayerHasBuff("Incarnation")) && WoW.CurrentAstralPower <= 90 || (WoW.PlayerHasBuff("CelestialAlignment") || WoW.PlayerHasBuff("Incarnation")) && WoW.CurrentAstralPower <= 85))
+						{
+							WoW.CastSpell("SolarW");
+							return;
+						}
+						// actions.ed+=/lunar_strike,if=buff.lunar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=11&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=85|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=77.5)
+						if (WoW.CanCast("LStrike") && WoW.PlayerHasBuff("LunarEmp") && WoW.PlayerBuffTimeRemaining("EmeraldDreamcatcherBuff") > 250 && WoW.CurrentAstralPower>=11&&((!WoW.PlayerHasBuff("CelestialAlignment")||!WoW.PlayerHasBuff("Incarnation")&&WoW.CurrentAstralPower<=85||(WoW.PlayerHasBuff("CelestialAlignment")||WoW.PlayerHasBuff("Incarnation"))&&WoW.CurrentAstralPower<=77)))
+						{
+							WoW.CastSpell("LStrike");
+							return;
+						}
+						// actions.ed+=/solar_wrath,if=buff.solar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=16&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=90|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=85)
+						if (WoW.CanCast("SolarW") && WoW.PlayerHasBuff("SolarEmp") && WoW.PlayerBuffTimeRemaining("EmeraldDreamcatcherBuff") > 150 && WoW.CurrentAstralPower >= 16 && ((!WoW.PlayerHasBuff("CelestialAlignment") || !WoW.PlayerHasBuff("Incarnation") && WoW.CurrentAstralPower <= 90 || (WoW.PlayerHasBuff("CelestialAlignment") || WoW.PlayerHasBuff("Incarnation")) && WoW.CurrentAstralPower <= 85)))
+						{
+							WoW.CastSpell("SolarW");
+							return;
+						}
+						// actions.ed+=/starsurge,if=(buff.the_emerald_dreamcatcher.up&buff.the_emerald_dreamcatcher.remains<gcd.max)|astral_power>90|((buff.celestial_alignment.up|buff.incarnation.up)&astral_power>=85)|(buff.the_emerald_dreamcatcher.up&astral_power>=77.5&(buff.celestial_alignment.up|buff.incarnation.up))
+						if (WoW.CanCast("Starsurge") && (WoW.PlayerHasBuff("EmeraldDreamcatcherBuff") && WoW.PlayerBuffTimeRemaining("EmeraldDreamcatcherBuff") < 100) || WoW.CurrentAstralPower > 90 || ((WoW.PlayerHasBuff("CelestialAlignment") || WoW.PlayerHasBuff("Incarnation")) && WoW.CurrentAstralPower >= 85) || (WoW.PlayerHasBuff("EmeraldDreamcatcherBuff") && WoW.CurrentAstralPower >= 77 && (WoW.PlayerHasBuff("CelestialAlignment") || (WoW.PlayerHasBuff("Incarnation")))))
+						{
+							WoW.CastSpell("Starsurge");
+							return;
+						}
+						// actions.ed+=/starfall,if=buff.oneths_overconfidence.up&remains<2
+						if (StarfallMacro && WoW.CanCast("Starfall") && WoW.PlayerHasBuff("OnethsOverconfidence"))
+						{
+							WoW.CastSpell("Starfall");
+							return;
+						}
+						// actions.ed+=/new_moon,if=astral_power<=90
+						if (WoW.CanCast("Moon") && WoW.CurrentAstralPower <= 90)
+						{
+							WoW.CastSpell("Moon");
+							return;
+						}
+						// actions.ed+=/half_moon,if=astral_power<=80
+						if (WoW.CanCast("HalfMoon") && WoW.CurrentAstralPower <= 80)
+						{
+							WoW.CastSpell("HalfMoon");
+							return;
+						}
+						// actions.ed+=/full_moon,if=astral_power<=60&((cooldown.incarnation.remains>65&cooldown.full_moon.charges>0)|(cooldown.incarnation.remains>50&cooldown.full_moon.charges>1)|(cooldown.incarnation.remains>25&cooldown.full_moon.charges>2))
+						if (WoW.CanCast("FullMoon") && WoW.CurrentAstralPower <= 60&&((Incarnation && WoW.SpellCooldownTimeRemaining("Incarnation") > 6500 && WoW.PlayerSpellCharges("FullMoon") > 0) || (WoW.SpellCooldownTimeRemaining("Incarnation") > 5000 && WoW.PlayerSpellCharges("FullMoon") > 1) || (WoW.SpellCooldownTimeRemaining("Incarnation") > 2500 && WoW.PlayerSpellCharges("FullMoon") > 2)))
+						{
+							WoW.CastSpell("FullMoon");
+							return;
+						}
+						// actions.ed+=/solar_wrath,if=buff.solar_empowerment.up
+						if (WoW.CanCast("SolarW") && WoW.PlayerHasBuff("SolarEmp")) 
+						{
+							WoW.CastSpell("SolarW");
+							return;
+						}
+						// actions.ed+=/lunar_strike,if=buff.lunar_empowerment.up
+						if (WoW.CanCast("LStrike") && WoW.PlayerHasBuff("LunarEmp"))
+						{
+							WoW.CastSpell("LStrike");
+							return;
+						}
+						// actions.ed+=/solar_wrath
+						if (WoW.CanCast("SolarW"))
+						{
+							WoW.CastSpell("SolarW");
+							return;
+						}
+					}
+					// Pull
                 if (WoW.IsInCombat && pullwatch.ElapsedMilliseconds < 15000 && UseCooldowns)
                 {
                     // KBW if in use
@@ -2137,7 +2168,7 @@ namespace CloudMagic.Rotation
             }
         }
 		}
-        
+		}
         public override Form SettingsForm { get; set; }
     }
 }
@@ -2168,6 +2199,12 @@ Spell,24858,Moonkin,F11
 Spell,108238,Renewal,F7
 Spell,202360,BlessingOfAncients,F10
 Spell,133642,KBW,T
+Spell,1,----Bear Stuff---,Z
+Spell,5487,Bear Form,NumPad5
+Spell,77758,ThrashBear,D4
+Spell,33917,Mangle,D3
+Spell,22842,Frenzied Regeneration,F2
+Spell,192081,Ironfur,D5
 Aura,209407,OnethsOverconfidence
 Aura,224706,EmeraldDreamcatcherBuff
 Aura,164547,LunarEmp
@@ -2188,5 +2225,8 @@ Aura,157228,OwlkinFrenzy
 Aura,191034,StarfallP
 Aura,197637,StarfallT
 Aura,783,Travel Form
+Aura,5487,Bear Form
+Aura,192090,ThrashBear
+Aura,22842,Frenzied Regeneration
 Item,133642,KBW
 */
