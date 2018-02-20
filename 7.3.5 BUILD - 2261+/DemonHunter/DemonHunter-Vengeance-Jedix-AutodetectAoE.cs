@@ -398,5 +398,4 @@ Debuff,212818,Fiery Demise
 Range,207407,Soul Carver
 Range,211881,Fel Eruption
 Range,204157,Throw Glaive
-Charge,1,Chargestuff
 */
