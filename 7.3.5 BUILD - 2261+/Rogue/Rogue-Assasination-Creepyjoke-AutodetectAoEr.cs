@@ -324,6 +324,5 @@ Debuff,703,Garrote
 Debuff,192425,Toxins
 Debuff,192759,Kingsbane
 Debuff,79140,Vendetta
-Charge,1,chargestuff
 Range,1943,Rupture
 */
