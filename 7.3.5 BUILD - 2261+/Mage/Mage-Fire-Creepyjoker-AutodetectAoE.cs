@@ -887,7 +887,7 @@ namespace CloudMagic.Rotation
 /*
 [AddonDetails.db]
 AddonAuthor=Creepyjoker
-AddonName=smartie
+AddonName=Noobzun
 WoWVersion=70300
 [SpellBook.db]
 Spell,190319,Combustion,E
